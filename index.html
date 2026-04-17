@@ -1,0 +1,3392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AARK — Tradition, Styled for Today</title>
+<meta name="description" content="AARK catalog with straight cut kurtis, long frocks, short frocks, short tops, kids frocks, men's kurtas, and matching family looks. Rooted in tradition, styled for today.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --teal: #0F6E56;
+  --teal-light: #1a8a6c;
+  --teal-pale: #e8f5f1;
+  --wishlist-teal: #008080;
+  --gold: #C9A84C;
+  --gold-light: #dfc07a;
+  --cream: #FAF7F2;
+  --cream-dark: #F0EBE3;
+  --white: #FFFFFF;
+  --charcoal: #2C2C2C;
+  --warm-grey: #8A8580;
+  --light-grey: #E8E4DE;
+  --text: #1E1E1E;
+  --text-muted: #6B6560;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Jost', sans-serif;
+  --shadow-sm: 0 2px 12px rgba(15,110,86,0.08);
+  --shadow-md: 0 8px 32px rgba(15,110,86,0.12);
+  --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
+  --radius: 4px;
+  --radius-lg: 12px;
+  --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  font-family: var(--sans);
+  background: var(--cream);
+  color: var(--text);
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+img { max-width: 100%; display: block; }
+a { text-decoration: none; color: inherit; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+ul { list-style: none; }
+
+/* Keep cursor behavior consistent across custom clickable elements. */
+a[onclick],
+a:not([href]),
+[onclick],
+[onclick] *,
+.nav-icon-btn,
+.nav-icon-btn *,
+.cart-badge {
+  cursor: pointer;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--cream); }
+::-webkit-scrollbar-thumb { background: var(--teal); border-radius: 3px; }
+
+/* ── PAGE SYSTEM ── */
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.4s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ══════════════════════════════════════════
+   HEADER / NAV
+══════════════════════════════════════════ */
+.header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+  background: rgba(250,247,242,0.96);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--light-grey);
+  transition: var(--transition);
+}
+.header.scrolled { box-shadow: var(--shadow-sm); }
+.nav-inner {
+  max-width: 1280px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 68px;
+}
+.nav-logo {
+  font-family: var(--serif);
+  font-size: 2rem; font-weight: 600; letter-spacing: 0.18em;
+  color: var(--teal);
+  cursor: pointer;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links {
+  display: flex; align-items: center; gap: 32px;
+}
+.nav-link {
+  display: inline-flex; align-items: center;
+  font-size: 0.8rem; font-weight: 500; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--text);
+  position: relative; cursor: pointer; line-height: 1;
+  text-decoration: none !important; border-bottom: none !important; box-shadow: none !important; outline: none !important;
+  background: none !important;
+  transition: color 0.25s;
+}
+.nav-link::before,
+.nav-link::after {
+  content: none !important;
+  display: none !important;
+}
+.nav-link:hover,
+.nav-link:focus-visible {
+  color: var(--gold);
+  text-decoration: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  background: none !important;
+}
+.nav-actions { display: flex; align-items: center; gap: 16px; }
+.nav-icon-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: var(--transition); position: relative;
+  color: var(--text); font-size: 1rem;
+}
+.nav-icon-btn:hover { background: var(--teal-pale); color: var(--teal); }
+.nav-icon-btn.wishlist-nav { color: var(--wishlist-teal); }
+.nav-icon-btn.wishlist-nav:hover {
+  color: var(--gold);
+  background: rgba(201,168,76,0.12);
+}
+.heart-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 1em; height: 1em; line-height: 0; pointer-events: none;
+}
+.heart-icon svg {
+  width: 100%; height: 100%; display: block;
+  fill: currentColor;
+}
+.nav-icon-btn .heart-icon { width: 18px; height: 18px; }
+.mobile-bottom-nav .heart-icon { width: 16px; height: 16px; }
+.product-action-btn.wishlist .heart-icon { width: 15px; height: 15px; }
+.empty-wishlist-heart .heart-icon { width: 64px; height: 64px; }
+.cart-badge {
+  position: absolute; top: 2px; right: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--gold); color: white;
+  font-size: 0.6rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.hamburger { display: none; flex-direction: column; gap: 5px; padding: 4px; cursor: pointer; }
+.hamburger span { display: block; width: 22px; height: 1.5px; background: var(--text); transition: var(--transition); }
+
+/* ── MOBILE NAV ── */
+.mobile-nav {
+  display: none; position: fixed; top: 68px; left: 0; right: 0; bottom: 0;
+  background: var(--cream); z-index: 999;
+  padding: 32px 24px; overflow-y: auto;
+  flex-direction: column; gap: 20px;
+  animation: slideDown 0.3s ease;
+}
+.mobile-nav.open { display: flex; }
+@keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+.mobile-nav a {
+  font-family: var(--serif); font-size: 1.6rem; font-weight: 500;
+  color: var(--text); border-bottom: 1px solid var(--light-grey); padding-bottom: 16px;
+}
+.mobile-nav a:hover { color: var(--teal); }
+.mobile-nav-footer {
+  margin-top: auto; display: flex; gap: 16px; flex-wrap: wrap;
+}
+
+/* ══════════════════════════════════════════
+   HERO
+══════════════════════════════════════════ */
+.hero {
+  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #0d5e49 0%, #0F6E56 45%, #1a8a6c 100%);
+}
+.hero-bg-pattern {
+  position: absolute; inset: 0; opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.hero-content {
+  position: relative; z-index: 2;
+  text-align: center; padding: 120px 24px 80px;
+  max-width: 900px;
+}
+.hero-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4);
+  color: var(--gold-light); padding: 6px 18px;
+  border-radius: 40px; font-size: 0.72rem; letter-spacing: 0.18em;
+  text-transform: uppercase; margin-bottom: 28px;
+  animation: fadeUp 0.6s ease 0.2s both;
+}
+.hero-title {
+  font-family: var(--serif); font-size: clamp(3rem, 8vw, 6.5rem);
+  color: white; line-height: 1.08; font-weight: 400; letter-spacing: 0.02em;
+  margin-bottom: 24px;
+  animation: fadeUp 0.6s ease 0.4s both;
+}
+.hero-title em { font-style: italic; color: var(--gold-light); }
+.hero-sub {
+  font-size: 1rem; color: rgba(255,255,255,0.75); letter-spacing: 0.06em;
+  max-width: 480px; margin: 0 auto 44px;
+  animation: fadeUp 0.6s ease 0.6s both;
+}
+.hero-actions {
+  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  animation: fadeUp 0.6s ease 0.8s both;
+}
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+.hero-scroll {
+  position: absolute; bottom: 32px; left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  color: rgba(255,255,255,0.5); font-size: 0.7rem; letter-spacing: 0.14em; text-transform: uppercase;
+  animation: bounce 2s infinite;
+  cursor: pointer;
+}
+@keyframes bounce { 0%,100%{transform:translateX(-50%) translateY(0)} 50%{transform:translateX(-50%) translateY(8px)} }
+.scroll-line { width: 1px; height: 36px; background: rgba(255,255,255,0.3); }
+
+/* ══════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 13px 28px; border-radius: var(--radius);
+  font-family: var(--sans); font-size: 0.8rem; font-weight: 500;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  transition: var(--transition); cursor: pointer; border: none;
+}
+.btn:disabled, .btn[disabled] {
+  opacity: 0.68; cursor: not-allowed;
+  transform: none !important; box-shadow: none !important;
+}
+.btn-primary {
+  background: var(--gold); color: white;
+  box-shadow: 0 4px 20px rgba(201,168,76,0.35);
+}
+.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,168,76,0.45); }
+.btn-outline-white {
+  background: transparent; color: white;
+  border: 1px solid rgba(255,255,255,0.5);
+}
+.btn-outline-white:hover { background: rgba(255,255,255,0.12); border-color: white; }
+.btn-outline-teal {
+  background: transparent; color: var(--teal);
+  border: 1.5px solid var(--teal);
+}
+.btn-outline-teal:hover { background: var(--teal); color: white; transform: translateY(-2px); }
+.btn-teal {
+  background: var(--teal); color: white;
+  box-shadow: 0 4px 20px rgba(15,110,86,0.3);
+}
+.btn-teal:hover { background: var(--teal-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(15,110,86,0.4); }
+.btn-whatsapp {
+  background: #25D366; color: white;
+  box-shadow: 0 4px 20px rgba(37,211,102,0.3);
+}
+.btn-whatsapp:hover { background: #1ebd5a; transform: translateY(-2px); }
+.btn-sm { padding: 9px 20px; font-size: 0.72rem; }
+.btn-lg { padding: 16px 36px; font-size: 0.85rem; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ══════════════════════════════════════════
+   SECTIONS SHARED
+══════════════════════════════════════════ */
+.section { padding: 80px 24px; }
+.section-sm { padding: 48px 24px; }
+.container { max-width: 1280px; margin: 0 auto; }
+.section-header { text-align: center; margin-bottom: 56px; }
+.section-label {
+  display: inline-block; font-size: 0.7rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--gold); font-weight: 500;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-family: var(--serif); font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 400; color: var(--text); line-height: 1.2; letter-spacing: 0.02em;
+}
+.section-title em { font-style: italic; color: var(--teal); }
+.section-sub {
+  margin-top: 14px; font-size: 0.95rem; color: var(--text-muted);
+  max-width: 520px; margin-left: auto; margin-right: auto; line-height: 1.7;
+}
+.divider {
+  width: 48px; height: 2px; margin: 20px auto 0;
+  background: linear-gradient(90deg, var(--gold), var(--teal));
+  border-radius: 2px;
+}
+
+/* ══════════════════════════════════════════
+   ANNOUNCEMENT BAR
+══════════════════════════════════════════ */
+.announcement {
+  background: var(--teal); color: white;
+  text-align: center; padding: 10px 24px;
+  font-size: 0.78rem; letter-spacing: 0.1em;
+  position: fixed; top: 0; left: 0; right: 0; z-index: 1001;
+}
+.announcement strong { color: var(--gold-light); }
+
+/* ══════════════════════════════════════════
+   CATEGORY TILES
+══════════════════════════════════════════ */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.category-card {
+  position: relative; overflow: hidden; border-radius: var(--radius-lg);
+  cursor: pointer; aspect-ratio: 3/4;
+  background: var(--cream-dark);
+  transition: var(--transition);
+}
+.category-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.category-card:hover .cat-img { transform: scale(1.06); }
+.cat-img {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: transform 0.6s ease;
+}
+.cat-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,110,86,0.85) 0%, rgba(15,110,86,0.1) 50%, transparent 100%);
+}
+.cat-info {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  padding: 24px 20px;
+}
+.cat-name {
+  font-family: var(--serif); font-size: 1.4rem;
+  color: white; font-weight: 500; margin-bottom: 4px;
+}
+.cat-count { font-size: 0.72rem; color: rgba(255,255,255,0.7); letter-spacing: 0.1em; }
+.cat-arrow {
+  position: absolute; top: 16px; right: 16px;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.9rem;
+  transform: translateX(10px); opacity: 0;
+  transition: var(--transition);
+}
+.category-card:hover .cat-arrow { transform: translateX(0); opacity: 1; }
+
+/* ══════════════════════════════════════════
+   PRODUCT CARDS
+══════════════════════════════════════════ */
+.product-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+}
+.product-card {
+  background: white; border-radius: var(--radius-lg);
+  overflow: hidden; transition: var(--transition);
+  box-shadow: var(--shadow-sm);
+  cursor: pointer;
+}
+.product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.product-img-wrap {
+  position: relative; overflow: hidden; aspect-ratio: 3/4;
+  background: var(--cream-dark);
+}
+.product-img-main {
+  width: 100%; height: 100%; object-fit: cover;
+  transition: opacity 0.4s ease, transform 0.5s ease;
+}
+.product-img-hover {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.product-card:hover .product-img-main { opacity: 0; transform: scale(1.04); }
+.product-card:hover .product-img-hover { opacity: 1; }
+.product-badges {
+  position: absolute; top: 12px; left: 12px;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.badge {
+  display: inline-block; padding: 3px 10px;
+  font-size: 0.62rem; font-weight: 600; letter-spacing: 0.1em;
+  text-transform: uppercase; border-radius: 40px;
+}
+.badge-new { background: var(--teal); color: white; }
+.badge-sale { background: #E8533A; color: white; }
+.badge-best { background: var(--gold); color: white; }
+.badge-hand { background: var(--cream-dark); color: var(--teal); border: 1px solid var(--teal); }
+.product-actions {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  display: flex; gap: 8px; padding: 12px;
+  transform: translateY(100%); transition: transform 0.35s ease;
+}
+.product-card:hover .product-actions { transform: translateY(0); }
+.product-action-btn {
+  flex: 1; padding: 9px; border-radius: var(--radius);
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em;
+  display: flex; align-items: center; justify-content: center; gap: 5px;
+  transition: var(--transition);
+}
+.product-action-btn.wishlist {
+  background: white; color: var(--wishlist-teal); flex: 0 0 40px;
+  border: 1px solid rgba(0,128,128,0.28);
+  font-size: 0;
+}
+.product-action-btn.wishlist:hover {
+  border-color: var(--gold);
+  color: var(--gold);
+  background: rgba(201,168,76,0.08);
+}
+.product-action-btn.wishlist.active {
+  background: rgba(201,168,76,0.14);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+.product-action-btn.add-cart {
+  background: var(--teal); color: white;
+}
+.product-action-btn.add-cart:hover { background: var(--teal-light); }
+.product-action-btn.whatsapp {
+  background: #25D366; color: white; flex: 0 0 40px;
+}
+.product-info { padding: 16px 18px 20px; }
+.product-cat { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--warm-grey); margin-bottom: 6px; }
+.product-name {
+  font-family: var(--serif); font-size: 1.1rem; font-weight: 500;
+  color: var(--text); margin-bottom: 6px; line-height: 1.3;
+}
+.product-price { display: flex; align-items: center; gap: 10px; }
+.price-current { font-size: 1rem; font-weight: 600; color: var(--teal); }
+.price-original { font-size: 0.85rem; color: var(--warm-grey); text-decoration: line-through; }
+.price-save { font-size: 0.68rem; color: #E8533A; font-weight: 600; }
+.product-rating { display: flex; align-items: center; gap: 4px; margin-top: 6px; }
+.stars { color: var(--gold); font-size: 0.75rem; letter-spacing: 1px; }
+.rating-count { font-size: 0.7rem; color: var(--warm-grey); }
+
+/* ══════════════════════════════════════════
+   MARQUEE BAND
+══════════════════════════════════════════ */
+.marquee-band {
+  background: var(--teal); padding: 14px 0; overflow: hidden;
+}
+.marquee-track {
+  display: flex; gap: 0;
+  animation: marquee 28s linear infinite;
+  width: max-content;
+}
+.marquee-item {
+  display: flex; align-items: center; gap: 24px;
+  padding: 0 48px; white-space: nowrap;
+  font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: rgba(255,255,255,0.85); font-weight: 400;
+}
+.marquee-dot { color: var(--gold-light); font-size: 1.2rem; line-height: 1; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ══════════════════════════════════════════
+   FEATURES STRIP
+══════════════════════════════════════════ */
+.features-strip {
+  background: white; border-top: 1px solid var(--light-grey);
+  border-bottom: 1px solid var(--light-grey);
+}
+.features-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  divide: border-right;
+}
+.feature-item {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 32px 28px;
+  border-right: 1px solid var(--light-grey);
+}
+.feature-item:last-child { border-right: none; }
+.feature-icon {
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--teal-pale); color: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.feature-text h4 {
+  font-family: var(--serif); font-size: 1rem; font-weight: 600;
+  margin-bottom: 4px; color: var(--text);
+}
+.feature-text p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.5; }
+
+/* ══════════════════════════════════════════
+   BANNER / EDITORIAL
+══════════════════════════════════════════ */
+.editorial-banner {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  min-height: 520px; overflow: hidden;
+  border-radius: var(--radius-lg);
+}
+.editorial-img {
+  position: relative; overflow: hidden;
+}
+.editorial-img img { width: 100%; height: 100%; object-fit: cover; }
+.editorial-content {
+  background: var(--teal);
+  display: flex; flex-direction: column; justify-content: center;
+  padding: 64px 56px;
+}
+.editorial-content .section-label { color: rgba(201,168,76,0.9); }
+.editorial-content .section-title { color: white; text-align: left; }
+.editorial-content .section-title em { color: var(--gold-light); }
+.editorial-content p { color: rgba(255,255,255,0.75); margin-top: 16px; margin-bottom: 32px; font-size: 0.95rem; line-height: 1.8; }
+
+/* ══════════════════════════════════════════
+   TESTIMONIALS
+══════════════════════════════════════════ */
+.testimonials-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.testimonial-card {
+  background: white; border-radius: var(--radius-lg);
+  padding: 32px 28px; box-shadow: var(--shadow-sm);
+  position: relative; transition: var(--transition);
+}
+.testimonial-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+.testimonial-card::before {
+  content: '\201C'; position: absolute; top: 16px; left: 24px;
+  font-family: var(--serif); font-size: 5rem; color: var(--teal-pale);
+  line-height: 1; z-index: 0;
+}
+.testimonial-text {
+  font-family: var(--serif); font-size: 1.05rem; font-style: italic;
+  color: var(--text); line-height: 1.7; position: relative; z-index: 1;
+  margin-bottom: 20px;
+}
+.testimonial-author { display: flex; align-items: center; gap: 12px; }
+.author-avatar {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--teal-pale); display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 1.1rem; font-weight: 600; color: var(--teal);
+  border: 2px solid var(--teal-pale);
+}
+.author-name { font-weight: 600; font-size: 0.85rem; color: var(--text); }
+.author-place { font-size: 0.72rem; color: var(--warm-grey); }
+.testimonial-stars { color: var(--gold); font-size: 0.8rem; margin-top: 3px; }
+
+/* ══════════════════════════════════════════
+   INSTAGRAM GRID
+══════════════════════════════════════════ */
+.instagram-grid {
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px;
+}
+.insta-item {
+  aspect-ratio: 3/4; overflow: hidden; position: relative;
+  background: linear-gradient(180deg, #f7f2ea 0%, #efe7db 100%);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-lg);
+}
+.insta-item img {
+  width: 100%; height: 100%; object-fit: contain;
+  transition: transform 0.35s ease;
+}
+.insta-overlay {
+  position: absolute; inset: 0;
+  background: rgba(15,110,86,0.7);
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0; transition: opacity 0.3s;
+  color: white; font-size: 1.4rem;
+  flex-direction: column; gap: 4px;
+}
+.insta-overlay span { font-size: 0.75rem; letter-spacing: 0.08em; }
+.insta-item:hover img { transform: scale(1); }
+.insta-item:hover .insta-overlay { opacity: 1; }
+
+/* ══════════════════════════════════════════
+   NEWSLETTER
+══════════════════════════════════════════ */
+.newsletter-section {
+  background: linear-gradient(135deg, var(--teal) 0%, #0d5e49 100%);
+  padding: 80px 24px; text-align: center; position: relative; overflow: hidden;
+}
+.newsletter-section::before {
+  content: ''; position: absolute; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+}
+.newsletter-inner { position: relative; z-index: 1; max-width: 600px; margin: 0 auto; }
+.newsletter-section .section-label { color: var(--gold-light); }
+.newsletter-section .section-title { color: white; }
+.newsletter-section .section-sub { color: rgba(255,255,255,0.7); }
+.newsletter-form {
+  display: flex; gap: 0; margin-top: 36px;
+  background: white; border-radius: 50px; overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+.newsletter-input {
+  flex: 1; padding: 16px 24px; border: none; outline: none;
+  font-family: var(--sans); font-size: 0.9rem; color: var(--text);
+  background: transparent;
+}
+.newsletter-form .btn { border-radius: 50px; margin: 4px; }
+.whatsapp-cta {
+  margin-top: 24px;
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  color: rgba(255,255,255,0.7); font-size: 0.85rem;
+}
+.whatsapp-cta a {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: white; font-weight: 500;
+  border-bottom: 1px solid rgba(255,255,255,0.4);
+  padding-bottom: 2px;
+}
+
+/* ══════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════ */
+.footer {
+  background: var(--charcoal); color: rgba(255,255,255,0.75);
+  padding: 64px 24px 32px;
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr;
+  gap: 48px; max-width: 1280px; margin: 0 auto 48px;
+}
+.footer-brand .logo { font-family: var(--serif); font-size: 2rem; font-weight: 600; letter-spacing: 0.18em; color: white; margin-bottom: 16px; }
+.footer-brand .logo span { color: var(--gold); }
+.footer-brand p { font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.55); max-width: 280px; margin-bottom: 24px; }
+.footer-social { display: flex; gap: 12px; }
+.social-btn {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+  color: rgba(255,255,255,0.6); font-size: 0.9rem;
+  transition: var(--transition);
+}
+.social-btn:hover { background: var(--teal); border-color: var(--teal); color: white; transform: translateY(-3px); }
+.footer-col h5 {
+  font-size: 0.72rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: white; margin-bottom: 20px; font-weight: 500;
+}
+.footer-col ul li { margin-bottom: 10px; }
+.footer-col ul li a {
+  font-size: 0.85rem; color: rgba(255,255,255,0.55);
+  transition: color 0.25s; cursor: pointer;
+}
+.footer-col ul li a:hover { color: var(--gold-light); }
+.footer-contact-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 14px; font-size: 0.85rem; color: rgba(255,255,255,0.55);
+}
+.footer-contact-item .icon { color: var(--gold); margin-top: 2px; flex-shrink: 0; }
+.footer-bottom {
+  max-width: 1280px; margin: 0 auto;
+  border-top: 1px solid rgba(255,255,255,0.08); padding-top: 28px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+}
+.footer-bottom p { font-size: 0.78rem; color: rgba(255,255,255,0.35); }
+.payment-icons { display: flex; gap: 8px; }
+.pay-icon {
+  background: rgba(255,255,255,0.08); border-radius: 4px;
+  padding: 4px 10px; font-size: 0.65rem; color: rgba(255,255,255,0.5);
+  letter-spacing: 0.06em; text-transform: uppercase;
+}
+
+/* ══════════════════════════════════════════
+   SHOP PAGE
+══════════════════════════════════════════ */
+.shop-layout { display: flex; gap: 32px; align-items: flex-start; }
+.shop-sidebar {
+  width: 260px; flex-shrink: 0; position: sticky; top: 100px;
+  background: white; border-radius: var(--radius-lg); padding: 28px;
+  box-shadow: var(--shadow-sm);
+}
+.filter-group { margin-bottom: 28px; }
+.filter-title {
+  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: var(--text); font-weight: 600; margin-bottom: 14px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.filter-toggle { background: none; border: none; cursor: pointer; color: var(--teal); font-size: 0.8rem; }
+.filter-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.filter-chip {
+  padding: 6px 14px; border-radius: 40px; font-size: 0.75rem;
+  border: 1px solid var(--light-grey); cursor: pointer; transition: var(--transition);
+  background: white; color: var(--text-muted);
+}
+.filter-chip:hover, .filter-chip.active { border-color: var(--teal); color: var(--teal); background: var(--teal-pale); }
+.filter-chip.selected { background: var(--teal); color: white; border-color: var(--teal); }
+.shop-main { flex: 1; min-width: 0; }
+.shop-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 28px; flex-wrap: wrap; gap: 12px;
+}
+.shop-result-count { font-size: 0.85rem; color: var(--text-muted); }
+.sort-select {
+  padding: 9px 16px; border: 1px solid var(--light-grey); border-radius: var(--radius);
+  font-family: var(--sans); font-size: 0.8rem; color: var(--text); cursor: pointer;
+  background: white; outline: none;
+}
+.sort-select:focus { border-color: var(--teal); }
+.active-filters { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
+.active-filter-tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; background: var(--teal-pale); border-radius: 40px;
+  font-size: 0.72rem; color: var(--teal); cursor: pointer;
+}
+.active-filter-tag:hover { background: var(--teal); color: white; }
+
+/* ══════════════════════════════════════════
+   PRODUCT DETAIL PAGE
+══════════════════════════════════════════ */
+.product-detail {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  align-items: flex-start;
+}
+.product-gallery { position: sticky; top: 100px; }
+.main-image {
+  aspect-ratio: 3/4; overflow: hidden; border-radius: var(--radius-lg);
+  background: var(--cream-dark); margin-bottom: 12px; cursor: zoom-in;
+}
+.main-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+.main-image:hover img { transform: scale(1.04); }
+.thumb-row { display: flex; gap: 10px; }
+.thumb {
+  width: 80px; height: 100px; border-radius: var(--radius);
+  overflow: hidden; cursor: pointer; border: 2px solid transparent;
+  transition: border-color 0.25s; flex-shrink: 0;
+  background: var(--cream-dark);
+}
+.thumb.active { border-color: var(--teal); }
+.thumb img { width: 100%; height: 100%; object-fit: cover; }
+.product-detail-info {}
+.detail-breadcrumb {
+  display: flex; gap: 8px; align-items: center;
+  font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px;
+}
+.detail-breadcrumb a:hover { color: var(--teal); cursor: pointer; }
+.detail-breadcrumb span { color: var(--light-grey); }
+.detail-cat { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.14em; color: var(--teal); font-weight: 500; margin-bottom: 8px; }
+.detail-name { font-family: var(--serif); font-size: 2.4rem; font-weight: 400; line-height: 1.15; color: var(--text); margin-bottom: 12px; }
+.detail-rating { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.detail-rating .stars { font-size: 0.9rem; }
+.detail-rating span { font-size: 0.8rem; color: var(--text-muted); }
+.detail-price { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.detail-price .current { font-size: 2rem; font-weight: 600; color: var(--teal); }
+.detail-price .original { font-size: 1.2rem; color: var(--warm-grey); text-decoration: line-through; }
+.detail-price .save { background: #fef3f0; color: #e8533a; padding: 3px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
+.detail-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 24px; border-bottom: 1px solid var(--light-grey); padding-bottom: 24px; }
+.size-section { margin-bottom: 24px; }
+.size-label {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+  margin-bottom: 10px; color: var(--text);
+}
+.size-chart-link { color: var(--teal); cursor: pointer; text-decoration: underline; font-weight: 400; }
+.size-options { display: flex; gap: 8px; flex-wrap: wrap; }
+.size-opt {
+  width: 46px; height: 46px; border: 1.5px solid var(--light-grey);
+  border-radius: var(--radius); display: flex; align-items: center; justify-content: center;
+  font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: var(--transition);
+}
+.size-opt:hover { border-color: var(--teal); color: var(--teal); }
+.size-opt.active { background: var(--teal); color: white; border-color: var(--teal); }
+.size-opt.out { text-decoration: line-through; color: var(--light-grey); cursor: default; }
+.qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+.qty-label { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); min-width: 60px; }
+.qty-control { display: flex; align-items: center; border: 1.5px solid var(--light-grey); border-radius: var(--radius); overflow: hidden; }
+.qty-btn {
+  width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; cursor: pointer; transition: background 0.2s;
+}
+.qty-btn:hover { background: var(--teal-pale); color: var(--teal); }
+.qty-num { width: 48px; text-align: center; font-size: 0.9rem; font-weight: 500; border: none; outline: none; font-family: var(--sans); }
+.cta-row { display: flex; gap: 12px; margin-bottom: 20px; }
+.detail-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+.detail-tag {
+  padding: 4px 12px; border-radius: 40px; font-size: 0.68rem; letter-spacing: 0.1em;
+  text-transform: uppercase; border: 1px solid var(--light-grey); color: var(--text-muted);
+}
+.accordion { border-top: 1px solid var(--light-grey); }
+.accordion-item { border-bottom: 1px solid var(--light-grey); }
+.accordion-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 16px 0; cursor: pointer; transition: color 0.25s;
+  font-size: 0.82rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+}
+.accordion-header:hover { color: var(--teal); }
+.accordion-body { padding-bottom: 16px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; display: none; }
+.accordion-body.open { display: block; }
+
+/* ══════════════════════════════════════════
+   ABOUT PAGE
+══════════════════════════════════════════ */
+.about-hero {
+  min-height: 70vh; display: flex; align-items: center;
+  background: linear-gradient(135deg, #0d5e49, #0F6E56);
+  position: relative; overflow: hidden;
+  text-align: center; padding: 120px 24px 80px;
+}
+.about-hero-content { max-width: 700px; margin: 0 auto; position: relative; z-index: 2; }
+.about-hero h1 { font-family: var(--serif); font-size: clamp(2.5rem, 6vw, 5rem); color: white; font-weight: 400; line-height: 1.1; }
+.about-hero h1 em { color: var(--gold-light); font-style: italic; }
+.about-hero p { color: rgba(255,255,255,0.7); margin-top: 20px; font-size: 1rem; line-height: 1.8; }
+.story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.story-img { border-radius: var(--radius-lg); overflow: hidden; aspect-ratio: 4/5; background: var(--cream-dark); }
+.story-img img { width: 100%; height: 100%; object-fit: cover; }
+.story-side { display: flex; flex-direction: column; gap: 24px; }
+.founder-note {
+  background: linear-gradient(180deg, rgba(250,247,242,0.98), rgba(240,235,227,0.95));
+  border: 1px solid rgba(15,110,86,0.08);
+  border-left: 3px solid var(--gold);
+  border-radius: var(--radius-lg);
+  padding: 24px 26px;
+  box-shadow: var(--shadow-sm);
+}
+.founder-note p {
+  font-family: var(--serif);
+  font-size: 1.6rem;
+  line-height: 1.35;
+  color: var(--text);
+}
+.founder-note cite {
+  display: block;
+  margin-top: 14px;
+  font-size: 0.76rem;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+.value-card {
+  padding: 36px 28px; text-align: center;
+  background: white; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); transition: var(--transition);
+}
+.value-card:hover { box-shadow: var(--shadow-md); transform: translateY(-4px); }
+.value-icon {
+  width: 60px; height: 60px; border-radius: 16px;
+  background: var(--teal-pale); color: var(--teal);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.6rem; margin: 0 auto 20px;
+}
+.value-card h3 { font-family: var(--serif); font-size: 1.3rem; margin-bottom: 8px; }
+.value-card p { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; }
+.team-note {
+  background: var(--teal); padding: 64px;
+  border-radius: var(--radius-lg); text-align: center; color: white;
+}
+.team-note p { font-family: var(--serif); font-size: 1.5rem; font-style: italic; line-height: 1.6; max-width: 600px; margin: 0 auto; }
+.team-note cite { display: block; margin-top: 20px; font-size: 0.8rem; font-style: normal; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold-light); }
+
+/* ══════════════════════════════════════════
+   CONTACT PAGE
+══════════════════════════════════════════ */
+.contact-grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 64px; }
+.contact-form-wrap {
+  background: white; border-radius: var(--radius-lg);
+  padding: 48px 40px; box-shadow: var(--shadow-sm);
+}
+.contact-form { position: relative; }
+.form-group { margin-bottom: 20px; }
+.form-label { display: block; font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 13px 16px;
+  border: 1.5px solid var(--light-grey); border-radius: var(--radius);
+  font-family: var(--sans); font-size: 0.9rem; color: var(--text);
+  background: var(--cream); outline: none; transition: border-color 0.25s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--teal); background: white; }
+.form-textarea { resize: vertical; min-height: 130px; }
+.form-honeypot {
+  position: absolute; left: -9999px; width: 1px; height: 1px;
+  overflow: hidden; opacity: 0; pointer-events: none;
+}
+.contact-submit-note {
+  margin-top: 14px; font-size: 0.78rem; line-height: 1.7;
+  color: var(--text-muted);
+}
+.contact-info-wrap {}
+.contact-card {
+  background: white; border-radius: var(--radius-lg);
+  padding: 32px 28px; box-shadow: var(--shadow-sm); margin-bottom: 20px;
+  display: flex; align-items: flex-start; gap: 16px;
+  transition: var(--transition); cursor: pointer;
+}
+.contact-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
+.contact-card-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; flex-shrink: 0;
+}
+.contact-card-icon.teal { background: var(--teal-pale); color: var(--teal); }
+.contact-card-icon.wa { background: #e8fdf1; color: #25D366; }
+.contact-card-icon.insta { background: #fdf0f8; color: #e1306c; }
+.contact-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
+.contact-card p, .contact-card a { font-size: 0.85rem; color: var(--text-muted); }
+.qr-grid {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px; margin-top: 20px;
+}
+.qr-card {
+  background: white; border-radius: var(--radius-lg);
+  padding: 18px; box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+.qr-card img {
+  width: 100%; max-width: 180px; margin: 0 auto 14px;
+  border-radius: 16px; background: white;
+}
+.qr-card h5 {
+  font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--text); margin-bottom: 6px;
+}
+.qr-card p { font-size: 0.8rem; color: var(--text-muted); line-height: 1.6; }
+
+/* ══════════════════════════════════════════
+   SIZE CHART PAGE
+══════════════════════════════════════════ */
+.size-table-wrap { overflow-x: auto; background: white; border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 32px; }
+.size-table { width: 100%; border-collapse: collapse; }
+.size-table th {
+  background: var(--teal); color: white;
+  padding: 14px 20px; text-align: left;
+  font-size: 0.72rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 500;
+}
+.size-table th:first-child { border-radius: var(--radius) 0 0 0; }
+.size-table th:last-child { border-radius: 0 var(--radius) 0 0; }
+.size-table td { padding: 12px 20px; border-bottom: 1px solid var(--light-grey); font-size: 0.85rem; color: var(--text); }
+.size-table tr:last-child td { border-bottom: none; }
+.size-table tr:nth-child(even) td { background: var(--cream); }
+.size-table tr:hover td { background: var(--teal-pale); }
+.measure-tip {
+  background: var(--teal-pale); border: 1px solid rgba(15,110,86,0.2);
+  border-radius: var(--radius-lg); padding: 20px 24px;
+  display: flex; gap: 12px; align-items: flex-start; margin-top: 24px;
+}
+.measure-tip .icon { color: var(--teal); font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
+.measure-tip p { font-size: 0.85rem; color: var(--text); line-height: 1.7; }
+
+/* ══════════════════════════════════════════
+   FAQ PAGE
+══════════════════════════════════════════ */
+.faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+.faq-section-title {
+  font-family: var(--serif); font-size: 1.5rem; color: var(--teal);
+  margin-bottom: 16px; display: flex; align-items: center; gap: 10px;
+}
+.faq-item {
+  background: white; border-radius: var(--radius-lg);
+  overflow: hidden; margin-bottom: 10px; box-shadow: var(--shadow-sm);
+}
+.faq-q {
+  padding: 16px 20px; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 0.88rem; font-weight: 500; color: var(--text);
+  transition: background 0.2s;
+}
+.faq-q:hover { background: var(--cream); }
+.faq-q.open { color: var(--teal); }
+.faq-chevron { transition: transform 0.3s; color: var(--warm-grey); }
+.faq-q.open .faq-chevron { transform: rotate(180deg); color: var(--teal); }
+.faq-a { padding: 0 20px 16px; font-size: 0.85rem; color: var(--text-muted); line-height: 1.8; display: none; }
+.faq-a.open { display: block; }
+
+/* ══════════════════════════════════════════
+   PAGE HERO (inner pages)
+══════════════════════════════════════════ */
+.inner-hero {
+  padding: 120px 24px 64px;
+  background: linear-gradient(135deg, var(--teal) 0%, #0d5e49 100%);
+  text-align: center; margin-bottom: 0;
+}
+.inner-hero h1 {
+  font-family: var(--serif); font-size: clamp(2rem, 5vw, 4rem);
+  color: white; font-weight: 400; margin-bottom: 12px;
+}
+.inner-hero h1 em { font-style: italic; color: var(--gold-light); }
+.inner-hero p { color: rgba(255,255,255,0.7); max-width: 480px; margin: 0 auto; font-size: 0.95rem; }
+.breadcrumb {
+  display: flex; align-items: center; gap: 8px; justify-content: center;
+  margin-top: 16px; font-size: 0.75rem; color: rgba(255,255,255,0.55);
+}
+.breadcrumb span { color: var(--gold-light); }
+
+/* ══════════════════════════════════════════
+   FLOATING ELEMENTS
+══════════════════════════════════════════ */
+.floating-wa {
+  position: fixed; bottom: 24px; right: 24px; z-index: 900;
+  width: 56px; height: 56px; border-radius: 50%;
+  background: #25D366; color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem; box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+  transition: var(--transition); cursor: pointer;
+  text-decoration: none;
+}
+.floating-wa:hover { transform: scale(1.1); box-shadow: 0 8px 32px rgba(37,211,102,0.5); }
+.floating-wa-tooltip {
+  position: absolute; right: 64px; white-space: nowrap;
+  background: white; color: var(--text);
+  padding: 8px 14px; border-radius: 8px;
+  font-size: 0.8rem; font-weight: 500;
+  box-shadow: var(--shadow-sm);
+  opacity: 0; pointer-events: none; transition: opacity 0.25s;
+}
+.floating-wa:hover .floating-wa-tooltip { opacity: 1; }
+
+/* Mobile sticky bottom nav */
+.mobile-bottom-nav {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 800;
+  background: white; border-top: 1px solid var(--light-grey);
+  padding: 8px 0 calc(8px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+}
+.mobile-bottom-nav ul { display: flex; justify-content: space-around; align-items: center; }
+.mobile-bottom-nav li a {
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--text-muted); padding: 4px 12px; cursor: pointer;
+}
+.mobile-bottom-nav li a .mbn-icon { font-size: 1.2rem; }
+.mobile-bottom-nav li a.active { color: var(--teal); }
+
+/* ══════════════════════════════════════════
+   CART SIDEBAR
+══════════════════════════════════════════ */
+.cart-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 1100;
+  display: none; opacity: 0; transition: opacity 0.3s;
+}
+.cart-overlay.open { display: block; opacity: 1; }
+.cart-sidebar {
+  position: fixed; top: 0; right: 0; bottom: 0; width: 420px; z-index: 1200;
+  background: var(--cream); transform: translateX(100%); transition: transform 0.4s ease;
+  display: flex; flex-direction: column; overflow: hidden;
+}
+.cart-sidebar.open { transform: translateX(0); }
+.cart-header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid var(--light-grey);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.cart-header h3 { font-family: var(--serif); font-size: 1.5rem; font-weight: 500; }
+.cart-close { padding: 8px; cursor: pointer; color: var(--text-muted); font-size: 1.2rem; }
+.cart-close:hover { color: var(--text); }
+.cart-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+.cart-item {
+  display: flex; gap: 16px; padding: 16px 0;
+  border-bottom: 1px solid var(--light-grey);
+}
+.cart-item-img { width: 80px; height: 100px; border-radius: var(--radius); overflow: hidden; background: var(--cream-dark); flex-shrink: 0; }
+.cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+.cart-item-info { flex: 1; }
+.cart-item-name { font-family: var(--serif); font-size: 1rem; font-weight: 500; margin-bottom: 4px; }
+.cart-item-meta { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; }
+.cart-item-price { font-weight: 600; color: var(--teal); font-size: 0.95rem; }
+.cart-item-controls { display: flex; align-items: center; gap: 12px; margin-top: 8px; }
+.cart-qty { display: flex; align-items: center; border: 1px solid var(--light-grey); border-radius: var(--radius); }
+.cart-qty button { width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; font-size: 0.9rem; transition: background 0.2s; }
+.cart-qty button:hover { background: var(--teal-pale); color: var(--teal); }
+.cart-qty span { width: 32px; text-align: center; font-size: 0.82rem; }
+.cart-remove { font-size: 0.75rem; color: var(--text-muted); cursor: pointer; }
+.cart-remove:hover { color: #e8533a; }
+.cart-footer {
+  padding: 20px 24px;
+  border-top: 1px solid var(--light-grey);
+  background: white;
+}
+.cart-subtotal { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+.cart-subtotal span { font-size: 0.85rem; color: var(--text-muted); }
+.cart-subtotal strong { font-size: 1.1rem; color: var(--text); font-weight: 600; }
+.cart-coupon { display: flex; gap: 8px; margin-bottom: 16px; }
+.coupon-input {
+  flex: 1; padding: 10px 14px; border: 1.5px solid var(--light-grey);
+  border-radius: var(--radius); font-family: var(--sans); font-size: 0.82rem; outline: none;
+}
+.coupon-input:focus { border-color: var(--teal); }
+.empty-cart { text-align: center; padding: 48px 0; }
+.empty-cart-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.3; }
+.empty-cart p { color: var(--text-muted); margin-bottom: 20px; }
+
+/* ══════════════════════════════════════════
+   SIZE CHART MODAL
+══════════════════════════════════════════ */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1300;
+  display: none; align-items: center; justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: white; border-radius: var(--radius-lg);
+  max-width: 680px; width: 100%; max-height: 85vh; overflow-y: auto;
+  animation: modalIn 0.3s ease;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(0.94); } to { opacity: 1; transform: scale(1); } }
+.modal-header {
+  padding: 24px 28px 16px;
+  border-bottom: 1px solid var(--light-grey);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.modal-header h3 { font-family: var(--serif); font-size: 1.6rem; font-weight: 500; }
+.modal-close { font-size: 1.3rem; cursor: pointer; color: var(--text-muted); padding: 4px; }
+.modal-close:hover { color: var(--text); }
+.modal-body { padding: 24px 28px; }
+.modal-tabs { display: flex; gap: 0; border-bottom: 1px solid var(--light-grey); margin-bottom: 24px; }
+.modal-tab {
+  padding: 10px 20px; cursor: pointer; font-size: 0.78rem;
+  font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+  border-bottom: 2px solid transparent; color: var(--text-muted); transition: all 0.25s;
+}
+.modal-tab.active { color: var(--teal); border-bottom-color: var(--teal); }
+
+/* ══════════════════════════════════════════
+   TOASTS
+══════════════════════════════════════════ */
+.toast-container {
+  position: fixed; top: 90px; right: 24px; z-index: 2000;
+  display: flex; flex-direction: column; gap: 8px;
+  pointer-events: none;
+}
+.toast {
+  background: white; border-radius: 10px;
+  padding: 14px 20px; min-width: 280px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  border-left: 3px solid var(--teal);
+  display: flex; gap: 12px; align-items: center;
+  animation: toastIn 0.3s ease; font-size: 0.85rem;
+}
+@keyframes toastIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
+.toast-icon { font-size: 1.2rem; }
+.toast.success { border-left-color: var(--teal); }
+.toast.error { border-left-color: #e8533a; }
+
+/* ══════════════════════════════════════════
+   SEARCH
+══════════════════════════════════════════ */
+.search-overlay {
+  position: fixed; inset: 0; z-index: 2100;
+  background: rgba(18, 24, 22, 0.42);
+  backdrop-filter: blur(10px);
+  display: none; align-items: flex-start; justify-content: center;
+  padding: 88px 24px 24px;
+}
+.search-overlay.open { display: flex; }
+.search-panel {
+  width: min(1040px, 100%);
+  max-height: calc(100vh - 120px);
+  background: rgba(250,247,242,0.98);
+  border: 1px solid rgba(15,110,86,0.08);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 28px 80px rgba(0,0,0,0.18);
+  display: flex; flex-direction: column;
+}
+.search-header {
+  padding: 20px 22px 16px;
+  border-bottom: 1px solid var(--light-grey);
+  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(250,247,242,0.98));
+}
+.search-input-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 0 4px;
+}
+.search-icon {
+  color: var(--teal); font-size: 1.05rem; flex-shrink: 0;
+}
+.search-input {
+  flex: 1; border: none; outline: none; background: transparent;
+  font-family: var(--sans); font-size: 1rem; color: var(--text);
+  padding: 8px 0;
+}
+.search-input::placeholder { color: var(--warm-grey); }
+.search-close {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--text-muted); transition: var(--transition);
+}
+.search-close:hover { background: var(--cream-dark); color: var(--text); }
+.search-helper {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; margin-top: 10px; padding: 0 4px;
+  color: var(--text-muted); font-size: 0.78rem;
+}
+.search-helper strong { color: var(--text); font-weight: 500; }
+.search-shortcut {
+  border: 1px solid var(--light-grey);
+  border-radius: 999px; padding: 5px 10px;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  font-size: 0.66rem; color: var(--warm-grey);
+}
+.search-body {
+  overflow-y: auto; padding: 18px 22px 22px;
+}
+.search-chip-row {
+  display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px;
+}
+.search-chip {
+  padding: 7px 14px; border-radius: 999px;
+  border: 1px solid rgba(15,110,86,0.14);
+  background: white; color: var(--teal);
+  font-size: 0.76rem; letter-spacing: 0.04em;
+  transition: var(--transition);
+}
+.search-chip:hover {
+  background: var(--teal-pale); border-color: rgba(15,110,86,0.24);
+}
+.search-section-label {
+  font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 12px; font-weight: 600;
+}
+.search-results {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px;
+}
+.search-result-item {
+  display: flex; gap: 14px; align-items: center;
+  padding: 14px; border-radius: 18px;
+  background: white; border: 1px solid rgba(15,110,86,0.08);
+  box-shadow: var(--shadow-sm); cursor: pointer;
+  transition: var(--transition);
+}
+.search-result-item:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  border-color: rgba(15,110,86,0.16);
+}
+.search-result-thumb {
+  width: 68px; height: 88px; border-radius: 12px; overflow: hidden;
+  background: var(--cream-dark); flex-shrink: 0;
+}
+.search-result-thumb img {
+  width: 100%; height: 100%; object-fit: cover;
+}
+.search-result-copy {
+  min-width: 0; flex: 1;
+}
+.search-result-kicker {
+  font-size: 0.68rem; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--warm-grey); margin-bottom: 5px;
+}
+.search-result-name {
+  font-family: var(--serif); font-size: 1.05rem; line-height: 1.2;
+  color: var(--text); margin-bottom: 6px;
+}
+.search-result-meta {
+  font-size: 0.78rem; color: var(--text-muted);
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.search-result-price {
+  color: var(--teal); font-weight: 600;
+}
+.search-result-arrow {
+  flex-shrink: 0; color: var(--gold); font-size: 1rem; padding-right: 4px;
+}
+.search-empty {
+  background: white; border-radius: 20px; padding: 28px;
+  text-align: center; box-shadow: var(--shadow-sm);
+  border: 1px solid rgba(15,110,86,0.08);
+}
+.search-empty h4 {
+  font-family: var(--serif); font-size: 1.6rem; font-weight: 500;
+  color: var(--text); margin-bottom: 8px;
+}
+.search-empty p {
+  color: var(--text-muted); font-size: 0.9rem; max-width: 420px;
+  margin: 0 auto;
+}
+
+/* ══════════════════════════════════════════
+   TRUST BADGES
+══════════════════════════════════════════ */
+.trust-row {
+  display: flex; gap: 32px; justify-content: center; flex-wrap: wrap;
+  align-items: center; padding: 40px 24px;
+  background: white; border-bottom: 1px solid var(--light-grey);
+}
+.trust-item {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 0.78rem; color: var(--text-muted); font-weight: 500;
+}
+.trust-item .icon { color: var(--teal); font-size: 1.1rem; }
+.trust-item strong { color: var(--text); display: block; font-size: 0.82rem; }
+
+/* ══════════════════════════════════════════
+   COLLECTIONS PAGE
+══════════════════════════════════════════ */
+.collections-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;
+}
+.collection-hero-card {
+  border-radius: var(--radius-lg); overflow: hidden; position: relative;
+  aspect-ratio: 4/5; cursor: pointer; background: var(--cream-dark);
+  transition: var(--transition);
+}
+.collection-hero-card:first-child {
+  grid-column: span 2; aspect-ratio: 16/9;
+}
+.collection-hero-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.collection-hero-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+.collection-hero-card:hover img { transform: scale(1.04); }
+.collection-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(15,110,86,0.9) 0%, transparent 60%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 28px;
+}
+.collection-card-overlay h3 { font-family: var(--serif); font-size: 1.8rem; color: white; font-weight: 400; margin-bottom: 6px; }
+.collection-card-overlay p { font-size: 0.8rem; color: rgba(255,255,255,0.7); margin-bottom: 14px; }
+
+/* ══════════════════════════════════════════
+   UTILS
+══════════════════════════════════════════ */
+.text-center { text-align: center; }
+.text-teal { color: var(--teal); }
+.text-gold { color: var(--gold); }
+.text-muted { color: var(--text-muted); }
+.mt-8 { margin-top: 8px; }
+.mt-16 { margin-top: 16px; }
+.mt-24 { margin-top: 24px; }
+.mt-40 { margin-top: 40px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.mb-40 { margin-bottom: 40px; }
+.flex { display: flex; }
+.gap-8 { gap: 8px; }
+.gap-16 { gap: 16px; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.hidden { display: none; }
+
+/* ══════════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════════ */
+@media (max-width: 1024px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .category-grid { grid-template-columns: repeat(2, 1fr); }
+  .product-grid { grid-template-columns: repeat(2, 1fr); }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .feature-item:nth-child(2) { border-right: none; }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr 1fr; }
+  .testimonials-grid .testimonial-card:last-child { display: none; }
+  .editorial-banner { grid-template-columns: 1fr; }
+  .editorial-img { min-height: 300px; }
+  .product-detail { grid-template-columns: 1fr; gap: 40px; }
+  .product-gallery { position: static; }
+  .contact-grid { grid-template-columns: 1fr; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .story-grid { grid-template-columns: 1fr; gap: 40px; }
+  .values-grid { grid-template-columns: 1fr 1fr; }
+  .collections-grid { grid-template-columns: 1fr 1fr; }
+  .collection-hero-card:first-child { grid-column: span 1; aspect-ratio: 4/5; }
+  .instagram-grid { grid-template-columns: repeat(4, 1fr); }
+  .shop-sidebar { width: 220px; }
+}
+@media (max-width: 768px) {
+  body { padding-bottom: 68px; }
+  .announcement { font-size: 0.7rem; padding: 8px 16px; }
+  .mobile-bottom-nav { display: block; }
+  .floating-wa { bottom: 88px; }
+  .category-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .features-grid { grid-template-columns: 1fr; }
+  .feature-item { border-right: none; border-bottom: 1px solid var(--light-grey); }
+  .feature-item:last-child { border-bottom: none; }
+  .footer-grid { grid-template-columns: 1fr; gap: 32px; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .testimonials-grid .testimonial-card:last-child { display: block; }
+  .cart-sidebar { width: 100%; }
+  .instagram-grid { grid-template-columns: repeat(3, 1fr); }
+  .values-grid { grid-template-columns: 1fr; }
+  .collections-grid { grid-template-columns: 1fr; }
+  .collection-hero-card:first-child { grid-column: span 1; }
+  .shop-layout { flex-direction: column; }
+  .shop-sidebar { width: 100%; position: static; }
+  .newsletter-form { flex-direction: column; border-radius: 12px; }
+  .newsletter-form .btn { margin: 4px; }
+  .editorial-content { padding: 40px 28px; }
+  .section { padding: 56px 16px; }
+  .trust-row { gap: 16px; }
+  .cta-row { flex-direction: column; }
+  .faq-grid { grid-template-columns: 1fr; }
+  .qr-grid { grid-template-columns: 1fr; }
+  .search-overlay { padding: 76px 16px 16px; }
+  .search-panel { max-height: calc(100vh - 92px); border-radius: 20px; }
+  .search-results { grid-template-columns: 1fr; }
+  .search-helper { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 480px) {
+  .nav-inner { padding: 0 16px; }
+  .hero-actions { flex-direction: column; align-items: center; }
+  .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .category-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .instagram-grid { grid-template-columns: repeat(2, 1fr); }
+  .product-info { padding: 12px 14px 14px; }
+  .product-name { font-size: 0.95rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ANNOUNCEMENT BAR -->
+<div class="announcement">
+  🌿 Free delivery on orders above <strong>₹999</strong> &nbsp;|&nbsp; Handcrafted with love &nbsp;|&nbsp; Kalamkari collection now live ✨
+</div>
+
+<!-- HEADER -->
+<header class="header" id="header" style="top: 40px;">
+  <div class="nav-inner">
+    <div class="nav-logo" onclick="showPage('home')">AARK<span>.</span></div>
+    <nav class="nav-links">
+      <button type="button" class="nav-link" onclick="showPage('shop')">Shop</button>
+      <button type="button" class="nav-link" onclick="showPage('collections')">Collections</button>
+      <button type="button" class="nav-link" onclick="showPage('new')">New Arrivals</button>
+      <button type="button" class="nav-link" onclick="showPage('about')">About</button>
+      <button type="button" class="nav-link" onclick="showPage('contact')">Contact</button>
+    </nav>
+    <div class="nav-actions">
+      <div class="nav-icon-btn" onclick="toggleSearch()" title="Search">🔍</div>
+      <div class="nav-icon-btn wishlist-nav" onclick="showPage('wishlist')" title="Wishlist">
+        <span class="heart-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg>
+        </span>
+      </div>
+      <div class="nav-icon-btn" onclick="openCart()" title="Cart" style="position:relative">
+        🛒
+        <div class="cart-badge" id="cartBadge">0</div>
+      </div>
+      <button class="hamburger" onclick="toggleMobileNav()" id="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mobileNav">
+  <a onclick="showPage('home'); toggleMobileNav()">Home</a>
+  <a onclick="showPage('shop'); toggleMobileNav()">Shop All</a>
+  <a onclick="showPage('collections'); toggleMobileNav()">Collections</a>
+  <a onclick="showPage('new'); toggleMobileNav()">New Arrivals</a>
+  <a onclick="showPage('about'); toggleMobileNav()">About AARK</a>
+  <a onclick="showPage('sizechart'); toggleMobileNav()">Size Chart</a>
+  <a onclick="showPage('faq'); toggleMobileNav()">FAQ</a>
+  <a onclick="showPage('contact'); toggleMobileNav()">Contact</a>
+  <div class="mobile-nav-footer">
+    <a class="btn btn-whatsapp btn-sm" href="https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC?mode=gi_t" target="_blank">📱 WhatsApp Community</a>
+    <a class="btn btn-outline-teal btn-sm" href="https://instagram.com/aark.fusion" target="_blank">📸 Instagram</a>
+  </div>
+</nav>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- SEARCH OVERLAY -->
+<div class="search-overlay" id="searchOverlay" onclick="closeSearch()">
+  <div class="search-panel" onclick="event.stopPropagation()">
+    <div class="search-header">
+      <div class="search-input-row">
+        <div class="search-icon">🔍</div>
+        <input
+          class="search-input"
+          id="searchInput"
+          type="text"
+          placeholder="Search by product name, series, SKU, or category"
+          autocomplete="off"
+          oninput="handleSearchInput(this.value)"
+          onkeydown="handleSearchKeydown(event)"
+        >
+        <button class="search-close" type="button" onclick="closeSearch()" aria-label="Close search">✕</button>
+      </div>
+      <div class="search-helper">
+        <div id="searchHelperText"><strong>Search the catalog</strong> across series, product codes, and categories.</div>
+        <div class="search-shortcut">Esc to close</div>
+      </div>
+    </div>
+    <div class="search-body">
+      <div class="search-chip-row">
+        <button class="search-chip" type="button" onclick="applySearchSuggestion('Riju')">The Riju Series</button>
+        <button class="search-chip" type="button" onclick="applySearchSuggestion('Alpa')">The Alpa Series</button>
+        <button class="search-chip" type="button" onclick="applySearchSuggestion('Ananta')">Ananta Series</button>
+        <button class="search-chip" type="button" onclick="applySearchSuggestion('Aira')">The Aira Series</button>
+        <button class="search-chip" type="button" onclick="applySearchSuggestion('Arjuna')">Arjuna Series</button>
+        <button class="search-chip" type="button" onclick="applySearchSuggestion('SC001')">SKU Search</button>
+      </div>
+      <div id="searchResultsWrap"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     HOME PAGE
+══════════════════════════════════════════ -->
+<div id="page-home" class="page active">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg-pattern"></div>
+    <div class="hero-content">
+      <div class="hero-tag">✦ New Collection Live</div>
+      <h1 class="hero-title">
+        Tradition,<br>
+        <em>styled for today</em>
+      </h1>
+      <p class="hero-sub">Premium ethnic wear for women, kids and families — rooted in culture, designed for the modern woman.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary btn-lg" onclick="showPage('shop')">Shop Collection</button>
+        <button class="btn btn-outline-white btn-lg" onclick="showPage('collections')">Explore Looks</button>
+      </div>
+    </div>
+    <div class="hero-scroll" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+      <div class="scroll-line"></div>
+      SCROLL
+    </div>
+  </section>
+
+  <!-- FEATURES STRIP -->
+  <div id="features" class="features-strip">
+    <div class="features-grid container">
+      <div class="feature-item">
+        <div class="feature-icon">🧵</div>
+        <div class="feature-text"><h4>Handcrafted Quality</h4><p>Each piece stitched with care by skilled artisans</p></div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🌿</div>
+        <div class="feature-text"><h4>Eco-Conscious</h4><p>Sustainable fabrics and responsible production</p></div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🚚</div>
+        <div class="feature-text"><h4>Fast Delivery</h4><p>Ships within 3–5 days across India</p></div>
+      </div>
+      <div class="feature-item">
+        <div class="feature-icon">🔄</div>
+        <div class="feature-text"><h4>Easy Exchange</h4><p>Hassle-free size exchange within 7 days</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MARQUEE -->
+  <div class="marquee-band">
+    <div class="marquee-track">
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Riju Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Alpa Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> Ananta Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Kriti Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Aira Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> Arjuna Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> Matching Mom & Kids Looks</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Riju Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Alpa Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> Ananta Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Kriti Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Aira Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> Arjuna Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> Matching Mom & Kids Looks</div>
+    </div>
+  </div>
+
+  <!-- SHOP BY CATEGORY -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Shop by Category</div>
+        <h2 class="section-title">Find Your <em>Perfect Look</em></h2>
+        <div class="divider"></div>
+        <p class="section-sub">Browse the real catalog by series, silhouette, and family styling sets from the images in your folder.</p>
+      </div>
+      <div class="category-grid">
+        <div class="category-card" onclick="showShopWithFilter('straight-cut-kurtis')">
+          <img class="cat-img" src="catalog-images/SC001_870.jpg" alt="Straight Cut Kurtis">
+          <div class="cat-overlay"></div>
+          <div class="cat-info"><div class="cat-name">Straight Cut Kurtis</div><div class="cat-count">12 styles · The Riju Series</div></div>
+          <div class="cat-arrow">→</div>
+        </div>
+        <div class="category-card" onclick="showShopWithFilter('short-tops')">
+          <img class="cat-img" src="catalog-images/ST001_800.jpg" alt="Short Tops">
+          <div class="cat-overlay"></div>
+          <div class="cat-info"><div class="cat-name">Short Tops</div><div class="cat-count">15 styles · The Alpa Series</div></div>
+          <div class="cat-arrow">→</div>
+        </div>
+        <div class="category-card" onclick="showShopWithFilter('long-frocks')">
+          <img class="cat-img" src="catalog-images/LF001_1200.jpg" alt="Long Frocks">
+          <div class="cat-overlay"></div>
+          <div class="cat-info"><div class="cat-name">Long Frocks</div><div class="cat-count">6 styles · Ananta Series</div></div>
+          <div class="cat-arrow">→</div>
+        </div>
+        <div class="category-card" onclick="showShopWithFilter('short-frocks')">
+          <img class="cat-img" src="catalog-images/SF001_1150.jpg" alt="Short Frocks">
+          <div class="cat-overlay"></div>
+          <div class="cat-info"><div class="cat-name">Short Frocks</div><div class="cat-count">5 styles · The Kriti Series</div></div>
+          <div class="cat-arrow">→</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:16px;">
+        <div class="category-card" onclick="showShopWithFilter('kids-frocks')" style="aspect-ratio:2/1;">
+          <img class="cat-img" src="catalog-images/KF001_570.jpg" alt="Kids Frocks">
+          <div class="cat-overlay"></div>
+          <div class="cat-info" style="padding:14px;"><div class="cat-name" style="font-size:1.1rem;">Kids Frocks</div><div class="cat-count">3 styles · The Aira Series</div></div>
+          <div class="cat-arrow">→</div>
+        </div>
+        <div class="category-card" onclick="showShopWithFilter('mens-kurtas')" style="aspect-ratio:2/1;">
+          <img class="cat-img" src="mens_collection/teal_front.png" alt="Men's Kurtas">
+          <div class="cat-overlay"></div>
+          <div class="cat-info" style="padding:14px;"><div class="cat-name" style="font-size:1.1rem;">Men's Kurtas</div><div class="cat-count">2 styles · Arjuna Series</div></div>
+          <div class="cat-arrow">→</div>
+        </div>
+        <div class="category-card" onclick="showPage('collections')" style="aspect-ratio:2/1;">
+          <img class="cat-img" src="catalog-images/mom_kids.jpg" alt="Mom and kids matching collection">
+          <div class="cat-overlay"></div>
+          <div class="cat-info" style="padding:14px;"><div class="cat-name" style="font-size:1.1rem;">Mom & Kids Matching</div><div class="cat-count">Signature family styling story</div></div>
+          <div class="cat-arrow">→</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEW ARRIVALS -->
+  <section class="section" style="background:white; padding-top:72px; padding-bottom:72px;">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Fresh off the rack</div>
+        <h2 class="section-title">New <em>Arrivals</em></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="product-grid" id="newArrivalsGrid"></div>
+      <div class="text-center mt-40">
+        <button class="btn btn-outline-teal btn-lg" onclick="showPage('new')">View All New Arrivals</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- EDITORIAL BANNER -->
+  <section class="section">
+    <div class="container">
+      <div class="editorial-banner">
+        <div class="editorial-img">
+          <img src="catalog-images/mom_kids.jpg" alt="Mom and kids coordinated outfits">
+        </div>
+        <div class="editorial-content">
+          <div class="section-label">Spotlight Collection</div>
+          <h2 class="section-title" style="text-align:left;">Matching <em>Mom & Kids</em><br>Moments</h2>
+          <p>Use the new family styling image as a collection spotlight and guide shoppers into coordinated looks. It adds an instant branded story to the catalog instead of relying on generic placeholders.</p>
+          <button class="btn btn-primary" onclick="showPage('collections')">Explore Collections →</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURED STYLES -->
+  <section class="section" style="background:var(--cream-dark);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Catalog Highlights</div>
+        <h2 class="section-title">Featured <em>Styles</em></h2>
+        <div class="divider"></div>
+        <p class="section-sub">A mix of standout pieces across the current catalog, organized from the real product photos in your folder.</p>
+      </div>
+      <div class="product-grid" id="bestSellersGrid"></div>
+      <div class="text-center mt-40">
+        <button class="btn btn-teal btn-lg" onclick="showPage('shop')">View All Products</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SHOP BY OCCASION -->
+  <section class="section" style="background:white;">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Dress for the moment</div>
+        <h2 class="section-title">Shop by <em>Occasion</em></h2>
+        <div class="divider"></div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;">
+        <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🎉</div>
+          <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Festive</div>
+        </div>
+        <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🕌</div>
+          <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Pooja / Temple</div>
+        </div>
+        <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🌸</div>
+          <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Casual Daily</div>
+        </div>
+        <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">💒</div>
+          <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Wedding</div>
+        </div>
+        <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🏢</div>
+          <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Office Wear</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTAGRAM GALLERY -->
+  <section class="section-sm" style="background:var(--cream);">
+    <div class="container">
+      <div class="section-header" style="margin-bottom:32px;">
+        <div class="section-label">@aark.fusion</div>
+        <h2 class="section-title">As seen on <em>Instagram</em></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="instagram-grid">
+        <div class="insta-item"><img src="customer_images/image.png" alt="AARK customer on Instagram" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
+        <div class="insta-item"><img src="customer_images/image1.png" alt="AARK customer style photo" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
+        <div class="insta-item"><img src="customer_images/image2.png" alt="Customer wearing AARK outfit" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
+        <div class="insta-item"><img src="customer_images/image3.png" alt="AARK customer look" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
+        <div class="insta-item"><img src="customer_images/image4.png" alt="Customer photo featuring AARK wear" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
+        <div class="insta-item"><img src="customer_images/image5.png" alt="AARK customer featured on Instagram" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
+        <div class="insta-item"><img src="customer_images/image6.png" alt="Customer look in AARK collection" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
+        <div class="insta-item"><img src="customer_images/image7.png" alt="AARK customer community photo" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
+      </div>
+      <div class="text-center mt-24">
+        <a class="btn btn-outline-teal" href="https://instagram.com/aark.fusion" target="_blank">Follow @aark.fusion on Instagram →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="section" style="background:var(--cream-dark);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">What our customers say</div>
+        <h2 class="section-title">Loved by <em>Many</em></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <p class="testimonial-text">"I ordered a straight-cut kurti and a matching kids frock for Dussehra — the quality is absolutely beautiful. The Kalamkari print is exactly as shown. Will be ordering again!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">P</div>
+            <div><div class="author-name">Priya M.</div><div class="author-place">Hyderabad, AP</div><div class="testimonial-stars">★★★★★</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-text">"Ordered 3 frocks for my daughter — the fabric is so soft, and the stitching is neat. AARK has the best quality I've found online for ethnic kids wear. Highly recommend!"</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">S</div>
+            <div><div class="author-name">Suhasini R.</div><div class="author-place">Bangalore, KA</div><div class="testimonial-stars">★★★★★</div></div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <p class="testimonial-text">"The saree I ordered for my sister's wedding was stunning. Delivery was fast and packaging was thoughtful. I love that the brand cares about craftsmanship — you can feel it."</p>
+          <div class="testimonial-author">
+            <div class="author-avatar">L</div>
+            <div><div class="author-name">Lakshmi V.</div><div class="author-place">Chennai, TN</div><div class="testimonial-stars">★★★★★</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NEWSLETTER -->
+  <section class="newsletter-section">
+    <div class="newsletter-inner">
+      <div class="section-label">Stay Connected</div>
+      <h2 class="section-title" style="font-size:2.4rem;">Be First to Know About<br><em>New Collections</em></h2>
+      <p class="section-sub">Exclusive previews, festive drops, style tips, and special offers for our community.</p>
+      <div class="newsletter-form">
+        <input class="newsletter-input" type="email" placeholder="Enter your email address" id="emailInput">
+        <button class="btn btn-gold" style="background:var(--gold);color:white;" onclick="subscribeEmail()">Subscribe</button>
+      </div>
+      <div class="whatsapp-cta">
+        Prefer WhatsApp updates? <a href="https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC?mode=gi_t" target="_blank">📱 Join our WhatsApp community</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="logo">AARK<span>.</span></div>
+        <p>Tradition, styled for today. Premium ethnic wear crafted with love, for women, kids and families who celebrate culture through fashion.</p>
+        <div class="footer-social">
+          <a class="social-btn" href="https://instagram.com/aark.fusion" target="_blank">📸</a>
+          <a class="social-btn" href="https://wa.me/919000107301" target="_blank">📱</a>
+          <a class="social-btn" href="https://maps.google.com/?q=17.440479,78.420235" target="_blank">📍</a>
+          <a class="social-btn" href="https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC?mode=gi_t" target="_blank">👥</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Quick Links</h5>
+        <ul>
+          <li><a onclick="showPage('shop')">Shop All</a></li>
+          <li><a onclick="showPage('new')">New Arrivals</a></li>
+          <li><a onclick="showPage('collections')">Collections</a></li>
+          <li><a onclick="showPage('about')">About AARK</a></li>
+          <li><a onclick="showPage('contact')">Contact Us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Help</h5>
+        <ul>
+          <li><a onclick="showPage('sizechart')">Size Chart</a></li>
+          <li><a onclick="showPage('faq')">FAQ</a></li>
+          <li><a onclick="showPage('faq')">Shipping Policy</a></li>
+          <li><a onclick="showPage('faq')">Return & Exchange</a></li>
+          <li><a onclick="showPage('faq')">Custom Orders</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <div class="footer-contact-item"><span class="icon">📱</span><div><strong style="color:rgba(255,255,255,0.7)">WhatsApp</strong><br><a href="https://wa.me/919000107301" target="_blank">+91 90001 07301</a></div></div>
+        <div class="footer-contact-item"><span class="icon">📧</span><div><strong style="color:rgba(255,255,255,0.7)">Email</strong><br><a href="mailto:aarkfusion@gmail.com">aarkfusion@gmail.com</a></div></div>
+        <div class="footer-contact-item"><span class="icon">📸</span><div><strong style="color:rgba(255,255,255,0.7)">Instagram</strong><br><a href="https://instagram.com/aark.fusion" target="_blank">@aark.fusion</a></div></div>
+        <div class="footer-contact-item"><span class="icon">📍</span><div><strong style="color:rgba(255,255,255,0.7)">Location</strong><br><a href="https://maps.google.com/?q=17.440479,78.420235" target="_blank">Open Map Pin</a></div></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 AARK. All rights reserved. Made with <span style="color:#008080;" class="heart-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg></span> in India.</p>
+      <div class="payment-icons">
+        <div class="pay-icon">UPI</div>
+        <div class="pay-icon">COD</div>
+        <div class="pay-icon">Card</div>
+        <div class="pay-icon">GPay</div>
+        <div class="pay-icon">PhonePe</div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SHOP PAGE
+══════════════════════════════════════════ -->
+<div id="page-shop" class="page">
+  <div class="inner-hero">
+    <h1>Shop <em>All</em></h1>
+    <p>Handpicked prints, premium fabrics, thoughtful designs.</p>
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span>Shop All</span></div>
+  </div>
+  <section class="section" style="padding-top:48px;">
+    <div class="container">
+      <div class="shop-layout">
+        <aside class="shop-sidebar">
+          <div style="font-family:var(--serif);font-size:1.2rem;font-weight:500;margin-bottom:24px;color:var(--text);">Filters</div>
+          <div class="filter-group">
+            <div class="filter-title">Series</div>
+            <div class="filter-options">
+              <div class="filter-chip" data-filter-type="category" data-filter-value="straight-cut-kurtis" onclick="toggleFilter(this,'category','straight-cut-kurtis')">The Riju Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="short-tops" onclick="toggleFilter(this,'category','short-tops')">The Alpa Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="long-frocks" onclick="toggleFilter(this,'category','long-frocks')">Ananta Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="short-frocks" onclick="toggleFilter(this,'category','short-frocks')">The Kriti Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="kids-frocks" onclick="toggleFilter(this,'category','kids-frocks')">The Aira Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="mens-kurtas" onclick="toggleFilter(this,'category','mens-kurtas')">Arjuna Series</div>
+            </div>
+          </div>
+          <div class="filter-group">
+            <div class="filter-title">Price Range</div>
+            <div class="filter-options">
+              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="under800" onclick="toggleFilter(this,'priceRange','under800')">Under ₹800</div>
+              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="800-900" onclick="toggleFilter(this,'priceRange','800-900')">₹800–₹900</div>
+              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="900-1200" onclick="toggleFilter(this,'priceRange','900-1200')">₹900–₹1200</div>
+              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="above1200" onclick="toggleFilter(this,'priceRange','above1200')">Above ₹1200</div>
+            </div>
+          </div>
+          <button class="btn btn-outline-teal btn-sm btn-full" onclick="clearFilters()" style="margin-top:8px;">Clear All Filters</button>
+        </aside>
+        <div class="shop-main">
+          <div class="shop-toolbar">
+            <div class="shop-result-count" id="shopResultCount">Showing 43 products</div>
+            <select class="sort-select" onchange="sortProducts(this.value)">
+              <option value="newest">Newest First</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="series">Series Order</option>
+            </select>
+          </div>
+          <div class="active-filters" id="activeFilters"></div>
+          <div class="product-grid" id="shopProductGrid"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     NEW ARRIVALS PAGE
+══════════════════════════════════════════ -->
+<div id="page-new" class="page">
+  <div class="inner-hero">
+    <h1><em>New</em> Arrivals</h1>
+    <p>Fresh drops, handpicked every week. Be the first to wear it.</p>
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span>New Arrivals</span></div>
+  </div>
+  <section class="section" style="padding-top:48px;">
+    <div class="container">
+      <div class="product-grid" id="newPageGrid"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     COLLECTIONS PAGE
+══════════════════════════════════════════ -->
+<div id="page-collections" class="page">
+  <div class="inner-hero">
+    <h1>Our <em>Collections</em></h1>
+    <p>Curated stories told through fabric, print, and craftsmanship.</p>
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span>Collections</span></div>
+  </div>
+  <section class="section" style="padding-top:48px;">
+    <div class="container">
+      <div class="collections-grid">
+        <div class="collection-hero-card" onclick="showPage('shop')">
+          <img src="catalog-images/mom_kids.jpg" alt="Mom and kids matching collection">
+          <div class="collection-card-overlay"><h3>Mom & Kids Story</h3><p>Matching outfits and family styling inspiration</p><button class="btn btn-primary btn-sm">Explore →</button></div>
+        </div>
+        <div class="collection-hero-card" onclick="showShopWithFilter('straight-cut-kurtis')">
+          <img src="catalog-images/SC001_870.jpg" alt="The Riju Series">
+          <div class="collection-card-overlay"><h3>The Riju Series</h3><p>12 straight cut kurtis</p><button class="btn btn-primary btn-sm">Explore →</button></div>
+        </div>
+        <div class="collection-hero-card" onclick="showShopWithFilter('short-tops')">
+          <img src="catalog-images/ST001_800.jpg" alt="The Alpa Series">
+          <div class="collection-card-overlay"><h3>The Alpa Series</h3><p>15 short tops</p><button class="btn btn-primary btn-sm">Explore →</button></div>
+        </div>
+        <div class="collection-hero-card" onclick="showShopWithFilter('long-frocks')">
+          <img src="catalog-images/LF001_1200.jpg" alt="Ananta Series">
+          <div class="collection-card-overlay"><h3>Ananta Series</h3><p>6 long frocks</p><button class="btn btn-primary btn-sm">Explore →</button></div>
+        </div>
+        <div class="collection-hero-card" onclick="showShopWithFilter('short-frocks')">
+          <img src="catalog-images/SF001_1150.jpg" alt="The Kriti Series">
+          <div class="collection-card-overlay"><h3>The Kriti Series</h3><p>5 short frocks</p><button class="btn btn-primary btn-sm">Explore →</button></div>
+        </div>
+        <div class="collection-hero-card" onclick="showShopWithFilter('kids-frocks')">
+          <img src="catalog-images/KF001_570.jpg" alt="The Aira Series">
+          <div class="collection-card-overlay"><h3>The Aira Series</h3><p>3 kids frocks</p><button class="btn btn-primary btn-sm">Explore →</button></div>
+        </div>
+        <div class="collection-hero-card" onclick="showShopWithFilter('mens-kurtas')">
+          <img src="mens_collection/teal_front.png" alt="Arjuna Series">
+          <div class="collection-card-overlay"><h3>Arjuna Series</h3><p>2 men's kurtas with front and back views</p><button class="btn btn-primary btn-sm">Explore →</button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     PRODUCT DETAIL PAGE
+══════════════════════════════════════════ -->
+<div id="page-product" class="page">
+  <section class="section" style="padding-top:100px;">
+    <div class="container">
+      <div class="product-detail" id="productDetailContent"></div>
+      <div style="margin-top:72px;">
+        <div class="section-header">
+          <div class="section-label">You may also like</div>
+          <h2 class="section-title">Related <em>Products</em></h2>
+          <div class="divider"></div>
+        </div>
+        <div class="product-grid" id="relatedProductsGrid"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     WISHLIST PAGE
+══════════════════════════════════════════ -->
+<div id="page-wishlist" class="page">
+  <div class="inner-hero">
+    <h1>My <em>Wishlist</em></h1>
+    <p>Pieces you've saved to love later.</p>
+  </div>
+  <section class="section" style="padding-top:48px;">
+    <div class="container">
+      <div class="product-grid" id="wishlistGrid"></div>
+      <div id="emptyWishlist" class="text-center" style="padding:80px 0;">
+        <div class="empty-wishlist-heart" style="margin-bottom:16px;color:#008080;opacity:0.55;">
+          <span class="heart-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg>
+          </span>
+        </div>
+        <h3 style="font-family:var(--serif);font-size:1.8rem;margin-bottom:12px;color:var(--text);">Your wishlist is empty</h3>
+        <p style="color:var(--text-muted);margin-bottom:24px;">Save pieces you love and come back to them anytime.</p>
+        <button class="btn btn-teal" onclick="showPage('shop')">Browse Collection</button>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     ABOUT PAGE
+══════════════════════════════════════════ -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <div class="hero-bg-pattern"></div>
+    <div class="about-hero-content">
+      <div class="hero-tag" style="background:rgba(201,168,76,0.15);border-color:rgba(201,168,76,0.4);color:var(--gold-light);">Our Story</div>
+      <h1>Rooted in tradition,<br><em>designed for today</em></h1>
+      <p>AARK was born from a love for India's rich textile heritage — and a belief that traditional craftsmanship should feel modern, wearable, and deeply meaningful.</p>
+    </div>
+  </div>
+  <section class="section" style="background:white;">
+    <div class="container">
+      <div class="story-grid">
+        <div>
+          <div class="section-label">How It Began</div>
+          <h2 class="section-title" style="text-align:left;">A thread<br>that connects<br><em>generations.</em></h2>
+          <div class="divider" style="margin-left:0;"></div>
+          <p style="margin-top:24px;font-size:1rem;color:var(--text-muted);line-height:1.9;">AARK started as a quiet passion project — sketches of silhouettes inspired by childhood memories of watching grandmothers drape sarees, mothers choose kurtis for temple visits, and children dressed in their finest for every festival.</p>
+          <p style="margin-top:16px;font-size:1rem;color:var(--text-muted);line-height:1.9;">We grew up around colour, texture, and the unmistakable beauty of Indian handloom and block prints. But we also noticed a gap — ethnic wear either felt too traditional or too trend-chasing. Nothing felt effortlessly right for the modern Indian woman who celebrates both worlds.</p>
+          <p style="margin-top:16px;font-size:1rem;color:var(--text-muted);line-height:1.9;">So we set out to change that. AARK (which means "sun" — a symbol of warmth, clarity, and energy) became our vehicle to bring thoughtful, beautifully crafted ethnic wear to families across India.</p>
+        </div>
+        <div class="story-side">
+          <div class="story-img">
+            <img src="website_images/image_about.png" alt="AARK story across generations">
+          </div>
+          <div class="founder-note">
+            <p>"We don't just make clothes — we create pieces that feel like home."</p>
+            <cite>Founder, AARK</cite>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section" style="background:var(--cream);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-label">Why AARK</div>
+        <h2 class="section-title">What We <em>Stand For</em></h2>
+        <div class="divider"></div>
+      </div>
+      <div class="values-grid">
+        <div class="value-card"><div class="value-icon">🏺</div><h3>Heritage Craft</h3><p>Every print and pattern is rooted in India's centuries-old textile traditions. We honour Kalamkari, block prints, and handloom weaves.</p></div>
+        <div class="value-card"><div class="value-icon">🌿</div><h3>Sustainable Choice</h3><p>We source natural fabrics, minimise waste in production, and choose local over imported — for people and the planet.</p></div>
+        <div class="value-card"><div class="value-icon">✂️</div><h3>Precision Stitching</h3><p>Each piece is stitched in our own unit where quality is checked at every step. You receive clothes that fit and feel right.</p></div>
+        <div class="value-card"><div class="value-icon">💛</div><h3>Made with Love</h3><p>Behind every garment is a skilled artisan who takes pride in their work. We believe craft is love, and it shows.</p></div>
+        <div class="value-card"><div class="value-icon">👨‍👩‍👧</div><h3>Family First</h3><p>From toddlers to grandmothers, AARK creates ethnic wear for the whole family to wear together with joy.</p></div>
+        <div class="value-card"><div class="value-icon">🎨</div><h3>Thoughtful Design</h3><p>Our designs balance tradition with wearability. Clothes that feel at home in a temple, a wedding, or a casual family outing.</p></div>
+      </div>
+    </div>
+  </section>
+  <section class="section" style="background:white;">
+    <div class="container">
+      <div class="team-note">
+        <p>"We believe ethnic wear isn't just clothing — it's identity. When a woman wears a Kalamkari kurti that was made by a skilled artisan and designed with love, she carries a piece of culture with her. That's the AARK promise."</p>
+        <cite>— The AARK Team</cite>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CONTACT PAGE
+══════════════════════════════════════════ -->
+<div id="page-contact" class="page">
+  <div class="inner-hero">
+    <h1>Get in <em>Touch</em></h1>
+    <p>We'd love to hear from you. Reach us on WhatsApp, Instagram, or email.</p>
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span>Contact</span></div>
+  </div>
+  <section class="section" style="padding-top:56px;">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-form-wrap">
+          <h2 style="font-family:var(--serif);font-size:1.8rem;margin-bottom:8px;font-weight:400;">Send us a message</h2>
+          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:28px;">For custom orders, size queries, or anything else — we respond within 24 hours.</p>
+          <form
+            id="contactForm"
+            class="contact-form"
+            action="https://formsubmit.co/ajax/aarkfusion@gmail.com"
+            method="POST"
+            onsubmit="return sendContactForm(event)"
+          >
+            <input type="hidden" name="_template" value="table">
+            <input type="hidden" name="_subject" id="contactSubjectInput" value="New AARK website enquiry">
+            <input type="hidden" name="_url" id="contactFormUrl">
+            <input type="hidden" name="_webhook" id="contactFormWebhook">
+            <div class="form-honeypot" aria-hidden="true">
+              <label class="form-label" for="contactWebsite">Website</label>
+              <input class="form-input" id="contactWebsite" type="text" name="_honey" tabindex="-1" autocomplete="off">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contactName">Your Name</label>
+              <input class="form-input" id="contactName" name="name" type="text" placeholder="Enter your full name" required>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+              <div class="form-group">
+                <label class="form-label" for="contactPhone">Phone / WhatsApp</label>
+                <input class="form-input" id="contactPhone" name="phone" type="tel" placeholder="+91 XXXXXXXXXX" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="contactEmail">Email</label>
+                <input class="form-input" id="contactEmail" name="email" type="email" placeholder="your@email.com" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contactSubject">Subject</label>
+              <select class="form-select" id="contactSubject" name="subject" required>
+                <option value="Order Query">Order Query</option>
+                <option value="Custom Stitching">Custom Stitching</option>
+                <option value="Size Query">Size Query</option>
+                <option value="Exchange / Return">Exchange / Return</option>
+                <option value="Bulk / Wholesale">Bulk / Wholesale</option>
+                <option value="Other">Other</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="contactMessage">Message</label>
+              <textarea class="form-textarea" id="contactMessage" name="message" placeholder="Tell us how we can help you..." required></textarea>
+            </div>
+            <button class="btn btn-teal btn-full btn-lg" id="contactSubmitBtn" type="submit">Send Message →</button>
+            <p class="contact-submit-note">Messages are routed to the AARK inbox and logged for follow-up.</p>
+          </form>
+        </div>
+        <div class="contact-info-wrap">
+          <h3 style="font-family:var(--serif);font-size:1.5rem;margin-bottom:20px;font-weight:400;">Prefer to reach us directly?</h3>
+          <div class="contact-card" onclick="window.open('https://wa.me/919000107301','_blank')">
+            <div class="contact-card-icon wa">📱</div>
+            <div><h4>WhatsApp</h4><p>+91 90001 07301</p><p style="margin-top:4px;font-size:0.75rem;color:var(--teal);">Fastest response for orders, sizing, and custom requests</p></div>
+          </div>
+          <div class="contact-card" onclick="window.open('https://instagram.com/aark.fusion','_blank')">
+            <div class="contact-card-icon insta">📸</div>
+            <div><h4>Instagram DM</h4><p>@aark.fusion</p><p style="margin-top:4px;font-size:0.75rem;color:var(--teal);">Browse the latest looks and message the brand directly</p></div>
+          </div>
+          <div class="contact-card">
+            <div class="contact-card-icon teal">📧</div>
+            <div><h4>Email</h4><p><a href="mailto:aarkfusion@gmail.com">aarkfusion@gmail.com</a></p><p style="margin-top:4px;font-size:0.75rem;color:var(--teal);">For detailed queries and wholesale</p></div>
+          </div>
+          <div class="contact-card" onclick="window.open('https://maps.google.com/?q=17.440479,78.420235','_blank')">
+            <div class="contact-card-icon teal">📍</div>
+            <div><h4>Location</h4><p>Open Google Maps pin</p><p style="margin-top:4px;font-size:0.75rem;color:var(--teal);">Tap to view the shared store location</p></div>
+          </div>
+          <div class="qr-grid">
+            <div class="qr-card">
+              <img src="catalog-images/whatsapp_QR.jpg" alt="WhatsApp QR code">
+              <h5>WhatsApp Community</h5>
+              <p>Scan to join the AARK WhatsApp community for updates and drops.</p>
+            </div>
+            <div class="qr-card">
+              <img src="catalog-images/Instagram_qr.jpg" alt="Instagram QR code">
+              <h5>Instagram QR</h5>
+              <p>Scan to follow <strong>@aark.fusion</strong> on Instagram.</p>
+            </div>
+          </div>
+          <div style="background:var(--teal-pale);border-radius:var(--radius-lg);padding:24px;margin-top:8px;">
+            <h4 style="font-size:0.9rem;margin-bottom:10px;color:var(--teal);">🕐 Business Hours</h4>
+            <p style="font-size:0.82rem;color:var(--text-muted);line-height:1.9;">Monday – Saturday: 9 AM – 7 PM<br>Sunday: 10 AM – 2 PM<br>Festival holidays may vary</p>
+          </div>
+          <div style="margin-top:20px;">
+            <a class="btn btn-whatsapp btn-full" href="https://wa.me/919000107301" target="_blank">📱 Chat on WhatsApp Now</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     SIZE CHART PAGE
+══════════════════════════════════════════ -->
+<div id="page-sizechart" class="page">
+  <div class="inner-hero">
+    <h1>Size <em>Chart</em></h1>
+    <p>Find your perfect fit. All measurements are in centimetres (cm) unless noted.</p>
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span>Size Chart</span></div>
+  </div>
+  <section class="section" style="padding-top:48px;">
+    <div class="container">
+      <div style="max-width:800px;margin:0 auto;">
+        <div class="modal-tabs">
+          <div class="modal-tab active" onclick="switchSizeTab(this,'women')">Women</div>
+          <div class="modal-tab" onclick="switchSizeTab(this,'kids')">Kids</div>
+          <div class="modal-tab" onclick="switchSizeTab(this,'mens')">Men</div>
+        </div>
+        <div id="sizeTab-women">
+          <h3 style="font-family:var(--serif);font-size:1.3rem;margin-bottom:16px;">Women's Kurtis & Frocks</h3>
+          <div class="size-table-wrap">
+            <table class="size-table">
+              <thead><tr><th>Size</th><th>Bust (cm)</th><th>Waist (cm)</th><th>Hip (cm)</th><th>Length (cm)</th><th>Approx. Fit</th></tr></thead>
+              <tbody>
+                <tr><td><strong>XS</strong></td><td>80–84</td><td>64–68</td><td>88–92</td><td>44–46"</td><td>Very Slim / Petite</td></tr>
+                <tr><td><strong>S</strong></td><td>84–88</td><td>68–72</td><td>92–96</td><td>44–46"</td><td>Slim</td></tr>
+                <tr><td><strong>M</strong></td><td>88–92</td><td>72–76</td><td>96–100</td><td>44–46"</td><td>Regular</td></tr>
+                <tr><td><strong>L</strong></td><td>92–96</td><td>76–80</td><td>100–104</td><td>44–46"</td><td>Regular Plus</td></tr>
+                <tr><td><strong>XL</strong></td><td>96–100</td><td>80–84</td><td>104–108</td><td>44–46"</td><td>Plus</td></tr>
+                <tr><td><strong>XXL</strong></td><td>100–106</td><td>84–90</td><td>108–114</td><td>44–46"</td><td>Plus XL</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="measure-tip"><span class="icon">💡</span><p><strong>How to measure:</strong> Use a soft measuring tape. Measure your bust at the fullest point, waist at the narrowest point, and hips at the fullest point. Always measure over light clothing. If between sizes, we recommend sizing up for comfort.</p></div>
+        </div>
+        <div id="sizeTab-kids" style="display:none;">
+          <h3 style="font-family:var(--serif);font-size:1.3rem;margin-bottom:16px;">Kids Frocks & Kurtas</h3>
+          <div class="size-table-wrap">
+            <table class="size-table">
+              <thead><tr><th>Size / Age</th><th>Height (cm)</th><th>Chest (cm)</th><th>Waist (cm)</th><th>Dress Length</th></tr></thead>
+              <tbody>
+                <tr><td><strong>2–3 yrs</strong></td><td>90–98</td><td>54–58</td><td>50–53</td><td>24–26"</td></tr>
+                <tr><td><strong>4–5 yrs</strong></td><td>98–110</td><td>58–62</td><td>53–56</td><td>26–28"</td></tr>
+                <tr><td><strong>6–7 yrs</strong></td><td>110–120</td><td>62–66</td><td>56–60</td><td>28–30"</td></tr>
+                <tr><td><strong>8–9 yrs</strong></td><td>120–128</td><td>66–70</td><td>60–64</td><td>30–32"</td></tr>
+                <tr><td><strong>10–11 yrs</strong></td><td>128–136</td><td>70–74</td><td>64–68</td><td>32–34"</td></tr>
+                <tr><td><strong>12–13 yrs</strong></td><td>136–148</td><td>74–80</td><td>68–72</td><td>34–38"</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="sizeTab-mens" style="display:none;">
+          <h3 style="font-family:var(--serif);font-size:1.3rem;margin-bottom:16px;">Men's Kurtas</h3>
+          <div class="size-table-wrap">
+            <table class="size-table">
+              <thead><tr><th>Size</th><th>Chest (cm)</th><th>Shoulder (cm)</th><th>Length (cm)</th><th>Sleeve (cm)</th></tr></thead>
+              <tbody>
+                <tr><td><strong>S</strong></td><td>88–92</td><td>42–43</td><td>106–108</td><td>58–60</td></tr>
+                <tr><td><strong>M</strong></td><td>92–96</td><td>43–44</td><td>108–110</td><td>60–62</td></tr>
+                <tr><td><strong>L</strong></td><td>96–100</td><td>44–45</td><td>110–112</td><td>62–64</td></tr>
+                <tr><td><strong>XL</strong></td><td>100–104</td><td>45–46</td><td>112–114</td><td>64–66</td></tr>
+                <tr><td><strong>XXL</strong></td><td>104–110</td><td>46–48</td><td>114–116</td><td>66–68</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div style="background:var(--teal-pale);border-radius:var(--radius-lg);padding:24px 28px;margin-top:32px;">
+          <h4 style="font-size:0.9rem;font-weight:600;color:var(--teal);margin-bottom:8px;">🎯 Need a Custom Size?</h4>
+          <p style="font-size:0.85rem;color:var(--text-muted);line-height:1.7;">We offer custom stitching on most products. Share your exact measurements on WhatsApp and we'll stitch it to your perfect fit — at no extra cost on most items.</p>
+          <a class="btn btn-whatsapp btn-sm" style="margin-top:14px;display:inline-flex;" href="https://wa.me/919000107301" target="_blank">📱 Send Measurements on WhatsApp</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     FAQ PAGE
+══════════════════════════════════════════ -->
+<div id="page-faq" class="page">
+  <div class="inner-hero">
+    <h1>Frequently Asked <em>Questions</em></h1>
+    <p>Everything you need to know before you shop.</p>
+    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span>FAQ</span></div>
+  </div>
+  <section class="section" style="padding-top:48px;">
+    <div class="container" style="max-width:960px;">
+      <div class="faq-grid">
+        <div>
+          <div class="faq-section-title">🚚 Shipping</div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How long does delivery take? <span class="faq-chevron">▾</span></div><div class="faq-a">Orders are dispatched within 2–3 business days and typically delivered in 5–7 business days across India. Express shipping (2–3 days) is available at checkout.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do you ship across India? <span class="faq-chevron">▾</span></div><div class="faq-a">Yes! We deliver to all major cities and most pin codes across India. Enter your pin code at checkout to confirm delivery availability.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is Cash on Delivery (COD) available? <span class="faq-chevron">▾</span></div><div class="faq-a">Yes, COD is available for orders up to ₹2000 in most locations. A small COD convenience fee may apply. For higher value orders, we recommend prepaid payment for faster dispatch.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I track my order? <span class="faq-chevron">▾</span></div><div class="faq-a">Once dispatched, you'll receive a tracking number on WhatsApp/email. You can also contact us on WhatsApp for real-time updates on your order.</div></div>
+
+          <div class="faq-section-title" style="margin-top:32px;">📏 Sizes & Fit</div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I know which size to order? <span class="faq-chevron">▾</span></div><div class="faq-a">Refer to our Size Chart page for detailed measurements. If you're between sizes, we recommend sizing up for kurtis and frocks for a comfortable fit. You can also send your exact measurements on WhatsApp for custom stitching.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Is custom stitching available? <span class="faq-chevron">▾</span></div><div class="faq-a">Yes! We offer custom stitching on most products. Share your chest, waist, hip measurements and kurti length on WhatsApp, and we'll stitch to your exact size. Custom orders take an additional 3–5 business days.</div></div>
+        </div>
+        <div>
+          <div class="faq-section-title">🔁 Returns & Exchange</div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Can I exchange for a different size? <span class="faq-chevron">▾</span></div><div class="faq-a">Yes! Size exchange is accepted within 7 days of delivery. The product must be unworn, unwashed, and with original tags. Contact us on WhatsApp to initiate an exchange. Return shipping is the customer's responsibility for size changes.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What if I receive a defective product? <span class="faq-chevron">▾</span></div><div class="faq-a">We're very sorry if this happens! Please send us a photo of the defect on WhatsApp within 48 hours of receiving the order. We'll replace or fully refund — no questions asked.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">Do you accept returns? <span class="faq-chevron">▾</span></div><div class="faq-a">We accept returns only for defective or incorrect items. For size-related issues, we offer exchanges. Custom-stitched items are non-returnable unless defective.</div></div>
+
+          <div class="faq-section-title" style="margin-top:32px;">💬 How to Order</div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I order from Instagram? <span class="faq-chevron">▾</span></div><div class="faq-a">DM us on Instagram <strong>@aark.fusion</strong> with the product name or image and your size. We'll guide you through the next steps and confirm availability.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">How do I order on WhatsApp? <span class="faq-chevron">▾</span></div><div class="faq-a">Tap any WhatsApp button on the site or message us directly at <strong>+91 90001 07301</strong>. Share the product code, size, and delivery details and we'll help you complete the order.</div></div>
+          <div class="faq-item"><div class="faq-q" onclick="toggleFaq(this)">What payment methods are accepted? <span class="faq-chevron">▾</span></div><div class="faq-a">We accept UPI (GPay, PhonePe, Paytm), debit/credit cards, net banking, and COD. For WhatsApp orders, we send a UPI payment link or QR code.</div></div>
+        </div>
+      </div>
+      <div style="background:var(--teal);border-radius:var(--radius-lg);padding:40px;text-align:center;margin-top:48px;">
+        <h3 style="font-family:var(--serif);font-size:1.8rem;color:white;margin-bottom:8px;">Still have questions?</h3>
+        <p style="color:rgba(255,255,255,0.7);margin-bottom:24px;">We're happy to help. Reach us on WhatsApp for the fastest response.</p>
+        <a class="btn btn-whatsapp btn-lg" href="https://wa.me/919000107301" target="_blank">📱 Chat with Us on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CART SIDEBAR
+══════════════════════════════════════════ -->
+<div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header">
+    <h3>Your Cart</h3>
+    <button class="cart-close" onclick="closeCart()">✕</button>
+  </div>
+  <div class="cart-body" id="cartBody"></div>
+  <div class="cart-footer" id="cartFooter"></div>
+</div>
+
+<!-- SIZE CHART MODAL -->
+<div class="modal-overlay" id="sizeModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Size Guide</h3>
+      <button class="modal-close" onclick="closeSizeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:20px;">All measurements in centimetres (cm). When in doubt, size up.</p>
+      <div class="size-table-wrap">
+        <table class="size-table">
+          <thead><tr><th>Size</th><th>Bust</th><th>Waist</th><th>Hip</th></tr></thead>
+          <tbody>
+            <tr><td>XS</td><td>80–84</td><td>64–68</td><td>88–92</td></tr>
+            <tr><td>S</td><td>84–88</td><td>68–72</td><td>92–96</td></tr>
+            <tr><td>M</td><td>88–92</td><td>72–76</td><td>96–100</td></tr>
+            <tr><td>L</td><td>92–96</td><td>76–80</td><td>100–104</td></tr>
+            <tr><td>XL</td><td>96–100</td><td>80–84</td><td>104–108</td></tr>
+            <tr><td>XXL</td><td>100–106</td><td>84–90</td><td>108–114</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <button class="btn btn-outline-teal btn-sm" style="margin-top:16px;" onclick="closeSizeModal();showPage('sizechart')">Full Size Chart →</button>
+    </div>
+  </div>
+</div>
+
+<!-- FLOATING WHATSAPP -->
+<a class="floating-wa" href="https://wa.me/919000107301" target="_blank">
+  <div class="floating-wa-tooltip">Chat on WhatsApp</div>
+  📱
+</a>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-bottom-nav">
+  <ul>
+    <li><a onclick="showPage('home')" id="mbn-home" class="active"><span class="mbn-icon">🏠</span>Home</a></li>
+    <li><a onclick="showPage('shop')" id="mbn-shop"><span class="mbn-icon">🛍️</span>Shop</a></li>
+    <li><a onclick="showPage('collections')" id="mbn-collections"><span class="mbn-icon">✨</span>Collections</a></li>
+    <li><a onclick="showPage('wishlist')" id="mbn-wishlist"><span class="mbn-icon" style="color:#008080;"><span class="heart-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg></span></span>Wishlist</a></li>
+    <li><a onclick="openCart()" id="mbn-cart"><span class="mbn-icon">🛒</span>Cart</a></li>
+  </ul>
+</nav>
+
+<!-- JAVASCRIPT -->
+<script>
+// ══════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════
+const WHATSAPP_NUMBER = '919000107301';
+const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
+const WHATSAPP_COMMUNITY_URL = 'https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC?mode=gi_t';
+const INSTAGRAM_URL = 'https://instagram.com/aark.fusion';
+const INSTAGRAM_HANDLE = '@aark.fusion';
+const PREFIX_ORDER = { SC: 0, ST: 1, LF: 2, SF: 3, KF: 4, AR: 5 };
+const CONTACT_FORM_CONFIG = {
+  // Paste the deployed Google Apps Script web app URL here.
+  sheetsWebhookUrl: 'PASTE_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE',
+};
+
+const SERIES_META = {
+  SC: {
+    series: 'The Riju Series',
+    cat: 'straight-cut-kurtis',
+    categoryLabel: 'Straight Cut Kurtis',
+    productLabel: 'Kurti',
+    fabric: 'Cotton Blend',
+    sizes: ['XS', 'S', 'M', 'L', 'XL', 'XXL'],
+    fitNote: 'Straight-cut silhouette with all-day comfort and clean lines.',
+  },
+  ST: {
+    series: 'The Alpa Series',
+    cat: 'short-tops',
+    categoryLabel: 'Short Tops',
+    productLabel: 'Top',
+    fabric: 'Cotton Blend',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    fitNote: 'Easy short-top shape designed for relaxed styling and layering.',
+  },
+  LF: {
+    series: 'Ananta Series',
+    cat: 'long-frocks',
+    categoryLabel: 'Long Frocks',
+    productLabel: 'Long Frock',
+    fabric: 'Premium Cotton',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    fitNote: 'Flowing long-frock silhouette with a dressier statement feel.',
+  },
+  SF: {
+    series: 'The Kriti Series',
+    cat: 'short-frocks',
+    categoryLabel: 'Short Frocks',
+    productLabel: 'Short Frock',
+    fabric: 'Cotton Blend',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    fitNote: 'Playful shorter silhouette that works for everyday and festive dressing.',
+  },
+  KF: {
+    series: 'The Aira Series',
+    cat: 'kids-frocks',
+    categoryLabel: 'Kids Frocks',
+    productLabel: 'Kids Frock',
+    fabric: 'Soft Cotton',
+    sizes: ['2-3yr', '4-5yr', '6-7yr', '8-9yr', '10-11yr'],
+    fitNote: 'Kid-friendly fit with easy movement and comfortable wear.',
+  },
+  AR: {
+    series: 'Arjuna Series',
+    cat: 'mens-kurtas',
+    categoryLabel: "Men's Kurtas",
+    productLabel: 'Kurta',
+    fabric: 'Premium Cotton',
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    fitNote: 'Classic men\'s kurta silhouette with a clean mandarin collar and easy festive styling.',
+  },
+};
+
+const CATALOG_FILES = [
+  'SC001_870.jpg',
+  'SC002_870.jpg',
+  'SC003_870.jpg',
+  'SC004_870.jpg',
+  'SC005_870.jpg',
+  'SC006_870.jpg',
+  'SC007_870.jpg',
+  'SC008_870.jpg',
+  'SC009_870.jpg',
+  'SC010_870.jpg',
+  'SC011_870.jpg',
+  'SC012_870.jpg',
+  'ST001_800.jpg',
+  'ST002_800.jpg',
+  'ST003_800.jpg',
+  'ST004_800.jpg',
+  'ST005_800.jpg',
+  'ST006_800.jpg',
+  'ST007_800.jpg',
+  'ST008_800.jpg',
+  'ST009_800.jpg',
+  'ST010_800.jpg',
+  'ST011_800.jpg',
+  'ST012_800.jpg',
+  'ST013_800.jpg',
+  'ST014_800.jpg',
+  'ST015_800.jpg',
+  'LF001_1200.jpg',
+  'LF002_1200.jpg',
+  'LF003_1200.jpg',
+  'LF004_1200.jpg',
+  'LF005_1200.jpg',
+  'LF006_1200.jpg',
+  'SF001_1150.jpg',
+  'SF002_1150.jpg',
+  'SF003_1150.jpg',
+  'SF004_1150.jpg',
+  'SF005_1150.jpg',
+  'KF001_570.jpg',
+  'KF002_570.png',
+  'KF003_570.jpg',
+];
+
+const NEW_SKUS = new Set(['SC012', 'ST015', 'LF006', 'SF005', 'KF003']);
+const FEATURED_SKUS = new Set(['SC001', 'SC006', 'ST003', 'LF002', 'SF002', 'KF001']);
+const MENS_PRODUCTS = [
+  {
+    sku: 'AR001',
+    prefix: 'AR',
+    sequence: 1,
+    categoryLabel: "Men's Kurtas",
+    series: 'Arjuna Series',
+    name: 'Arjuna Series Teal Kurta',
+    price: null,
+    priceLabel: 'Price on request',
+    image: 'mens_collection/teal_front.png',
+    hoverImage: 'mens_collection/teal_back.png',
+    images: [
+      'mens_collection/teal_front.png',
+      'mens_collection/teal_back.png',
+    ],
+    desc: 'Arjuna Series men\'s kurta in teal with front and back views available from the new mens collection folder. Share the product code on WhatsApp to confirm price and order details.',
+    fabric: 'Premium Cotton',
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    tags: ['Arjuna Series', "Men's Kurtas", 'AR001', 'Teal'],
+    badge: 'new',
+    featured: true,
+    fitNote: 'Classic men\'s kurta silhouette with a clean mandarin collar and a polished festive finish.',
+    cat: 'mens-kurtas',
+    allowCart: false,
+    sortIndex: CATALOG_FILES.length + 1,
+  },
+  {
+    sku: 'AR002',
+    prefix: 'AR',
+    sequence: 2,
+    categoryLabel: "Men's Kurtas",
+    series: 'Arjuna Series',
+    name: 'Arjuna Series White Kurta',
+    price: null,
+    priceLabel: 'Price on request',
+    image: 'mens_collection/white_front.png',
+    hoverImage: 'mens_collection/white_back.png',
+    images: [
+      'mens_collection/white_front.png',
+      'mens_collection/white_back.png',
+    ],
+    desc: 'Arjuna Series men\'s kurta in white with front and back views available from the new mens collection folder. Share the product code on WhatsApp to confirm price and order details.',
+    fabric: 'Premium Cotton',
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    tags: ['Arjuna Series', "Men's Kurtas", 'AR002', 'White'],
+    badge: 'new',
+    featured: true,
+    fitNote: 'Clean white kurta styling with a versatile silhouette that works for celebrations, pujas, and family looks.',
+    cat: 'mens-kurtas',
+    allowCart: false,
+    sortIndex: CATALOG_FILES.length + 2,
+  },
+];
+
+function buildWhatsAppHref(message) {
+  return `${WHATSAPP_URL}?text=${encodeURIComponent(message)}`;
+}
+
+function getHeartIconMarkup() {
+  return `<span class="heart-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg></span>`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function buildProductDescription(meta, sku) {
+  return `${meta.series} ${meta.productLabel.toLowerCase()} from the AARK catalog. Product code ${sku}. A polished everyday style built from the actual product image set you shared.`;
+}
+
+function buildProduct(file, index) {
+  const [sku, priceWithExt] = file.split('_');
+  const prefix = sku.slice(0, 2);
+  const sequence = Number(sku.slice(2));
+  const price = Number(priceWithExt.split('.')[0]);
+  const meta = SERIES_META[prefix];
+
+  return {
+    id: index + 1,
+    sku,
+    prefix,
+    sequence,
+    cat: meta.cat,
+    categoryLabel: meta.categoryLabel,
+    series: meta.series,
+    name: `${meta.series} ${meta.productLabel} ${sku}`,
+    price,
+    image: `catalog-images/${file}`,
+    hoverImage: `catalog-images/${file}`,
+    images: [`catalog-images/${file}`],
+    desc: buildProductDescription(meta, sku),
+    fabric: meta.fabric,
+    sizes: meta.sizes,
+    tags: [meta.series, meta.categoryLabel, sku, `₹${price}`],
+    badge: NEW_SKUS.has(sku) ? 'new' : '',
+    featured: FEATURED_SKUS.has(sku),
+    fitNote: meta.fitNote,
+    allowCart: true,
+    sortIndex: index + 1,
+  };
+}
+
+function canAddToCart(product) {
+  return product.allowCart !== false && typeof product.price === 'number' && !Number.isNaN(product.price);
+}
+
+function getProductPriceLabel(product) {
+  if (canAddToCart(product)) return `₹${product.price}`;
+  return product.priceLabel || 'Price on request';
+}
+
+function getDefaultSize(product) {
+  return product.sizes.includes('M') ? 'M' : product.sizes[0];
+}
+
+function sortProductList(list, mode = currentSort) {
+  const sorted = [...list];
+
+  if (mode === 'price-asc') {
+    return sorted.sort((a, b) => {
+      const priceA = typeof a.price === 'number' ? a.price : Number.POSITIVE_INFINITY;
+      const priceB = typeof b.price === 'number' ? b.price : Number.POSITIVE_INFINITY;
+      return (priceA - priceB) || a.name.localeCompare(b.name);
+    });
+  }
+  if (mode === 'price-desc') {
+    return sorted.sort((a, b) => {
+      const priceA = typeof a.price === 'number' ? a.price : Number.NEGATIVE_INFINITY;
+      const priceB = typeof b.price === 'number' ? b.price : Number.NEGATIVE_INFINITY;
+      return (priceB - priceA) || a.name.localeCompare(b.name);
+    });
+  }
+  if (mode === 'series') {
+    return sorted.sort((a, b) => {
+      return (PREFIX_ORDER[a.prefix] - PREFIX_ORDER[b.prefix]) || (a.sequence - b.sequence);
+    });
+  }
+
+  return sorted.sort((a, b) => {
+    return (b.sortIndex - a.sortIndex) || (PREFIX_ORDER[a.prefix] - PREFIX_ORDER[b.prefix]);
+  });
+}
+
+function matchesPriceRange(price, range) {
+  if (typeof price !== 'number' || Number.isNaN(price)) return false;
+  if (range === 'under800') return price < 800;
+  if (range === '800-900') return price >= 800 && price <= 900;
+  if (range === '900-1200') return price > 900 && price <= 1200;
+  if (range === 'above1200') return price > 1200;
+  return true;
+}
+
+function getFilteredProducts() {
+  let filtered = [...products];
+
+  if (activeFilters.category) {
+    filtered = filtered.filter(product => product.cat === activeFilters.category);
+  }
+  if (activeFilters.priceRange) {
+    filtered = filtered.filter(product => matchesPriceRange(product.price, activeFilters.priceRange));
+  }
+
+  return sortProductList(filtered);
+}
+
+const products = [...CATALOG_FILES.map(buildProduct), ...MENS_PRODUCTS].map((product, index) => ({
+  ...product,
+  id: index + 1,
+}));
+
+let cart = [];
+let wishlist = [];
+let currentProduct = null;
+let activeFilters = {};
+let currentSort = 'newest';
+let isSubmittingContactForm = false;
+const SEARCH_RESULT_LIMIT = 12;
+
+// ══════════════════════════════════════════
+// PAGE NAVIGATION
+// ══════════════════════════════════════════
+function showPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-' + pageId);
+  if (pg) {
+    pg.classList.add('active');
+    window.scrollTo(0, 0);
+  }
+  document.getElementById('mobileNav').classList.remove('open');
+  closeSearch();
+  updateMobileNav(pageId);
+  if (pageId === 'home') initHomeGrids();
+  if (pageId === 'shop') initShopGrid();
+  if (pageId === 'new') initNewGrid();
+  if (pageId === 'wishlist') initWishlistGrid();
+}
+
+function updateMobileNav(pageId) {
+  document.querySelectorAll('.mobile-bottom-nav a').forEach(a => a.classList.remove('active'));
+  const mbn = document.getElementById('mbn-' + pageId);
+  if (mbn) mbn.classList.add('active');
+}
+
+function showShopWithFilter(filter) {
+  activeFilters = { category: filter };
+  showPage('shop');
+}
+
+// ══════════════════════════════════════════
+// PRODUCT CARD BUILDER
+// ══════════════════════════════════════════
+function buildProductCard(p) {
+  const inWishlist = wishlist.some(w => w.id === p.id);
+  const cartEnabled = canAddToCart(p);
+  const badgeHTML = p.badge ? `<div class="badge badge-${p.badge}">New</div>` : '';
+  const cartButtonHTML = cartEnabled
+    ? `<button class="product-action-btn add-cart" onclick="addToCart(${p.id})" title="Add to Cart">🛒 Add to Cart</button>`
+    : '';
+  const whatsappButtonHTML = cartEnabled
+    ? `<a class="product-action-btn whatsapp" href="${buildWhatsAppHref(`Hi! I'm interested in ${p.name} (${p.sku}) priced at ${getProductPriceLabel(p)}.`)}" target="_blank" title="WhatsApp">📱</a>`
+    : `<a class="product-action-btn whatsapp" style="flex:1;" href="${buildWhatsAppHref(`Hi! I'm interested in ${p.name} (${p.sku}). Please share the price and ordering details.`)}" target="_blank" title="WhatsApp">📱 WhatsApp</a>`;
+  return `
+  <div class="product-card" onclick="openProduct(${p.id})">
+    <div class="product-img-wrap">
+      <img class="product-img-main" src="${p.image}" alt="${p.name}" loading="lazy">
+      <img class="product-img-hover" src="${p.hoverImage || p.image}" alt="${p.name}" loading="lazy">
+      <div class="product-badges">${badgeHTML}</div>
+      <div class="product-actions" onclick="event.stopPropagation()">
+        <button class="product-action-btn wishlist ${inWishlist?'active':''}" onclick="toggleWishlist(${p.id},this)" title="Wishlist">${getHeartIconMarkup()}</button>
+        ${cartButtonHTML}
+        ${whatsappButtonHTML}
+      </div>
+    </div>
+    <div class="product-info">
+      <div class="product-cat">${p.categoryLabel}</div>
+      <div class="product-name">${p.name}</div>
+      <div class="product-price">
+        <span class="price-current">${getProductPriceLabel(p)}</span>
+      </div>
+      <div class="product-rating">
+        <span class="rating-count">${p.series} · ${p.sku}</span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function buildSearchResultItem(product) {
+  return `
+    <div class="search-result-item" onclick="openProductFromSearch(${product.id})">
+      <div class="search-result-thumb">
+        <img src="${product.image}" alt="${product.name}" loading="lazy">
+      </div>
+      <div class="search-result-copy">
+        <div class="search-result-kicker">${product.categoryLabel}</div>
+        <div class="search-result-name">${product.name}</div>
+        <div class="search-result-meta">
+          <span>${product.series}</span>
+          <span>${product.sku}</span>
+          <span class="search-result-price">${getProductPriceLabel(product)}</span>
+        </div>
+      </div>
+      <div class="search-result-arrow">→</div>
+    </div>
+  `;
+}
+
+function getSearchTokens(query) {
+  return query.toLowerCase().trim().split(/\s+/).filter(Boolean);
+}
+
+function getProductSearchText(product) {
+  return [
+    product.name,
+    product.sku,
+    product.series,
+    product.categoryLabel,
+    product.fabric,
+    ...(product.tags || []),
+  ].join(' ').toLowerCase();
+}
+
+function searchProducts(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) return [];
+
+  const tokens = getSearchTokens(q);
+
+  return products
+    .map(product => {
+      const haystack = getProductSearchText(product);
+      if (!tokens.every(token => haystack.includes(token))) return null;
+
+      let score = 0;
+      if (product.sku.toLowerCase() === q) score += 140;
+      if (product.sku.toLowerCase().startsWith(q)) score += 90;
+      if (product.name.toLowerCase().startsWith(q)) score += 70;
+      if (product.name.toLowerCase().includes(q)) score += 50;
+      if (product.series.toLowerCase().includes(q)) score += 40;
+      if (product.categoryLabel.toLowerCase().includes(q)) score += 25;
+      if ((product.tags || []).some(tag => tag.toLowerCase().includes(q))) score += 20;
+      score += Math.max(0, 20 - product.sequence);
+
+      return { product, score };
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.score - a.score || a.product.name.localeCompare(b.product.name))
+    .slice(0, SEARCH_RESULT_LIMIT)
+    .map(entry => entry.product);
+}
+
+function getSearchSuggestions() {
+  const featured = sortProductList(products.filter(product => product.featured), 'series');
+  const newest = sortProductList(products.filter(product => product.badge === 'new'));
+  const unique = [...featured, ...newest].filter(
+    (product, index, list) => list.findIndex(item => item.id === product.id) === index
+  );
+  return unique.slice(0, 8);
+}
+
+function renderSearchResults(query = '') {
+  const resultsWrap = document.getElementById('searchResultsWrap');
+  const helperText = document.getElementById('searchHelperText');
+  if (!resultsWrap || !helperText) return;
+
+  const trimmed = query.trim();
+
+  if (!trimmed) {
+    const suggestions = getSearchSuggestions();
+    helperText.innerHTML = `<strong>Search the catalog</strong> by product name, SKU, series, or category.`;
+    resultsWrap.innerHTML = `
+      <div class="search-section-label">Suggested Products</div>
+      <div class="search-results">
+        ${suggestions.map(buildSearchResultItem).join('')}
+      </div>
+    `;
+    return;
+  }
+
+  const results = searchProducts(trimmed);
+  const safeQuery = escapeHtml(trimmed);
+  helperText.innerHTML = results.length
+    ? `<strong>${results.length}</strong> result${results.length === 1 ? '' : 's'} for “${safeQuery}”.`
+    : `No matches for <strong>“${safeQuery}”</strong>. Try a series name like Riju or a code like SC001.`;
+
+  if (!results.length) {
+    resultsWrap.innerHTML = `
+      <div class="search-empty">
+        <h4>No matching products yet</h4>
+        <p>Try searching by series name, product code, category, or fabric. Examples: <strong>Arjuna</strong>, <strong>SC001</strong>, or <strong>Kids Frocks</strong>.</p>
+      </div>
+    `;
+    return;
+  }
+
+  resultsWrap.innerHTML = `
+    <div class="search-section-label">Search Results</div>
+    <div class="search-results">
+      ${results.map(buildSearchResultItem).join('')}
+    </div>
+  `;
+}
+
+function handleSearchInput(value) {
+  renderSearchResults(value);
+}
+
+function handleSearchKeydown(event) {
+  if (event.key !== 'Enter') return;
+
+  const results = searchProducts(event.currentTarget?.value || '');
+  if (!results.length) return;
+
+  event.preventDefault();
+  openProductFromSearch(results[0].id);
+}
+
+function openSearch(initialQuery = '') {
+  const overlay = document.getElementById('searchOverlay');
+  const input = document.getElementById('searchInput');
+  if (!overlay || !input) return;
+
+  document.getElementById('mobileNav').classList.remove('open');
+  overlay.classList.add('open');
+  input.value = initialQuery;
+  renderSearchResults(initialQuery);
+
+  setTimeout(() => {
+    input.focus();
+    if (initialQuery) input.select();
+  }, 10);
+}
+
+function closeSearch() {
+  const overlay = document.getElementById('searchOverlay');
+  if (overlay) overlay.classList.remove('open');
+}
+
+function applySearchSuggestion(value) {
+  openSearch(value);
+}
+
+function openProductFromSearch(id) {
+  closeSearch();
+  openProduct(id);
+}
+
+function isTypingTarget(target) {
+  if (!target) return false;
+  const tagName = target.tagName;
+  return tagName === 'INPUT' || tagName === 'TEXTAREA' || tagName === 'SELECT' || target.isContentEditable;
+}
+
+// ══════════════════════════════════════════
+// GRID INITIALIZERS
+// ══════════════════════════════════════════
+function initHomeGrids() {
+  const newArrivals = sortProductList(products.filter(p => p.badge === 'new')).slice(0, 4);
+  const featuredStyles = sortProductList(products.filter(p => p.featured), 'series').slice(0, 4);
+  document.getElementById('newArrivalsGrid').innerHTML = newArrivals.map(buildProductCard).join('');
+  document.getElementById('bestSellersGrid').innerHTML = featuredStyles.map(buildProductCard).join('');
+}
+
+function initShopGrid() {
+  const filtered = getFilteredProducts();
+  document.getElementById('shopProductGrid').innerHTML = filtered.length
+    ? filtered.map(buildProductCard).join('')
+    : `<div style="grid-column:1/-1;background:white;border-radius:12px;padding:32px;text-align:center;box-shadow:var(--shadow-sm);">No products match those filters yet.</div>`;
+  document.getElementById('shopResultCount').textContent = `Showing ${filtered.length} products`;
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.classList.toggle(
+      'selected',
+      chip.dataset.filterType && activeFilters[chip.dataset.filterType] === chip.dataset.filterValue
+    );
+  });
+  renderActiveFilters();
+}
+
+function initNewGrid() {
+  const newProducts = sortProductList(products.filter(p => p.badge === 'new'));
+  document.getElementById('newPageGrid').innerHTML = newProducts.map(buildProductCard).join('');
+}
+
+function initWishlistGrid() {
+  if (wishlist.length === 0) {
+    document.getElementById('wishlistGrid').innerHTML = '';
+    document.getElementById('emptyWishlist').style.display = 'block';
+  } else {
+    document.getElementById('emptyWishlist').style.display = 'none';
+    document.getElementById('wishlistGrid').innerHTML = wishlist.map(buildProductCard).join('');
+  }
+}
+
+// ══════════════════════════════════════════
+// PRODUCT DETAIL
+// ══════════════════════════════════════════
+function openProduct(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  currentProduct = p;
+  const cartEnabled = canAddToCart(p);
+  const sizesHTML = p.sizes.map(s => `<div class="size-opt" onclick="selectSize(this,'${s}')">${s}</div>`).join('');
+  const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
+  const thumbsHTML = (p.images || [p.image]).map((image, index) => `
+    <div class="thumb ${index === 0 ? 'active' : ''}" onclick="selectProductImage(${index})">
+      <img src="${image}" alt="${p.name} view ${index + 1}">
+    </div>
+  `).join('');
+  const qtySectionHTML = cartEnabled ? `
+      <div class="qty-row">
+        <span class="qty-label">Quantity</span>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <input class="qty-num" type="number" value="1" min="1" id="detailQty">
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+  ` : '';
+  const ctaRowHTML = cartEnabled ? `
+      <div class="cta-row">
+        <button class="btn btn-teal btn-lg" style="flex:1;" onclick="addToCartFromDetail()">🛒 Add to Cart</button>
+        <button class="btn btn-primary btn-lg" style="flex:1;" onclick="addToCartFromDetail();openCart()">Buy Now</button>
+      </div>
+  ` : `
+      <div style="background:var(--cream-dark);border-radius:12px;padding:14px 16px;font-size:0.84rem;color:var(--text-muted);margin-bottom:16px;">
+        Price for this kurta is available on WhatsApp. Use the button below and mention product code <strong style="color:var(--text)">${p.sku}</strong>.
+      </div>
+  `;
+  const whatsappMessage = cartEnabled
+    ? `Hi! I want to order ${p.name} (${p.sku}) priced at ${getProductPriceLabel(p)}.`
+    : `Hi! I'm interested in ${p.name} (${p.sku}). Please share the price and ordering details.`;
+  document.getElementById('productDetailContent').innerHTML = `
+    <div class="product-gallery">
+      <div class="main-image">
+        <img id="detailMainImage" src="${p.image}" alt="${p.name}">
+      </div>
+      <div class="thumb-row">${thumbsHTML}</div>
+    </div>
+    <div class="product-detail-info">
+      <div class="detail-breadcrumb">
+        <a onclick="showPage('home')">Home</a><span>/</span>
+        <a onclick="showPage('shop')">Shop</a><span>/</span>
+        <span style="color:var(--text)">${p.name}</span>
+      </div>
+      <div class="detail-cat">${p.categoryLabel}</div>
+      <h1 class="detail-name">${p.name}</h1>
+      <div class="detail-rating"><span>${p.series}</span><span>•</span><span>${p.sku}</span></div>
+      <div class="detail-price">
+        <span class="current">${getProductPriceLabel(p)}</span>
+      </div>
+      <p class="detail-desc">${p.desc}</p>
+      <div style="background:var(--teal-pale);border:1px solid rgba(15,110,86,0.18);border-radius:8px;padding:10px 14px;font-size:0.8rem;color:var(--teal);margin-bottom:16px;">
+        Series: ${p.series} · Product code: ${p.sku} · Fabric: ${p.fabric}
+      </div>
+      <div class="size-section">
+        <div class="size-label">
+          <span>Select Size</span>
+          <span class="size-chart-link" onclick="openSizeModal()">Size Chart</span>
+        </div>
+        <div class="size-options">${sizesHTML}</div>
+      </div>
+      ${qtySectionHTML}
+      ${ctaRowHTML}
+      <a class="btn btn-whatsapp btn-full" style="margin-bottom:16px;" href="${buildWhatsAppHref(whatsappMessage)}" target="_blank">${cartEnabled ? '📱 Order on WhatsApp' : '📱 Ask on WhatsApp'}</a>
+      <div class="detail-tags">${tagsHTML}</div>
+      <div class="accordion">
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Fabric & Care</span><span>▾</span></div>
+          <div class="accordion-body">Fabric: ${p.fabric}<br>Machine wash cold or hand wash. Use mild detergent. Dry in shade. Avoid wringing. Iron on low heat from reverse side.</div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Fit & Style Notes</span><span>▾</span></div>
+          <div class="accordion-body">${p.fitNote} Refer to the size chart before ordering, especially for kids sizing and long-frock lengths.</div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Delivery & Shipping</span><span>▾</span></div>
+          <div class="accordion-body">Ships within 2–3 business days. Delivery in 5–7 days across India. Express shipping available at checkout. Free shipping on orders above ₹999.</div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Return & Exchange Policy</span><span>▾</span></div>
+          <div class="accordion-body">Size exchange accepted within 7 days. Item must be unworn with original tags. Defective items replaced immediately. Custom stitched items are non-returnable unless defective.</div>
+        </div>
+      </div>
+    </div>`;
+  // Related products
+  const related = products.filter(x => x.id !== id && x.cat === p.cat).slice(0, 4);
+  document.getElementById('relatedProductsGrid').innerHTML = related.map(buildProductCard).join('');
+  showPage('product');
+}
+
+function selectProductImage(index) {
+  if (!currentProduct) return;
+  const images = currentProduct.images || [currentProduct.image];
+  const mainImage = document.getElementById('detailMainImage');
+  if (mainImage && images[index]) {
+    mainImage.src = images[index];
+  }
+  document.querySelectorAll('.thumb').forEach((thumb, thumbIndex) => {
+    thumb.classList.toggle('active', thumbIndex === index);
+  });
+}
+
+function selectSize(el, size) {
+  document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+function changeQty(delta) {
+  const inp = document.getElementById('detailQty');
+  const val = parseInt(inp.value) + delta;
+  inp.value = Math.max(1, val);
+}
+function toggleAccordion(header) {
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ══════════════════════════════════════════
+// CART
+// ══════════════════════════════════════════
+function openCart() {
+  document.getElementById('cartOverlay').classList.add('open');
+  document.getElementById('cartSidebar').classList.add('open');
+  renderCart();
+}
+function closeCart() {
+  document.getElementById('cartOverlay').classList.remove('open');
+  document.getElementById('cartSidebar').classList.remove('open');
+}
+function renderCart() {
+  const body = document.getElementById('cartBody');
+  const footer = document.getElementById('cartFooter');
+  if (cart.length === 0) {
+    body.innerHTML = `<div class="empty-cart"><div class="empty-cart-icon">🛒</div><p>Your cart is empty</p><button class="btn btn-teal" onclick="closeCart();showPage('shop')">Start Shopping</button></div>`;
+    footer.innerHTML = '';
+    document.getElementById('cartBadge').textContent = 0;
+    return;
+  }
+  body.innerHTML = cart.map((item, i) => `
+    <div class="cart-item">
+      <div class="cart-item-img"><img src="${item.image}" alt="${item.name}"></div>
+      <div class="cart-item-info">
+        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-meta">${item.sku} • Size: ${item.selectedSize || getDefaultSize(item)} • ${item.fabric}</div>
+        <div class="cart-item-price">₹${item.price * item.qty}</div>
+        <div class="cart-item-controls">
+          <div class="cart-qty">
+            <button onclick="updateCartQty(${i},-1)">−</button>
+            <span>${item.qty}</span>
+            <button onclick="updateCartQty(${i},1)">+</button>
+          </div>
+          <span class="cart-remove" onclick="removeFromCart(${i})">Remove</span>
+        </div>
+      </div>
+    </div>`).join('');
+  const subtotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * item.qty, 0);
+  const shipping = subtotal >= 999 ? 0 : 79;
+  footer.innerHTML = `
+    <div class="cart-coupon">
+      <input class="coupon-input" placeholder="Enter coupon code" id="couponInput">
+      <button class="btn btn-outline-teal btn-sm" onclick="applyCoupon()">Apply</button>
+    </div>
+    <div class="cart-subtotal"><span>Subtotal</span><strong>₹${subtotal}</strong></div>
+    <div class="cart-subtotal"><span>Shipping</span><strong>${shipping === 0 ? '<span style="color:var(--teal)">Free</span>' : '₹' + shipping}</strong></div>
+    <div class="cart-subtotal" style="border-top:1px solid var(--light-grey);padding-top:12px;"><span style="font-weight:600;color:var(--text)">Total</span><strong style="font-size:1.2rem;">₹${subtotal + shipping}</strong></div>
+    <button class="btn btn-teal btn-full" style="margin-top:4px;" onclick="checkout()">Proceed to Checkout →</button>
+    <a class="btn btn-whatsapp btn-full" style="margin-top:8px;" href="${buildWhatsAppHref(`Hi! I'd like to order ${cart.map(item => `${item.sku} (${item.selectedSize}, qty:${item.qty})`).join(', ')}.`)}" target="_blank">📱 Order via WhatsApp</a>`;
+  document.getElementById('cartBadge').textContent = cart.reduce((s, c) => s + c.qty, 0);
+}
+
+function updateCartQty(index, delta) {
+  cart[index].qty = Math.max(1, cart[index].qty + delta);
+  renderCart();
+}
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  renderCart();
+  showToast('Removed from cart', 'success');
+}
+function addToCart(id) {
+  const p = products.find(x => x.id === id);
+  if (!p) return;
+  if (!canAddToCart(p)) {
+    window.open(buildWhatsAppHref(`Hi! I'm interested in ${p.name} (${p.sku}). Please share the price and ordering details.`), '_blank');
+    showToast('Price available on WhatsApp for this style', 'success');
+    return;
+  }
+  const defaultSize = getDefaultSize(p);
+  const existing = cart.find(c => c.id === id && c.selectedSize === defaultSize);
+  if (existing) { existing.qty++; } else { cart.push({ ...p, qty: 1, selectedSize: defaultSize }); }
+  renderCart();
+  showToast(`${p.name} added to cart 🛒`, 'success');
+}
+function addToCartFromDetail() {
+  if (!currentProduct) return;
+  if (!canAddToCart(currentProduct)) {
+    window.open(buildWhatsAppHref(`Hi! I'm interested in ${currentProduct.name} (${currentProduct.sku}). Please share the price and ordering details.`), '_blank');
+    showToast('Shared on WhatsApp for pricing', 'success');
+    return;
+  }
+  const selectedSize = document.querySelector('.size-opt.active')?.textContent || currentProduct.sizes[0];
+  const qty = parseInt(document.getElementById('detailQty')?.value || 1);
+  const existing = cart.find(c => c.id === currentProduct.id && c.selectedSize === selectedSize);
+  if (existing) { existing.qty += qty; } else { cart.push({ ...currentProduct, qty, selectedSize }); }
+  renderCart();
+  showToast(`${currentProduct.name} added to cart 🛒`, 'success');
+}
+function checkout() {
+  closeCart();
+  showToast('Checkout — connect your payment gateway 💳', 'success');
+}
+function applyCoupon() {
+  const code = document.getElementById('couponInput').value.toUpperCase();
+  if (code === 'AARK10') showToast('10% discount applied! ✨', 'success');
+  else showToast('Invalid coupon code', 'error');
+}
+
+// ══════════════════════════════════════════
+// WISHLIST
+// ══════════════════════════════════════════
+function toggleWishlist(id, btn) {
+  const p = products.find(x => x.id === id);
+  const idx = wishlist.findIndex(w => w.id === id);
+  if (idx > -1) {
+    wishlist.splice(idx, 1);
+    btn.classList.remove('active');
+    showToast(`Removed from wishlist`, 'success');
+  } else {
+    wishlist.push(p);
+    btn.classList.add('active');
+    showToast(`${p.name} saved to wishlist ❤️`, 'success');
+  }
+}
+
+// ══════════════════════════════════════════
+// FILTERS
+// ══════════════════════════════════════════
+function toggleFilter(chip, type, value) {
+  if (activeFilters[type] === value) {
+    delete activeFilters[type];
+  } else {
+    activeFilters[type] = value;
+  }
+  initShopGrid();
+}
+
+function clearSingleFilter(type) {
+  delete activeFilters[type];
+  initShopGrid();
+}
+
+function renderActiveFilters() {
+  const activeFilterEl = document.getElementById('activeFilters');
+  if (!activeFilterEl) return;
+
+  const filters = [];
+
+  if (activeFilters.category) {
+    const label = document.querySelector(`.filter-chip[data-filter-type="category"][data-filter-value="${activeFilters.category}"]`)?.textContent || activeFilters.category;
+    filters.push({ type: 'category', label });
+  }
+
+  if (activeFilters.priceRange) {
+    const label = document.querySelector(`.filter-chip[data-filter-type="priceRange"][data-filter-value="${activeFilters.priceRange}"]`)?.textContent || activeFilters.priceRange;
+    filters.push({ type: 'priceRange', label });
+  }
+
+  activeFilterEl.innerHTML = filters.map(filter => `
+    <div class="active-filter-tag" onclick="clearSingleFilter('${filter.type}')">
+      ${filter.label} ✕
+    </div>
+  `).join('');
+}
+
+function clearFilters() {
+  activeFilters = {};
+  document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('selected'));
+  initShopGrid();
+}
+function sortProducts(val) {
+  currentSort = val;
+  initShopGrid();
+}
+
+// ══════════════════════════════════════════
+// MODALS
+// ══════════════════════════════════════════
+function openSizeModal() { document.getElementById('sizeModal').classList.add('open'); }
+function closeSizeModal() { document.getElementById('sizeModal').classList.remove('open'); }
+
+// ══════════════════════════════════════════
+// FAQ TOGGLE
+// ══════════════════════════════════════════
+function toggleFaq(q) {
+  const a = q.nextElementSibling;
+  q.classList.toggle('open');
+  a.classList.toggle('open');
+}
+
+// ══════════════════════════════════════════
+// SIZE CHART TABS
+// ══════════════════════════════════════════
+function switchSizeTab(tab, name) {
+  document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  ['women','kids','mens'].forEach(n => {
+    const el = document.getElementById('sizeTab-' + n);
+    if (el) el.style.display = n === name ? 'block' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════
+function showToast(msg, type = 'success') {
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = `toast ${type}`;
+  toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : '❌'}</span><span>${msg}</span>`;
+  container.appendChild(toast);
+  setTimeout(() => toast.remove(), 3000);
+}
+
+// ══════════════════════════════════════════
+// MOBILE NAV
+// ══════════════════════════════════════════
+function toggleMobileNav() {
+  document.getElementById('mobileNav').classList.toggle('open');
+}
+
+// ══════════════════════════════════════════
+// SCROLL HEADER
+// ══════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// ══════════════════════════════════════════
+// NEWSLETTER
+// ══════════════════════════════════════════
+function subscribeEmail() {
+  const email = document.getElementById('emailInput').value;
+  if (email && email.includes('@')) {
+    showToast('Subscribed! Welcome to AARK 🌿', 'success');
+    document.getElementById('emailInput').value = '';
+  } else {
+    showToast('Please enter a valid email', 'error');
+  }
+}
+
+function isContactWebhookConfigured() {
+  const url = CONTACT_FORM_CONFIG.sheetsWebhookUrl.trim();
+  return Boolean(url) && !url.includes('PASTE_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE');
+}
+
+function setupContactForm() {
+  const formUrlInput = document.getElementById('contactFormUrl');
+  const webhookInput = document.getElementById('contactFormWebhook');
+  const sourceUrl = window.location.protocol === 'file:'
+    ? 'Local preview of aark-website.html'
+    : window.location.href.split('#')[0];
+
+  if (formUrlInput) formUrlInput.value = sourceUrl;
+  if (webhookInput) webhookInput.value = isContactWebhookConfigured()
+    ? CONTACT_FORM_CONFIG.sheetsWebhookUrl.trim()
+    : '';
+}
+
+function setContactSubmitLoading(isLoading) {
+  const button = document.getElementById('contactSubmitBtn');
+  if (!button) return;
+
+  if (!button.dataset.defaultLabel) button.dataset.defaultLabel = button.innerHTML;
+  button.disabled = isLoading;
+  button.innerHTML = isLoading ? 'Sending...' : button.dataset.defaultLabel;
+}
+
+async function sendContactForm(event) {
+  if (event) event.preventDefault();
+
+  const form = document.getElementById('contactForm');
+  const subjectInput = document.getElementById('contactSubjectInput');
+  if (!form || isSubmittingContactForm) return false;
+
+  if (window.location.protocol === 'file:') {
+    showToast('Serve this page from a local server or live site before sending the form.', 'error');
+    return false;
+  }
+
+  if (!isContactWebhookConfigured()) {
+    showToast('Add the Google Sheets webhook URL in CONTACT_FORM_CONFIG before sending live submissions.', 'error');
+    return false;
+  }
+
+  if (!form.reportValidity()) return false;
+
+  const formData = new FormData(form);
+  const selectedSubject = String(formData.get('subject') || 'Website Enquiry').trim();
+  const sourceUrl = window.location.href.split('#')[0];
+  const emailSubject = `AARK Website Enquiry • ${selectedSubject}`;
+
+  formData.set('_subject', emailSubject);
+  formData.set('_url', sourceUrl);
+  formData.set('_webhook', CONTACT_FORM_CONFIG.sheetsWebhookUrl.trim());
+  formData.set('submitted_from', sourceUrl);
+  formData.set('submitted_at', new Date().toISOString());
+
+  if (subjectInput) subjectInput.value = emailSubject;
+
+  isSubmittingContactForm = true;
+  setContactSubmitLoading(true);
+
+  try {
+    const response = await fetch(form.action, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: formData,
+    });
+    const result = await response.json().catch(() => ({}));
+    const success = response.ok && (
+      result.success === true ||
+      String(result.success || '').toLowerCase() === 'true' ||
+      !('success' in result)
+    );
+
+    if (!success) {
+      throw new Error(result.message || 'Message could not be sent right now.');
+    }
+
+    form.reset();
+    if (subjectInput) subjectInput.value = 'New AARK website enquiry';
+    showToast('Message sent to email and saved in Google Sheets 💚', 'success');
+    setupContactForm();
+  } catch (error) {
+    const errorMessage = error?.message && error.message !== 'Failed to fetch'
+      ? error.message
+      : 'Could not send your message right now. Please try again in a moment.';
+    showToast(errorMessage, 'error');
+  } finally {
+    isSubmittingContactForm = false;
+    setContactSubmitLoading(false);
+  }
+
+  return false;
+}
+
+function toggleSearch() {
+  const overlay = document.getElementById('searchOverlay');
+  if (overlay?.classList.contains('open')) closeSearch();
+  else openSearch();
+}
+
+document.addEventListener('keydown', event => {
+  const searchOpen = document.getElementById('searchOverlay')?.classList.contains('open');
+
+  if (event.key === 'Escape' && searchOpen) {
+    closeSearch();
+    return;
+  }
+
+  if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+    event.preventDefault();
+    openSearch();
+    return;
+  }
+
+  if (event.key === '/' && !searchOpen && !isTypingTarget(event.target)) {
+    event.preventDefault();
+    openSearch();
+  }
+});
+
+// ══════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════
+setupContactForm();
+initHomeGrids();
+</script>
+</body>
+</html>
