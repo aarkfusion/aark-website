@@ -10,24 +10,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
-  --teal: #0F6E56;
-  --teal-light: #1a8a6c;
-  --teal-pale: #e8f5f1;
+  --teal: #008080;
+  --teal-light: #00a3a3;
+  --teal-pale: #e0f5f5;
   --wishlist-teal: #008080;
   --gold: #C9A84C;
   --gold-light: #dfc07a;
-  --cream: #FAF7F2;
-  --cream-dark: #F0EBE3;
+  --cream: #FFFFFF;
+  --cream-dark: #f5f5f5;
   --white: #FFFFFF;
-  --charcoal: #2C2C2C;
-  --warm-grey: #8A8580;
-  --light-grey: #E8E4DE;
-  --text: #1E1E1E;
-  --text-muted: #6B6560;
+  --charcoal: #111111;
+  --warm-grey: #555555;
+  --light-grey: #e0e0e0;
+  --text: #000000;
+  --text-muted: #444444;
   --serif: 'Cormorant Garamond', Georgia, serif;
   --sans: 'Jost', sans-serif;
-  --shadow-sm: 0 2px 12px rgba(15,110,86,0.08);
-  --shadow-md: 0 8px 32px rgba(15,110,86,0.12);
+  --shadow-sm: 0 2px 12px rgba(0,128,128,0.08);
+  --shadow-md: 0 8px 32px rgba(0,128,128,0.12);
   --shadow-lg: 0 20px 60px rgba(0,0,0,0.12);
   --radius: 4px;
   --radius-lg: 12px;
@@ -177,7 +177,7 @@ a:not([href]),
 .hero {
   min-height: 100vh; display: flex; align-items: center; justify-content: center;
   position: relative; overflow: hidden;
-  background: linear-gradient(135deg, #0d5e49 0%, #0F6E56 45%, #1a8a6c 100%);
+  background: linear-gradient(135deg, #006666 0%, #008080 45%, #00a3a3 100%);
 }
 .hero-bg-pattern {
   position: absolute; inset: 0; opacity: 0.06;
@@ -254,9 +254,9 @@ a:not([href]),
 .btn-outline-teal:hover { background: var(--teal); color: white; transform: translateY(-2px); }
 .btn-teal {
   background: var(--teal); color: white;
-  box-shadow: 0 4px 20px rgba(15,110,86,0.3);
+  box-shadow: 0 4px 20px rgba(0,128,128,0.3);
 }
-.btn-teal:hover { background: var(--teal-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(15,110,86,0.4); }
+.btn-teal:hover { background: var(--teal-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,128,128,0.4); }
 .btn-whatsapp {
   background: #25D366; color: white;
   box-shadow: 0 4px 20px rgba(37,211,102,0.3);
@@ -326,7 +326,7 @@ a:not([href]),
 }
 .cat-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(15,110,86,0.85) 0%, rgba(15,110,86,0.1) 50%, transparent 100%);
+  background: linear-gradient(to top, rgba(0,128,128,0.85) 0%, rgba(0,128,128,0.1) 50%, transparent 100%);
 }
 .cat-info {
   position: absolute; bottom: 0; left: 0; right: 0;
@@ -559,7 +559,7 @@ a:not([href]),
 }
 .insta-overlay {
   position: absolute; inset: 0;
-  background: rgba(15,110,86,0.7);
+  background: rgba(0,128,128,0.7);
   display: flex; align-items: center; justify-content: center;
   opacity: 0; transition: opacity 0.3s;
   color: white; font-size: 1.4rem;
@@ -573,7 +573,7 @@ a:not([href]),
    NEWSLETTER
 ══════════════════════════════════════════ */
 .newsletter-section {
-  background: linear-gradient(135deg, var(--teal) 0%, #0d5e49 100%);
+  background: linear-gradient(135deg, var(--teal) 0%, #006666 100%);
   padding: 80px 24px; text-align: center; position: relative; overflow: hidden;
 }
 .newsletter-section::before {
@@ -789,7 +789,7 @@ a:not([href]),
 ══════════════════════════════════════════ */
 .about-hero {
   min-height: 70vh; display: flex; align-items: center;
-  background: linear-gradient(135deg, #0d5e49, #0F6E56);
+  background: linear-gradient(135deg, #006666, #008080);
   position: relative; overflow: hidden;
   text-align: center; padding: 120px 24px 80px;
 }
@@ -803,7 +803,7 @@ a:not([href]),
 .story-side { display: flex; flex-direction: column; gap: 24px; }
 .founder-note {
   background: linear-gradient(180deg, rgba(250,247,242,0.98), rgba(240,235,227,0.95));
-  border: 1px solid rgba(15,110,86,0.08);
+  border: 1px solid rgba(0,128,128,0.08);
   border-left: 3px solid var(--gold);
   border-radius: var(--radius-lg);
   padding: 24px 26px;
@@ -928,7 +928,7 @@ a:not([href]),
 .size-table tr:nth-child(even) td { background: var(--cream); }
 .size-table tr:hover td { background: var(--teal-pale); }
 .measure-tip {
-  background: var(--teal-pale); border: 1px solid rgba(15,110,86,0.2);
+  background: var(--teal-pale); border: 1px solid rgba(0,128,128,0.2);
   border-radius: var(--radius-lg); padding: 20px 24px;
   display: flex; gap: 12px; align-items: flex-start; margin-top: 24px;
 }
@@ -965,7 +965,7 @@ a:not([href]),
 ══════════════════════════════════════════ */
 .inner-hero {
   padding: 120px 24px 64px;
-  background: linear-gradient(135deg, var(--teal) 0%, #0d5e49 100%);
+  background: linear-gradient(135deg, var(--teal) 0%, #006666 100%);
   text-align: center; margin-bottom: 0;
 }
 .inner-hero h1 {
@@ -1145,7 +1145,7 @@ a:not([href]),
   width: min(1040px, 100%);
   max-height: calc(100vh - 120px);
   background: rgba(250,247,242,0.98);
-  border: 1px solid rgba(15,110,86,0.08);
+  border: 1px solid rgba(0,128,128,0.08);
   border-radius: 24px;
   overflow: hidden;
   box-shadow: 0 28px 80px rgba(0,0,0,0.18);
@@ -1195,13 +1195,13 @@ a:not([href]),
 }
 .search-chip {
   padding: 7px 14px; border-radius: 999px;
-  border: 1px solid rgba(15,110,86,0.14);
+  border: 1px solid rgba(0,128,128,0.14);
   background: white; color: var(--teal);
   font-size: 0.76rem; letter-spacing: 0.04em;
   transition: var(--transition);
 }
 .search-chip:hover {
-  background: var(--teal-pale); border-color: rgba(15,110,86,0.24);
+  background: var(--teal-pale); border-color: rgba(0,128,128,0.24);
 }
 .search-section-label {
   font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase;
@@ -1213,14 +1213,14 @@ a:not([href]),
 .search-result-item {
   display: flex; gap: 14px; align-items: center;
   padding: 14px; border-radius: 18px;
-  background: white; border: 1px solid rgba(15,110,86,0.08);
+  background: white; border: 1px solid rgba(0,128,128,0.08);
   box-shadow: var(--shadow-sm); cursor: pointer;
   transition: var(--transition);
 }
 .search-result-item:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
-  border-color: rgba(15,110,86,0.16);
+  border-color: rgba(0,128,128,0.16);
 }
 .search-result-thumb {
   width: 68px; height: 88px; border-radius: 12px; overflow: hidden;
@@ -1253,7 +1253,7 @@ a:not([href]),
 .search-empty {
   background: white; border-radius: 20px; padding: 28px;
   text-align: center; box-shadow: var(--shadow-sm);
-  border: 1px solid rgba(15,110,86,0.08);
+  border: 1px solid rgba(0,128,128,0.08);
 }
 .search-empty h4 {
   font-family: var(--serif); font-size: 1.6rem; font-weight: 500;
@@ -1298,7 +1298,7 @@ a:not([href]),
 .collection-hero-card:hover img { transform: scale(1.04); }
 .collection-card-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(15,110,86,0.9) 0%, transparent 60%);
+  background: linear-gradient(to top, rgba(0,128,128,0.9) 0%, transparent 60%);
   display: flex; flex-direction: column; justify-content: flex-end;
   padding: 28px;
 }
@@ -1673,23 +1673,23 @@ a:not([href]),
       </div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;">
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🎉</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🎉</div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Festive</div>
         </div>
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🕌</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🕌</div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Pooja / Temple</div>
         </div>
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🌸</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🌸</div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Casual Daily</div>
         </div>
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">💒</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">💒</div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Wedding</div>
         </div>
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(15,110,86,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🏢</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🏢</div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Office Wear</div>
         </div>
       </div>
@@ -2962,7 +2962,7 @@ function openProduct(id) {
         <span class="current">${getProductPriceLabel(p)}</span>
       </div>
       <p class="detail-desc">${p.desc}</p>
-      <div style="background:var(--teal-pale);border:1px solid rgba(15,110,86,0.18);border-radius:8px;padding:10px 14px;font-size:0.8rem;color:var(--teal);margin-bottom:16px;">
+      <div style="background:var(--teal-pale);border:1px solid rgba(0,128,128,0.18);border-radius:8px;padding:10px 14px;font-size:0.8rem;color:var(--teal);margin-bottom:16px;">
         Series: ${p.series} · Product code: ${p.sku} · Fabric: ${p.fabric}
       </div>
       <div class="size-section">
