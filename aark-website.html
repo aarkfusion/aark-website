@@ -3415,15 +3415,31 @@ function renderCart() {
   document.getElementById('cartBadge').textContent = cart.reduce((s, c) => s + c.qty, 0);
 }
 
+function saveCart() {
+  try {
+    const toSave = cart.map(item => ({
+      id: item.id, name: item.name, sku: item.sku, price: item.price,
+      qty: item.qty, selectedSize: item.selectedSize, fabric: item.fabric,
+      image: item.image, series: item.series,
+    }));
+    localStorage.setItem('aark_cart', JSON.stringify(toSave));
+  } catch(e) {}
+}
+function loadCartFromStorage() {
+  try {
+    const raw = localStorage.getItem('aark_cart');
+    if (raw) cart = JSON.parse(raw);
+  } catch(e) {}
+}
 function updateCartQty(index, delta) {
   const newQty = cart[index].qty + delta;
   if (newQty < 1) { removeFromCart(index); return; }
   cart[index].qty = newQty;
-  renderCart();
+  renderCart(); saveCart();
 }
 function removeFromCart(index) {
   cart.splice(index, 1);
-  renderCart();
+  renderCart(); saveCart();
   showToast('Removed from cart', 'success');
 }
 function addToCart(id) {
@@ -3461,12 +3477,13 @@ function addToCartFromDetail() {
   const qty = parseInt(document.getElementById('detailQty')?.value || 1);
   const existing = cart.find(c => c.id === currentProduct.id && c.selectedSize === selectedSize);
   if (existing) { existing.qty += qty; } else { cart.push({ ...currentProduct, qty, selectedSize }); }
-  renderCart();
+  renderCart(); saveCart();
   showToast(`${currentProduct.name} added to cart 🛒`, 'success');
 }
 function checkout() {
+  saveCart();
   closeCart();
-  showToast('Checkout — connect your payment gateway 💳', 'success');
+  window.location.href = 'checkout.html';
 }
 function applyCoupon() {
   const code = document.getElementById('couponInput').value.toUpperCase();
@@ -3767,6 +3784,8 @@ window.addEventListener('popstate', function(e) {
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
+loadCartFromStorage();
+renderCart();
 setupContactForm();
 initHomeGrids();
 

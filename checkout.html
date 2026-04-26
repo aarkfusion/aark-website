@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout — AARK</title>
+<meta name="description" content="Complete your AARK order securely via UPI.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+<style>
+:root {
+  --teal: #008080;
+  --teal-light: #00a3a3;
+  --teal-pale: #e0f5f5;
+  --gold: #A37E2C;
+  --gold-light: #c4a050;
+  --cream: #FFFFFF;
+  --cream-bg: #f9f7f3;
+  --charcoal: #111111;
+  --text: #000000;
+  --text-muted: #555555;
+  --border: #e0e0e0;
+  --error: #c0392b;
+  --serif: 'Cormorant Garamond', Georgia, serif;
+  --sans: 'Jost', sans-serif;
+  --radius: 8px;
+  --shadow: 0 2px 16px rgba(0,0,0,0.08);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body { font-family: var(--sans); background: var(--cream-bg); color: var(--text); line-height: 1.6; min-height: 100vh; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; font-family: inherit; border: none; }
+
+/* ── HEADER ── */
+.co-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: var(--teal);
+  height: 64px;
+  display: flex; align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+.co-header-inner {
+  max-width: 1200px; margin: 0 auto; width: 100%;
+  padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.co-logo {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 1.8rem; font-weight: 400;
+  letter-spacing: 6pt; color: var(--gold-light);
+  cursor: pointer;
+}
+.co-back {
+  display: flex; align-items: center; gap: 6px;
+  color: rgba(255,255,255,0.85); font-size: 0.82rem;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  transition: color 0.2s;
+}
+.co-back:hover { color: #fff; }
+.co-back svg { flex-shrink: 0; }
+.co-steps {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.75rem; letter-spacing: 0.08em;
+  color: rgba(255,255,255,0.6);
+}
+.co-step { display: flex; align-items: center; gap: 6px; }
+.co-step.active { color: var(--gold-light); }
+.co-step-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.co-step-sep { margin: 0 2px; }
+
+/* ── MAIN LAYOUT ── */
+.co-main { padding: 80px 16px 48px; }
+.co-wrap {
+  max-width: 1120px; margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  grid-template-areas: "form summary";
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── PAGE TITLE ── */
+.co-page-title {
+  grid-area: form;
+  padding: 28px 0 4px;
+}
+.co-page-title h1 {
+  font-family: var(--serif);
+  font-size: 2.4rem; font-weight: 400;
+  color: var(--text);
+  line-height: 1;
+}
+.co-page-title h1 em { color: var(--teal); font-style: italic; }
+.co-title-bar {
+  height: 3px; width: 56px;
+  background: linear-gradient(90deg, var(--teal), var(--gold));
+  border-radius: 2px; margin-top: 10px;
+}
+
+/* ── CARDS ── */
+.co-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.co-card-header {
+  padding: 18px 24px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; gap: 12px;
+}
+.co-card-header h2 {
+  font-family: var(--serif);
+  font-size: 1.25rem; font-weight: 500;
+  color: var(--text);
+}
+.co-card-num {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: white; font-size: 0.8rem; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.co-card-num.done { background: var(--gold); }
+.co-card-body { padding: 24px; }
+
+/* ── FORM ── */
+.co-form { display: flex; flex-direction: column; gap: 18px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+.form-group label {
+  font-size: 0.78rem; font-weight: 500;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  color: var(--text-muted);
+}
+.form-group label .req { color: var(--teal); margin-left: 2px; }
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  font-family: var(--sans); font-size: 0.92rem;
+  color: var(--text);
+  background: white;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  outline: none;
+  appearance: none;
+}
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px rgba(0,128,128,0.1);
+}
+.form-group input.error,
+.form-group select.error { border-color: var(--error); }
+.form-group input.valid,
+.form-group select.valid { border-color: #27ae60; }
+.form-error {
+  font-size: 0.75rem; color: var(--error);
+  display: none; margin-top: 2px;
+}
+.form-error.show { display: block; }
+.form-group select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23555' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.form-hint { font-size: 0.73rem; color: #888; margin-top: 3px; }
+
+/* ── BUTTONS ── */
+.btn-teal {
+  background: var(--teal); color: white;
+  padding: 14px 28px; border-radius: 6px;
+  font-family: var(--sans); font-size: 0.9rem;
+  font-weight: 500; letter-spacing: 0.05em;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: none; cursor: pointer;
+}
+.btn-teal:hover { background: var(--teal-light); transform: translateY(-1px); }
+.btn-teal:disabled { background: #aaa; cursor: not-allowed; transform: none; }
+.btn-teal.full { width: 100%; justify-content: center; }
+
+.btn-gold {
+  background: var(--gold); color: white;
+  padding: 14px 28px; border-radius: 6px;
+  font-family: var(--sans); font-size: 0.9rem;
+  font-weight: 500; letter-spacing: 0.05em;
+  transition: background 0.2s, transform 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
+  border: none; cursor: pointer;
+}
+.btn-gold:hover { background: var(--gold-light); transform: translateY(-1px); }
+.btn-gold.full { width: 100%; justify-content: center; }
+
+.btn-shimmer {
+  position: relative; overflow: hidden;
+  background: var(--teal); color: white;
+  padding: 16px 28px; border-radius: 6px;
+  font-family: var(--sans); font-size: 0.95rem;
+  font-weight: 600; letter-spacing: 0.06em;
+  width: 100%; border: none; cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-shimmer::after {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 60%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+  animation: shimmer 2s infinite;
+}
+.btn-shimmer:disabled {
+  background: #ccc; cursor: not-allowed;
+  animation: none;
+}
+.btn-shimmer:disabled::after { display: none; }
+@keyframes shimmer { to { left: 200%; } }
+
+.btn-outline {
+  background: transparent; color: var(--teal);
+  border: 1.5px solid var(--teal);
+  padding: 11px 22px; border-radius: 6px;
+  font-family: var(--sans); font-size: 0.85rem;
+  font-weight: 500; transition: all 0.2s;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.btn-outline:hover { background: var(--teal); color: white; }
+
+/* ── ORDER SUMMARY (right col) ── */
+.co-summary-col { grid-area: summary; position: sticky; top: 80px; }
+.summary-items { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
+.summary-item {
+  display: flex; gap: 12px; align-items: flex-start;
+}
+.summary-item-img {
+  width: 60px; height: 72px; flex-shrink: 0;
+  border-radius: 4px; overflow: hidden;
+  background: #f5f5f5;
+}
+.summary-item-img img { width: 100%; height: 100%; object-fit: cover; }
+.summary-item-info { flex: 1; }
+.summary-item-name { font-size: 0.88rem; font-weight: 500; line-height: 1.3; }
+.summary-item-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 3px; }
+.summary-item-price {
+  font-size: 0.9rem; font-weight: 600;
+  color: var(--text); margin-top: 4px;
+}
+.summary-divider { height: 1px; background: var(--border); margin: 4px 0; }
+.summary-row {
+  display: flex; justify-content: space-between;
+  font-size: 0.87rem; color: var(--text-muted);
+  padding: 5px 0;
+}
+.summary-row.total {
+  font-size: 1.05rem; font-weight: 700;
+  color: var(--text); border-top: 2px solid var(--border);
+  padding-top: 12px; margin-top: 4px;
+}
+.summary-row.total .amount { color: var(--gold); font-size: 1.2rem; }
+.free-shipping { color: var(--teal) !important; font-weight: 500; }
+.order-id-badge {
+  background: var(--teal-pale);
+  border: 1px solid rgba(0,128,128,0.2);
+  border-radius: 6px; padding: 12px 16px;
+  margin-top: 16px;
+}
+.order-id-badge .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+.order-id-badge .value { font-size: 0.95rem; font-weight: 600; color: var(--teal); margin-top: 3px; }
+.order-id-badge .note { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; }
+
+/* ── PAYMENT SECTION ── */
+.payment-section { display: none; }
+.payment-section.visible { display: block; }
+
+.upi-amount-display {
+  text-align: center; padding: 20px 0 8px;
+}
+.upi-amount-display .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
+.upi-amount-display .amount {
+  font-family: var(--serif);
+  font-size: 2.8rem; font-weight: 600;
+  color: var(--teal); line-height: 1.1; margin-top: 4px;
+}
+
+.qr-container {
+  display: flex; justify-content: center;
+  padding: 16px 0;
+}
+.qr-wrap {
+  border: 3px solid var(--gold);
+  border-radius: 12px; padding: 16px;
+  background: #f9f7f3;
+  box-shadow: 0 4px 20px rgba(163,126,44,0.22);
+  display: inline-block;
+}
+
+.upi-instructions {
+  background: var(--teal-pale);
+  border-radius: 6px; padding: 16px 20px;
+  margin: 16px 0;
+}
+.upi-instructions ol { padding-left: 18px; }
+.upi-instructions li { font-size: 0.85rem; color: var(--text); line-height: 1.7; margin-bottom: 2px; }
+.upi-instructions li strong { color: var(--teal); }
+
+.upi-apps-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin: 16px 0;
+}
+.upi-app-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 16px;
+  background: white; border: 1.5px solid var(--border);
+  border-radius: 8px; font-family: var(--sans);
+  font-size: 0.88rem; font-weight: 500;
+  color: var(--text);
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+  cursor: pointer; text-decoration: none;
+}
+.upi-app-btn:hover {
+  border-color: var(--teal); background: var(--teal-pale); color: var(--teal);
+}
+.upi-app-icon { font-size: 1.2rem; }
+
+/* ── UTR INPUT ── */
+.utr-section { margin-top: 24px; }
+.utr-input-wrap { position: relative; }
+.utr-input-wrap input {
+  width: 100%; padding: 14px 80px 14px 16px;
+  border: 2px solid var(--border); border-radius: 8px;
+  font-family: var(--sans); font-size: 1.05rem;
+  color: var(--text); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  letter-spacing: 0.06em;
+}
+.utr-input-wrap input:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,128,128,0.12); }
+.utr-input-wrap input.valid-utr { border-color: #27ae60; }
+.utr-counter {
+  position: absolute; right: 14px; top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.78rem; color: var(--text-muted); white-space: nowrap;
+}
+.utr-counter.ready { color: #27ae60; font-weight: 600; }
+
+/* ── LOADER ── */
+.order-loader {
+  display: none; text-align: center; padding: 32px 0;
+}
+.order-loader.show { display: block; }
+.spinner {
+  width: 44px; height: 44px;
+  border: 3px solid var(--teal-pale);
+  border-top-color: var(--teal);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loader-text { font-size: 0.9rem; color: var(--text-muted); }
+
+/* ── ERROR BANNER ── */
+.order-error {
+  display: none;
+  background: #fdf2f2; border: 1px solid #f5c6c6;
+  border-radius: 8px; padding: 16px 20px;
+  margin-top: 16px;
+}
+.order-error.show { display: block; }
+.order-error p { color: var(--error); font-size: 0.88rem; margin-bottom: 10px; }
+
+/* ── SUCCESS SCREEN ── */
+#successScreen {
+  display: none;
+  min-height: 100vh; padding: 100px 24px 60px;
+  background: var(--cream-bg);
+}
+#successScreen.show { display: block; }
+.success-inner {
+  max-width: 560px; margin: 0 auto;
+  text-align: center;
+}
+
+.checkmark-wrap { margin: 0 auto 28px; width: 88px; height: 88px; }
+.checkmark {
+  width: 88px; height: 88px;
+}
+.checkmark-circle {
+  stroke: var(--teal); stroke-width: 2;
+  stroke-dasharray: 166; stroke-dashoffset: 166;
+  fill: none;
+  animation: stroke-circle 0.6s cubic-bezier(0.65,0,0.45,1) forwards;
+}
+.checkmark-check {
+  stroke: var(--teal); stroke-width: 2;
+  stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 48; stroke-dashoffset: 48;
+  fill: none;
+  animation: stroke-check 0.4s cubic-bezier(0.65,0,0.45,1) 0.55s forwards;
+}
+@keyframes stroke-circle { to { stroke-dashoffset: 0; } }
+@keyframes stroke-check { to { stroke-dashoffset: 0; } }
+
+.success-title {
+  font-family: var(--serif);
+  font-size: 2.4rem; font-weight: 400;
+  color: var(--text); margin-bottom: 8px;
+}
+.success-subtitle { font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 24px; }
+
+.success-order-id {
+  background: white; border: 2px solid var(--gold);
+  border-radius: 10px; padding: 20px 24px; margin-bottom: 24px;
+  cursor: pointer; transition: box-shadow 0.2s;
+  position: relative;
+}
+.success-order-id:hover { box-shadow: 0 4px 20px rgba(163,126,44,0.2); }
+.success-order-id .label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-muted); }
+.success-order-id .value { font-size: 1.5rem; font-weight: 700; color: var(--gold); margin-top: 6px; letter-spacing: 2px; }
+.success-order-id .copy-hint { font-size: 0.7rem; color: #aaa; margin-top: 6px; }
+.copy-toast {
+  display: none; position: absolute; top: -32px; left: 50%;
+  transform: translateX(-50%);
+  background: var(--teal); color: white;
+  font-size: 0.72rem; padding: 4px 10px;
+  border-radius: 4px; white-space: nowrap;
+}
+.copy-toast.show { display: block; }
+
+.success-info {
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; padding: 20px 24px;
+  text-align: left; margin-bottom: 20px;
+}
+.success-info p { font-size: 0.88rem; color: var(--text-muted); line-height: 1.7; }
+.success-info p + p { margin-top: 8px; }
+
+.success-actions { display: flex; flex-direction: column; gap: 12px; }
+
+.btn-wa {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  background: var(--teal); color: white;
+  padding: 15px 24px; border-radius: 24px;
+  font-family: var(--sans); font-size: 0.95rem;
+  font-weight: 600; text-decoration: none;
+  transition: background 0.2s;
+}
+.btn-wa:hover { background: var(--teal-light); }
+
+/* ── FOOTER ── */
+.co-footer {
+  background: var(--charcoal); color: rgba(255,255,255,0.55);
+  text-align: center; padding: 24px;
+  font-size: 0.78rem; letter-spacing: 0.05em;
+  margin-top: 48px;
+}
+.co-footer a { color: var(--gold-light); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 900px) {
+  .co-wrap {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "summary"
+      "form";
+  }
+  .co-summary-col { position: static; }
+  .form-row { grid-template-columns: 1fr; }
+  .co-steps { display: none; }
+}
+@media (max-width: 480px) {
+  .co-main { padding: 72px 12px 40px; }
+  .co-card-body { padding: 16px; }
+  .co-page-title h1 { font-size: 1.9rem; }
+  .upi-apps-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="co-header">
+  <div class="co-header-inner">
+    <a class="co-back" href="index.html">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+      Shop
+    </a>
+    <a class="co-logo" href="index.html">AARK</a>
+    <div class="co-steps">
+      <div class="co-step active" id="stepIndicatorDetails">
+        <div class="co-step-dot"></div> Details
+      </div>
+      <div class="co-step-sep">›</div>
+      <div class="co-step" id="stepIndicatorPayment">
+        <div class="co-step-dot"></div> Payment
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="co-main" id="checkoutMain">
+  <div class="co-wrap">
+
+    <!-- LEFT: FORM + PAYMENT -->
+    <div class="co-form-col">
+
+      <div class="co-page-title">
+        <h1>Check<em>out</em></h1>
+        <div class="co-title-bar"></div>
+      </div>
+
+      <!-- STEP 1: CUSTOMER DETAILS -->
+      <div class="co-card" id="formCard" style="margin-top:20px;">
+        <div class="co-card-header">
+          <div class="co-card-num" id="formStepNum">1</div>
+          <h2>Your Details</h2>
+        </div>
+        <div class="co-card-body">
+          <form class="co-form" id="checkoutForm" novalidate>
+
+            <!-- Name -->
+            <div class="form-group">
+              <label>Full Name <span class="req">*</span></label>
+              <input type="text" id="fieldName" placeholder="e.g. Priya Sharma" autocomplete="name">
+              <div class="form-error" id="errName">Please enter your full name.</div>
+            </div>
+
+            <!-- Email + Phone -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>Email Address <span class="req">*</span></label>
+                <input type="email" id="fieldEmail" placeholder="you@example.com" autocomplete="email">
+                <div class="form-error" id="errEmail">Please enter a valid email address.</div>
+              </div>
+              <div class="form-group">
+                <label>Phone Number <span class="req">*</span></label>
+                <input type="tel" id="fieldPhone" placeholder="10-digit mobile number" autocomplete="tel" maxlength="10">
+                <div class="form-error" id="errPhone">Enter a valid 10-digit Indian mobile number.</div>
+              </div>
+            </div>
+
+            <!-- Address Line 1 -->
+            <div class="form-group">
+              <label>Address Line 1 <span class="req">*</span></label>
+              <input type="text" id="fieldAddr1" placeholder="House / Flat No., Street, Area" autocomplete="address-line1">
+              <div class="form-error" id="errAddr1">Please enter your address.</div>
+            </div>
+
+            <!-- Address Line 2 -->
+            <div class="form-group">
+              <label>Address Line 2 <span style="color:#aaa;font-weight:400;">(optional)</span></label>
+              <input type="text" id="fieldAddr2" placeholder="Landmark, Colony, etc." autocomplete="address-line2">
+            </div>
+
+            <!-- City + State -->
+            <div class="form-row">
+              <div class="form-group">
+                <label>City <span class="req">*</span></label>
+                <input type="text" id="fieldCity" placeholder="e.g. Hyderabad" autocomplete="address-level2">
+                <div class="form-error" id="errCity">Please enter your city.</div>
+              </div>
+              <div class="form-group">
+                <label>State <span class="req">*</span></label>
+                <select id="fieldState" autocomplete="address-level1">
+                  <option value="">Select State / UT</option>
+                  <optgroup label="States">
+                    <option>Andhra Pradesh</option>
+                    <option>Arunachal Pradesh</option>
+                    <option>Assam</option>
+                    <option>Bihar</option>
+                    <option>Chhattisgarh</option>
+                    <option>Goa</option>
+                    <option>Gujarat</option>
+                    <option>Haryana</option>
+                    <option>Himachal Pradesh</option>
+                    <option>Jharkhand</option>
+                    <option>Karnataka</option>
+                    <option>Kerala</option>
+                    <option>Madhya Pradesh</option>
+                    <option>Maharashtra</option>
+                    <option>Manipur</option>
+                    <option>Meghalaya</option>
+                    <option>Mizoram</option>
+                    <option>Nagaland</option>
+                    <option>Odisha</option>
+                    <option>Punjab</option>
+                    <option>Rajasthan</option>
+                    <option>Sikkim</option>
+                    <option>Tamil Nadu</option>
+                    <option>Telangana</option>
+                    <option>Tripura</option>
+                    <option>Uttar Pradesh</option>
+                    <option>Uttarakhand</option>
+                    <option>West Bengal</option>
+                  </optgroup>
+                  <optgroup label="Union Territories">
+                    <option>Andaman and Nicobar Islands</option>
+                    <option>Chandigarh</option>
+                    <option>Dadra and Nagar Haveli and Daman and Diu</option>
+                    <option>Delhi (NCT)</option>
+                    <option>Jammu & Kashmir</option>
+                    <option>Ladakh</option>
+                    <option>Lakshadweep</option>
+                    <option>Puducherry</option>
+                  </optgroup>
+                </select>
+                <div class="form-error" id="errState">Please select your state.</div>
+              </div>
+            </div>
+
+            <!-- PIN Code -->
+            <div class="form-group" style="max-width:200px;">
+              <label>PIN Code <span class="req">*</span></label>
+              <input type="text" id="fieldPin" placeholder="6-digit PIN" maxlength="6" inputmode="numeric" autocomplete="postal-code">
+              <div class="form-error" id="errPin">Please enter a valid 6-digit PIN code.</div>
+            </div>
+
+          </form>
+          <div style="margin-top:24px;">
+            <button class="btn-teal full" onclick="proceedToPayment()">
+              Proceed to Payment
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STEP 2: UPI PAYMENT -->
+      <div class="co-card payment-section" id="paymentCard" style="margin-top:20px;">
+        <div class="co-card-header">
+          <div class="co-card-num" id="payStepNum">2</div>
+          <h2>Pay via UPI</h2>
+        </div>
+        <div class="co-card-body">
+
+          <!-- Amount -->
+          <div class="upi-amount-display">
+            <div class="label">Amount to Pay</div>
+            <div class="amount" id="displayAmount">₹0</div>
+          </div>
+
+          <!-- QR Code -->
+          <div class="qr-container">
+            <div class="qr-wrap">
+              <div id="qrcode"></div>
+            </div>
+          </div>
+
+          <!-- Instructions -->
+          <div class="upi-instructions">
+            <ol>
+              <li>Scan the QR code with any UPI app, or tap your preferred app below</li>
+              <li>Verify the amount <strong id="instructAmt">₹0</strong> before paying</li>
+              <li>Complete the payment in your UPI app</li>
+              <li>Return here and enter your <strong>12-digit Transaction ID (UTR)</strong> below</li>
+            </ol>
+          </div>
+
+          <!-- UPI App Buttons -->
+          <div class="upi-apps-grid" id="upiAppsGrid">
+            <a class="upi-app-btn" id="btnGPay" href="#" onclick="openUpiApp('com.google.android.apps.nbu.paisa.user', event)">
+              <span class="upi-app-icon">🇬</span> Google Pay
+            </a>
+            <a class="upi-app-btn" id="btnPhonePe" href="#" onclick="openUpiApp('com.phonepe.app', event)">
+              <span class="upi-app-icon">💜</span> PhonePe
+            </a>
+            <a class="upi-app-btn" id="btnPaytm" href="#" onclick="openUpiApp('net.one97.paytm', event)">
+              <span class="upi-app-icon">💙</span> Paytm
+            </a>
+            <a class="upi-app-btn" id="btnBhim" href="#" onclick="openUpiApp('in.org.npci.upiapp', event)">
+              <span class="upi-app-icon">🇮🇳</span> BHIM
+            </a>
+          </div>
+
+          <!-- UTR Input -->
+          <div class="utr-section">
+            <div class="form-group">
+              <label>UPI Transaction ID (UTR) <span class="req">*</span></label>
+              <div class="utr-input-wrap">
+                <input
+                  type="tel"
+                  id="utrInput"
+                  placeholder="12-digit Transaction ID"
+                  maxlength="12"
+                  inputmode="numeric"
+                  oninput="onUtrInput(this)"
+                  autocomplete="off">
+                <span class="utr-counter" id="utrCounter">0 / 12</span>
+              </div>
+              <div class="form-hint">Find this in your UPI app under transaction history after payment.</div>
+            </div>
+
+            <!-- Loader -->
+            <div class="order-loader" id="orderLoader">
+              <div class="spinner"></div>
+              <div class="loader-text">Placing your order — please wait...</div>
+            </div>
+
+            <!-- Error -->
+            <div class="order-error" id="orderError">
+              <p id="orderErrorMsg">Something went wrong. Please try again.</p>
+              <button class="btn-outline" onclick="retryOrder()">Retry</button>
+            </div>
+
+            <!-- Submit -->
+            <button
+              class="btn-shimmer"
+              id="placeOrderBtn"
+              disabled
+              onclick="placeOrder()"
+              style="margin-top:16px;">
+              Confirm Payment &amp; Place Order
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: ORDER SUMMARY -->
+    <div class="co-summary-col">
+      <div class="co-card" style="margin-top:72px;">
+        <div class="co-card-header">
+          <div class="co-card-num done">✓</div>
+          <h2>Order Summary</h2>
+        </div>
+        <div class="co-card-body">
+          <div class="summary-items" id="summaryItems"></div>
+          <div class="summary-divider"></div>
+          <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">₹0</span></div>
+          <div class="summary-row"><span>Shipping</span><span id="summaryShipping">₹0</span></div>
+          <div class="summary-row total"><span>Total</span><span class="amount" id="summaryTotal">₹0</span></div>
+          <div class="order-id-badge">
+            <div class="label">Order ID</div>
+            <div class="value" id="summaryOrderId">—</div>
+            <div class="note">Save this for your records</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- SUCCESS SCREEN -->
+<div id="successScreen">
+  <div class="success-inner">
+    <div class="checkmark-wrap">
+      <svg class="checkmark" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25"/>
+        <path class="checkmark-check" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+    <h1 class="success-title">Order Placed! 🎉</h1>
+    <p class="success-subtitle">We've received your order and are verifying your payment. This usually takes a few hours during business hours.</p>
+
+    <div class="success-order-id" onclick="copyOrderId()">
+      <div class="copy-toast" id="copyToast">Copied!</div>
+      <div class="label">Your Order ID</div>
+      <div class="value" id="successOrderId">—</div>
+      <div class="copy-hint">Click to copy</div>
+    </div>
+
+    <div class="success-info">
+      <p>A confirmation email has been sent to <strong id="successEmail">—</strong>.</p>
+      <p>Expected dispatch: <strong>3–5 business days</strong> after payment verification.</p>
+      <p>Questions? Message us on WhatsApp with your Order ID.</p>
+    </div>
+
+    <div class="success-actions">
+      <a class="btn-wa" id="successWaBtn" href="#">
+        <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Message us on WhatsApp
+      </a>
+      <a class="btn-teal full" href="index.html">Continue Shopping</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="co-footer">
+  <p>© 2026 AARK. All rights reserved. &nbsp;|&nbsp; <a href="index.html">Back to Shop</a></p>
+</footer>
+
+<script>
+// ── CONSTANTS ──
+const CART_KEY = 'aark_cart';
+const UPI_ID = '16127579715@axl';
+const BACKEND_URL = 'https://aark-backend.onrender.com/place-order';
+
+// ── STATE ──
+let cart = [];
+let grandTotal = 0;
+let orderId = '';
+let qrGenerated = false;
+let customerEmail = '';
+let utrValue = '';
+
+// ── INIT ──
+document.addEventListener('DOMContentLoaded', () => {
+  cart = loadCart();
+  if (!cart || cart.length === 0) {
+    alert('Your cart is empty. Add some items first!');
+    window.location.href = 'index.html';
+    return;
+  }
+  orderId = generateOrderId();
+  renderSummary();
+  attachFormValidation();
+});
+
+// ── CART ──
+function loadCart() {
+  try {
+    const raw = localStorage.getItem(CART_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    return [];
+  }
+}
+
+function clearCart() {
+  localStorage.removeItem(CART_KEY);
+}
+
+// ── ORDER ID ──
+function generateOrderId() {
+  const now = new Date();
+  const date = now.getFullYear().toString() +
+    String(now.getMonth() + 1).padStart(2, '0') +
+    String(now.getDate()).padStart(2, '0');
+  const rand = Math.floor(1000 + Math.random() * 9000);
+  return `AARK-${date}-${rand}`;
+}
+
+// ── SUMMARY ──
+function renderSummary() {
+  const subtotal = cart.reduce((s, item) => s + (Number(item.price) || 0) * item.qty, 0);
+  const shipping = subtotal >= 999 ? 0 : 79;
+  grandTotal = subtotal + shipping;
+
+  document.getElementById('summarySubtotal').textContent = `₹${subtotal}`;
+  document.getElementById('summaryShipping').innerHTML = shipping === 0
+    ? '<span class="free-shipping">Free</span>'
+    : `₹${shipping}`;
+  document.getElementById('summaryTotal').textContent = `₹${grandTotal}`;
+  document.getElementById('summaryOrderId').textContent = orderId;
+  document.getElementById('displayAmount').textContent = `₹${grandTotal}`;
+  document.getElementById('instructAmt').textContent = `₹${grandTotal}`;
+
+  const container = document.getElementById('summaryItems');
+  container.innerHTML = cart.map(item => `
+    <div class="summary-item">
+      <div class="summary-item-img">
+        <img src="${item.image || ''}" alt="${item.name}" onerror="this.style.display='none'">
+      </div>
+      <div class="summary-item-info">
+        <div class="summary-item-name">${item.name}</div>
+        <div class="summary-item-meta">${item.sku} · Size: ${item.selectedSize || '—'} · Qty: ${item.qty}</div>
+        <div class="summary-item-price">₹${(Number(item.price) || 0) * item.qty}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── FORM VALIDATION ──
+const validators = {
+  fieldName:  v => v.trim().length >= 2,
+  fieldEmail: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
+  fieldPhone: v => /^[6-9]\d{9}$/.test(v.trim()),
+  fieldAddr1: v => v.trim().length >= 5,
+  fieldCity:  v => v.trim().length >= 2,
+  fieldState: v => v !== '',
+  fieldPin:   v => /^\d{6}$/.test(v.trim()),
+};
+
+const errorIds = {
+  fieldName: 'errName', fieldEmail: 'errEmail', fieldPhone: 'errPhone',
+  fieldAddr1: 'errAddr1', fieldCity: 'errCity', fieldState: 'errState',
+  fieldPin: 'errPin',
+};
+
+function attachFormValidation() {
+  Object.keys(validators).forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('blur', () => validateField(id));
+    el.addEventListener('input', () => {
+      if (el.classList.contains('error')) validateField(id);
+    });
+  });
+}
+
+function validateField(id) {
+  const el = document.getElementById(id);
+  const errEl = document.getElementById(errorIds[id]);
+  const valid = validators[id](el.value);
+  el.classList.toggle('error', !valid);
+  el.classList.toggle('valid', valid);
+  if (errEl) errEl.classList.toggle('show', !valid);
+  return valid;
+}
+
+function validateForm() {
+  let allValid = true;
+  Object.keys(validators).forEach(id => {
+    if (!validateField(id)) allValid = false;
+  });
+  return allValid;
+}
+
+// ── PROCEED TO PAYMENT ──
+function proceedToPayment() {
+  if (!validateForm()) {
+    const firstErr = document.querySelector('.form-group input.error, .form-group select.error');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  customerEmail = document.getElementById('fieldEmail').value.trim();
+
+  // Mark step 1 done
+  document.getElementById('formStepNum').classList.add('done');
+  document.getElementById('formStepNum').textContent = '✓';
+  document.getElementById('stepIndicatorPayment').classList.add('active');
+
+  // Show payment card
+  const payCard = document.getElementById('paymentCard');
+  payCard.classList.add('visible');
+  payCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Generate QR once
+  if (!qrGenerated) {
+    generateQR();
+    qrGenerated = true;
+  }
+}
+
+// ── QR CODE ──
+function generateQR() {
+  const upiUri = `upi://pay?pa=${UPI_ID}&pn=AARK&am=${grandTotal}&cu=INR&tn=${orderId}`;
+  document.getElementById('qrcode').innerHTML = '';
+  new QRCode(document.getElementById('qrcode'), {
+    text: upiUri,
+    width: 220,
+    height: 220,
+    colorDark: '#008080',
+    colorLight: '#f9f7f3',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+}
+
+// ── UPI APP BUTTONS ──
+function openUpiApp(pkg, e) {
+  e.preventDefault();
+  const upiBase = `pa=${UPI_ID}&pn=AARK&am=${grandTotal}&cu=INR&tn=${orderId}`;
+  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  let url;
+  if (isMobile) {
+    url = `intent://pay?${upiBase}#Intent;scheme=upi;package=${pkg};end`;
+  } else {
+    url = `upi://pay?${upiBase}`;
+  }
+  window.location.href = url;
+}
+
+// ── UTR INPUT ──
+function onUtrInput(el) {
+  el.value = el.value.replace(/\D/g, '').slice(0, 12);
+  utrValue = el.value;
+  const len = el.value.length;
+  const counter = document.getElementById('utrCounter');
+  counter.textContent = `${len} / 12`;
+  counter.classList.toggle('ready', len === 12);
+  el.classList.toggle('valid-utr', len === 12);
+  document.getElementById('placeOrderBtn').disabled = len !== 12;
+}
+
+// ── PLACE ORDER ──
+function getFormattedItems() {
+  return cart.map(item =>
+    `${item.name} (${item.sku}) — Size: ${item.selectedSize || '—'} × ${item.qty} = ₹${(Number(item.price) || 0) * item.qty}`
+  ).join('\n');
+}
+
+async function placeOrder() {
+  if (utrValue.length !== 12) return;
+
+  const loader = document.getElementById('orderLoader');
+  const errDiv = document.getElementById('orderError');
+  const btn = document.getElementById('placeOrderBtn');
+
+  loader.classList.add('show');
+  errDiv.classList.remove('show');
+  btn.disabled = true;
+  document.getElementById('utrInput').disabled = true;
+
+  const addr1 = document.getElementById('fieldAddr1').value.trim();
+  const addr2 = document.getElementById('fieldAddr2').value.trim();
+  const city  = document.getElementById('fieldCity').value.trim();
+  const state = document.getElementById('fieldState').value;
+  const pin   = document.getElementById('fieldPin').value.trim();
+  const fullAddress = [addr1, addr2, city, state, pin].filter(Boolean).join(', ');
+
+  const payload = {
+    order_id:          orderId,
+    customer_name:     document.getElementById('fieldName').value.trim(),
+    customer_email:    customerEmail,
+    customer_phone:    document.getElementById('fieldPhone').value.trim(),
+    customer_address:  fullAddress,
+    order_items:       getFormattedItems(),
+    order_total:       grandTotal.toString(),
+    utr_number:        utrValue,
+    date:              new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+  };
+
+  try {
+    const res = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      clearCart();
+      showSuccess(payload);
+    } else {
+      throw new Error(data.error || 'Unexpected server response');
+    }
+  } catch (err) {
+    console.error('Order error:', err);
+    loader.classList.remove('show');
+    document.getElementById('orderErrorMsg').textContent =
+      `Could not place order: ${err.message}. Please try again or contact us on WhatsApp.`;
+    errDiv.classList.add('show');
+    btn.disabled = false;
+    document.getElementById('utrInput').disabled = false;
+  }
+}
+
+function retryOrder() {
+  document.getElementById('orderError').classList.remove('show');
+  const btn = document.getElementById('placeOrderBtn');
+  btn.disabled = utrValue.length !== 12;
+  document.getElementById('utrInput').disabled = false;
+}
+
+// ── SUCCESS ──
+function showSuccess(payload) {
+  document.getElementById('checkoutMain').style.display = 'none';
+
+  const screen = document.getElementById('successScreen');
+  screen.classList.add('show');
+  document.getElementById('successOrderId').textContent = payload.order_id;
+  document.getElementById('successEmail').textContent = payload.customer_email;
+  document.getElementById('successWaBtn').href =
+    `https://wa.me/919000107301?text=Hi+AARK,+my+Order+ID+is+${payload.order_id}+and+UTR+is+${payload.utr_number}`;
+
+  // Confetti
+  setTimeout(() => {
+    confetti({
+      particleCount: 130,
+      spread: 80,
+      origin: { y: 0.5 },
+      colors: ['#008080', '#A37E2C', '#c4a050', '#ffffff', '#e0f5f5'],
+    });
+  }, 400);
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── COPY ORDER ID ──
+function copyOrderId() {
+  const id = document.getElementById('successOrderId').textContent;
+  navigator.clipboard.writeText(id).catch(() => {});
+  const toast = document.getElementById('copyToast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
+}
+</script>
+
+</body>
+</html>
