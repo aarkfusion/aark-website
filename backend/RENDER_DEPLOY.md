@@ -17,7 +17,7 @@
    - `OWNER_EMAIL` = sales.aarkfusion@gmail.com
 6. Click "Create Web Service"
 7. Wait ~2 minutes for deploy
-8. Your live URL will be: https://aark-backend.onrender.com
+8. Your live URL will be: https://aark-backend-dkn9.onrender.com
 
 ## Gmail App Password Setup
 

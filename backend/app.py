@@ -175,6 +175,64 @@ def place_order():
         return jsonify({"error": "Server error", "detail": str(e)}), 500
 
 
+def build_contact_email(d):
+    phone_line = f"<tr><td style='padding:6px 0;color:#666;width:40%;'>Phone</td><td style='padding:6px 0;color:#1a1a1a;'>{d['phone']}</td></tr>" if d.get('phone') else ''
+    return f"""
+<div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 32px; background: #f9f7f3;">
+  <div style="background: #008080; padding: 24px; border-radius: 8px 8px 0 0; text-align: center;">
+    <h1 style="color: #f9f7f3; margin: 0; font-size: 24px; letter-spacing: 3px;">AARK</h1>
+    <p style="color: #c4a050; margin: 8px 0 0; letter-spacing: 1px;">New Website Enquiry</p>
+  </div>
+  <div style="background: white; padding: 32px; border: 1px solid #e8e4dc;">
+    <h2 style="color: #1a1a1a; border-bottom: 2px solid #A37E2C; padding-bottom: 8px; margin-bottom: 20px;">
+      {d['subject']}
+    </h2>
+    <h3 style="color: #008080; margin-bottom: 12px;">From</h3>
+    <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px;">
+      <tr><td style="padding: 6px 0; color: #666; width: 40%;">Name</td><td style="padding: 6px 0; color: #1a1a1a; font-weight: bold;">{d['name']}</td></tr>
+      <tr><td style="padding: 6px 0; color: #666;">Email</td><td style="padding: 6px 0;"><a href="mailto:{d['email']}" style="color: #008080;">{d['email']}</a></td></tr>
+      {phone_line}
+      <tr><td style="padding: 6px 0; color: #666;">Sent at</td><td style="padding: 6px 0; color: #1a1a1a;">{d.get('submitted_at', '')}</td></tr>
+    </table>
+    <h3 style="color: #008080; margin-bottom: 12px;">Message</h3>
+    <div style="background: #f9f7f3; border-left: 4px solid #008080; padding: 16px 20px; border-radius: 0 6px 6px 0; color: #333; line-height: 1.7; white-space: pre-wrap;">{d['message']}</div>
+    <div style="margin-top: 28px; text-align: center;">
+      <a href="mailto:{d['email']}?subject=Re: {d['subject']}"
+         style="display: inline-block; background: #008080; color: white; padding: 12px 28px; border-radius: 6px; text-decoration: none; font-weight: bold;">
+        Reply to {d['name']}
+      </a>
+    </div>
+  </div>
+  <div style="background: #1a1a1a; padding: 16px; border-radius: 0 0 8px 8px; text-align: center;">
+    <p style="color: #c4a050; margin: 0; font-size: 12px; letter-spacing: 2px;">AARK — Tradition, Styled for Today</p>
+  </div>
+</div>
+"""
+
+
+@app.route('/contact', methods=['POST'])
+def contact():
+    try:
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No data received"}), 400
+
+        for field in ['name', 'email', 'subject', 'message']:
+            if not data.get(field):
+                return jsonify({"error": f"Missing field: {field}"}), 400
+
+        subject = f"AARK Enquiry — {data['subject']} from {data['name']}"
+        html = build_contact_email(data)
+        send_email(OWNER_EMAIL, subject, html)
+        print(f"Contact email sent from {data['email']}")
+
+        return jsonify({"success": True, "message": "Message sent successfully"}), 200
+
+    except Exception as e:
+        print(f"Contact form error: {e}")
+        return jsonify({"error": "Server error", "detail": str(e)}), 500
+
+
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)

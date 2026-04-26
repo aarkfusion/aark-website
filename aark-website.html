@@ -2290,17 +2290,11 @@ body.nav-scrolled .page-top-section {
           <form
             id="contactForm"
             class="contact-form"
-            action="https://formsubmit.co/ajax/sales.aarkfusion@gmail.com"
-            method="POST"
             onsubmit="return sendContactForm(event)"
           >
-            <input type="hidden" name="_template" value="table">
-            <input type="hidden" name="_subject" id="contactSubjectInput" value="New AARK website enquiry">
-            <input type="hidden" name="_url" id="contactFormUrl">
-            <input type="hidden" name="_webhook" id="contactFormWebhook">
             <div class="form-honeypot" aria-hidden="true">
               <label class="form-label" for="contactWebsite">Website</label>
-              <input class="form-input" id="contactWebsite" type="text" name="_honey" tabindex="-1" autocomplete="off">
+              <input class="form-input" id="contactWebsite" type="text" tabindex="-1" autocomplete="off">
             </div>
             <div class="form-group">
               <label class="form-label" for="contactName">Your Name</label>
@@ -2662,10 +2656,7 @@ const WA_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fil
 const INSTAGRAM_URL = 'https://instagram.com/aark.fusion';
 const INSTAGRAM_HANDLE = '@aark.fusion';
 const PREFIX_ORDER = { SC: 0, ST: 1, LF: 2, SF: 3, KF: 4, AR: 5 };
-const CONTACT_FORM_CONFIG = {
-  // Paste the deployed Google Apps Script web app URL here.
-  sheetsWebhookUrl: 'PASTE_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE',
-};
+const BACKEND_URL = 'https://aark-backend-dkn9.onrender.com';
 
 const SERIES_META = {
   SC: {
@@ -3643,28 +3634,11 @@ function subscribeEmail() {
   }
 }
 
-function isContactWebhookConfigured() {
-  const url = CONTACT_FORM_CONFIG.sheetsWebhookUrl.trim();
-  return Boolean(url) && !url.includes('PASTE_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE');
-}
-
-function setupContactForm() {
-  const formUrlInput = document.getElementById('contactFormUrl');
-  const webhookInput = document.getElementById('contactFormWebhook');
-  const sourceUrl = window.location.protocol === 'file:'
-    ? 'Local preview of aark-website.html'
-    : window.location.href.split('#')[0];
-
-  if (formUrlInput) formUrlInput.value = sourceUrl;
-  if (webhookInput) webhookInput.value = isContactWebhookConfigured()
-    ? CONTACT_FORM_CONFIG.sheetsWebhookUrl.trim()
-    : '';
-}
+function setupContactForm() {}
 
 function setContactSubmitLoading(isLoading) {
   const button = document.getElementById('contactSubmitBtn');
   if (!button) return;
-
   if (!button.dataset.defaultLabel) button.dataset.defaultLabel = button.innerHTML;
   button.disabled = isLoading;
   button.innerHTML = isLoading ? 'Sending...' : button.dataset.defaultLabel;
@@ -3672,70 +3646,45 @@ function setContactSubmitLoading(isLoading) {
 
 async function sendContactForm(event) {
   if (event) event.preventDefault();
-
   const form = document.getElementById('contactForm');
-  const subjectInput = document.getElementById('contactSubjectInput');
   if (!form || isSubmittingContactForm) return false;
-
-  if (window.location.protocol === 'file:') {
-    showToast('Serve this page from a local server or live site before sending the form.', 'error');
-    return false;
-  }
-
-  if (!isContactWebhookConfigured()) {
-    showToast('Add the Google Sheets webhook URL in CONTACT_FORM_CONFIG before sending live submissions.', 'error');
-    return false;
-  }
-
   if (!form.reportValidity()) return false;
 
-  const formData = new FormData(form);
-  const selectedSubject = String(formData.get('subject') || 'Website Enquiry').trim();
-  const sourceUrl = window.location.href.split('#')[0];
-  const emailSubject = `AARK Website Enquiry • ${selectedSubject}`;
-
-  formData.set('_subject', emailSubject);
-  formData.set('_url', sourceUrl);
-  formData.set('_webhook', CONTACT_FORM_CONFIG.sheetsWebhookUrl.trim());
-  formData.set('submitted_from', sourceUrl);
-  formData.set('submitted_at', new Date().toISOString());
-
-  if (subjectInput) subjectInput.value = emailSubject;
+  // Honeypot check
+  const honey = document.getElementById('contactWebsite');
+  if (honey && honey.value) return false;
 
   isSubmittingContactForm = true;
   setContactSubmitLoading(true);
 
+  const payload = {
+    name:         document.getElementById('contactName').value.trim(),
+    email:        document.getElementById('contactEmail').value.trim(),
+    phone:        document.getElementById('contactPhone').value.trim(),
+    subject:      document.getElementById('contactSubject').value,
+    message:      document.getElementById('contactMessage').value.trim(),
+    submitted_at: new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+  };
+
   try {
-    const response = await fetch(form.action, {
+    const res = await fetch(`${BACKEND_URL}/contact`, {
       method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: formData,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
-    const result = await response.json().catch(() => ({}));
-    const success = response.ok && (
-      result.success === true ||
-      String(result.success || '').toLowerCase() === 'true' ||
-      !('success' in result)
-    );
-
-    if (!success) {
-      throw new Error(result.message || 'Message could not be sent right now.');
-    }
-
+    const result = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(result.error || 'Message could not be sent.');
     form.reset();
-    if (subjectInput) subjectInput.value = 'New AARK website enquiry';
-    showToast('Message sent to email and saved in Google Sheets 💚', 'success');
-    setupContactForm();
-  } catch (error) {
-    const errorMessage = error?.message && error.message !== 'Failed to fetch'
-      ? error.message
-      : 'Could not send your message right now. Please try again in a moment.';
-    showToast(errorMessage, 'error');
+    showToast('Message sent! We\'ll get back to you within 24 hours.', 'success');
+  } catch (err) {
+    const msg = err.message && err.message !== 'Failed to fetch'
+      ? err.message
+      : 'Could not send your message. Please try WhatsApp instead.';
+    showToast(msg, 'error');
   } finally {
     isSubmittingContactForm = false;
     setContactSubmitLoading(false);
   }
-
   return false;
 }
 
