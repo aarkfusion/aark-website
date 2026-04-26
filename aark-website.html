@@ -7,7 +7,7 @@
 <meta name="description" content="AARK catalog with straight cut kurtis, long frocks, short frocks, short tops, kids frocks, men's kurtas, and matching family looks. Rooted in tradition, styled for today.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
   --teal: #008080;
@@ -73,27 +73,46 @@ a:not([href]),
 ══════════════════════════════════════════ */
 .header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: rgba(250,247,242,0.96);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--light-grey);
-  transition: var(--transition);
+  background: var(--teal);
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+  transition: box-shadow 0.45s ease;
 }
-.header.scrolled { box-shadow: var(--shadow-sm); }
+.header.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.22); }
+.header::before {
+  content: '';
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 75% 90% at 8%  55%, rgba(0,180,190,0.28) 0%, transparent 58%),
+    radial-gradient(ellipse 60% 75% at 88% 20%, rgba(0, 30, 55,0.42) 0%, transparent 54%),
+    radial-gradient(ellipse 80% 55% at 50% 95%, rgba(0,160,170,0.22) 0%, transparent 52%),
+    radial-gradient(ellipse 55% 70% at 28% 10%, rgba(0, 20, 45,0.32) 0%, transparent 50%),
+    radial-gradient(ellipse 45% 60% at 70% 65%, rgba(0,190,200,0.18) 0%, transparent 48%);
+}
 .nav-inner {
   max-width: 1280px; margin: 0 auto;
   display: grid; grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  padding: 0 24px; height: 68px;
+  padding: 0 32px;
+  height: 160px;
+  position: relative; z-index: 1;
+  transition: height 0.45s cubic-bezier(0.4,0,0.2,1);
 }
+.header.scrolled .nav-inner { height: 68px; }
 .nav-left { display: flex; align-items: center; gap: 32px; justify-content: flex-start; }
 .nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
 .nav-logo {
-  font-family: var(--serif);
-  font-size: 2rem; font-weight: 600; letter-spacing: 0.18em;
-  color: var(--teal);
+  font-family: 'EB Garamond', Georgia, serif;
+  font-size: 6rem; font-weight: 400; letter-spacing: 6pt;
+  color: var(--gold-light);
   cursor: pointer;
+  line-height: 1;
+  transition: font-size 0.45s cubic-bezier(0.4,0,0.2,1);
 }
-.nav-logo span { color: var(--gold); }
+.header.scrolled .nav-logo {
+  font-size: 2rem;
+  letter-spacing: 6pt;
+}
+.nav-logo span { color: var(--gold-light); }
 .nav-links {
   display: flex; align-items: center; gap: 32px;
 }
@@ -127,8 +146,9 @@ a:not([href]),
   transition: var(--transition); position: relative;
   color: var(--text); font-size: 1rem;
 }
-.nav-icon-btn:hover { background: var(--teal-pale); color: var(--teal); }
-.nav-icon-btn.wishlist-nav { color: var(--wishlist-teal); }
+.nav-icon-btn { color: rgba(255,255,255,0.9); }
+.nav-icon-btn:hover { background: rgba(255,255,255,0.15); color: #ffffff; }
+.nav-icon-btn.wishlist-nav { color: rgba(255,255,255,0.9); }
 .nav-icon-btn.wishlist-nav:hover {
   color: var(--gold);
   background: rgba(201,168,76,0.12);
@@ -205,11 +225,11 @@ a:not([href]),
 }
 .side-menu-close:hover { background: #333; }
 .side-menu-item {
-  display: block; font-family: var(--serif); font-size: 1.7rem;
+  display: block; font-family: var(--sans); font-size: 0.95rem;
   font-weight: 400; color: var(--text); padding: 9px 0;
   cursor: pointer; border: none; background: none;
   text-align: left; width: 100%; transition: color 0.2s;
-  line-height: 1.2;
+  line-height: 1.2; letter-spacing: 0.05em;
 }
 .side-menu-item:hover { color: var(--teal); }
 .side-menu-divider { height: 1px; background: var(--light-grey); margin: 28px 0; }
@@ -223,11 +243,11 @@ a:not([href]),
 .menu-trigger {
   display: flex; align-items: center; gap: 8px;
   font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em;
-  text-transform: uppercase; cursor: pointer; color: var(--text);
+  text-transform: uppercase; cursor: pointer; color: rgba(255,255,255,0.9);
   background: none; border: none; padding: 4px 0;
   transition: color 0.2s;
 }
-.menu-trigger:hover { color: var(--teal); }
+.menu-trigger:hover { color: #ffffff; }
 .menu-trigger svg { flex-shrink: 0; }
 
 /* ══════════════════════════════════════════
@@ -266,18 +286,22 @@ a:not([href]),
    HERO
 ══════════════════════════════════════════ */
 .hero {
-  min-height: 100vh; display: flex; align-items: flex-end; justify-content: flex-start;
-  position: relative; overflow: hidden;
-  background: #111;
+  margin-top: 160px;
+  transition: margin-top 0.45s cubic-bezier(0.4,0,0.2,1);
+  background: #008080;
+  line-height: 0;
+  position: relative;
 }
-/* BACKUP GRADIENT — remove comment below to restore original hero:
-.hero-gradient-backup {
-  background: linear-gradient(135deg, #006666 0%, #008080 45%, #00a3a3 100%);
+body.nav-scrolled .hero { margin-top: 68px; }
+.hero::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 120px; z-index: 1; pointer-events: none;
+  background: linear-gradient(to bottom, #008080 0%, transparent 100%);
 }
-*/
-.hero-bg-img {
-  position: absolute; inset: 0;
-  background: url('catalog-images/LF001_1200.jpg') center 20% / cover no-repeat;
+.hero-bg-img { display: none; }
+.hero-img {
+  width: 100%; display: block; position: relative; z-index: 0;
 }
 .hero-bg-overlay {
   position: absolute; inset: 0;
@@ -341,9 +365,9 @@ a:not([href]),
   transform: none !important; box-shadow: none !important;
 }
 .btn-primary {
-  background: #111111; color: white;
+  background: var(--gold); color: white;
 }
-.btn-primary:hover { background: #333333; }
+.btn-primary:hover { background: var(--teal-light); }
 .btn-outline-white {
   background: transparent; color: white;
   border: 1px solid rgba(255,255,255,0.5);
@@ -360,10 +384,10 @@ a:not([href]),
 }
 .btn-teal:hover { background: var(--teal); color: white; }
 .btn-whatsapp {
-  background: #25D366; color: white;
+  background: var(--teal); color: white;
   box-shadow: 0 4px 20px rgba(37,211,102,0.3);
 }
-.btn-whatsapp:hover { background: #1ebd5a; transform: translateY(-2px); }
+.btn-whatsapp:hover { background: var(--teal-light); transform: translateY(-2px); }
 .btn-sm { padding: 9px 20px; font-size: 0.72rem; }
 .btn-lg { padding: 16px 36px; font-size: 0.85rem; }
 .btn-full { width: 100%; justify-content: center; }
@@ -527,7 +551,7 @@ a:not([href]),
 }
 .product-action-btn.add-cart:hover { background: var(--teal-light); }
 .product-action-btn.whatsapp {
-  background: #25D366; color: white; flex: 0 0 40px;
+  background: var(--teal); color: white; flex: 0 0 40px;
 }
 .product-info { padding: 16px 18px 20px; }
 .product-cat { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--warm-grey); margin-bottom: 6px; }
@@ -558,7 +582,7 @@ a:not([href]),
   display: flex; align-items: center; gap: 24px;
   padding: 0 48px; white-space: nowrap;
   font-size: 0.78rem; letter-spacing: 0.14em; text-transform: uppercase;
-  color: rgba(255,255,255,0.85); font-weight: 400;
+  color: var(--gold-light); font-weight: 400;
 }
 .marquee-dot { color: var(--gold-light); font-size: 1.2rem; line-height: 1; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
@@ -859,7 +883,7 @@ a:not([href]),
   display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr;
   gap: 48px; max-width: 1280px; margin: 0 auto 48px;
 }
-.footer-brand .logo { font-family: var(--serif); font-size: 2rem; font-weight: 600; letter-spacing: 0.18em; color: white; margin-bottom: 16px; }
+.footer-brand .logo { font-family: 'EB Garamond', Georgia, serif; font-size: 2rem; font-weight: 400; letter-spacing: 6pt; color: white; margin-bottom: 16px; }
 .footer-brand .logo span { color: var(--gold); }
 .footer-brand p { font-size: 0.85rem; line-height: 1.8; color: rgba(255,255,255,0.55); max-width: 280px; margin-bottom: 24px; }
 .footer-social { display: flex; gap: 12px; }
@@ -1043,9 +1067,7 @@ a:not([href]),
 .story-img img { width: 100%; height: 100%; object-fit: cover; }
 .story-side { display: flex; flex-direction: column; gap: 24px; }
 .founder-note {
-  background: linear-gradient(180deg, rgba(250,247,242,0.98), rgba(240,235,227,0.95));
-  border: 1px solid rgba(0,128,128,0.08);
-  border-left: 3px solid var(--gold);
+  background: var(--cream);
   border-radius: var(--radius-lg);
   padding: 24px 26px;
   box-shadow: var(--shadow-sm);
@@ -1064,7 +1086,7 @@ a:not([href]),
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--teal);
+  color: var(--gold);
 }
 .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
 .value-card {
@@ -1129,8 +1151,8 @@ a:not([href]),
   font-size: 1.3rem; flex-shrink: 0;
 }
 .contact-card-icon.teal { background: var(--teal-pale); color: var(--teal); }
-.contact-card-icon.wa { background: #e8fdf1; color: #25D366; }
-.contact-card-icon.insta { background: #fdf0f8; color: #e1306c; }
+.contact-card-icon.wa { background: var(--teal-pale); color: var(--teal); }
+.contact-card-icon.insta { background: var(--teal-pale); color: var(--teal); }
 .contact-card h4 { font-size: 0.85rem; font-weight: 600; margin-bottom: 4px; }
 .contact-card p, .contact-card a { font-size: 0.85rem; color: var(--text-muted); }
 .qr-grid {
@@ -1175,6 +1197,18 @@ a:not([href]),
 }
 .measure-tip .icon { color: var(--teal); font-size: 1.2rem; flex-shrink: 0; margin-top: 2px; }
 .measure-tip p { font-size: 0.85rem; color: var(--text); line-height: 1.7; }
+.how-to-measure {
+  margin-top: 32px;
+}
+.how-to-measure h4 {
+  font-family: var(--serif); font-size: 1.2rem; font-weight: 500;
+  color: var(--teal); margin-bottom: 16px;
+  padding-bottom: 8px; border-bottom: 1px solid rgba(0,128,128,0.2);
+}
+.how-to-measure img {
+  width: 100%; border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm); display: block;
+}
 
 /* ══════════════════════════════════════════
    FAQ PAGE
@@ -1205,9 +1239,20 @@ a:not([href]),
    PAGE HERO (inner pages)
 ══════════════════════════════════════════ */
 .inner-hero {
-  padding: 120px 24px 64px;
+  padding: 180px 24px 64px;
   background: linear-gradient(135deg, var(--teal) 0%, #006666 100%);
   text-align: center; margin-bottom: 0;
+  transition: padding-top 0.45s cubic-bezier(0.4,0,0.2,1);
+}
+body.nav-scrolled .inner-hero {
+  padding-top: 88px;
+}
+.page-top-section {
+  padding-top: 180px;
+  transition: padding-top 0.45s cubic-bezier(0.4,0,0.2,1);
+}
+body.nav-scrolled .page-top-section {
+  padding-top: 88px;
 }
 .inner-hero h1 {
   font-family: var(--serif); font-size: clamp(2rem, 5vw, 4rem);
@@ -1227,13 +1272,13 @@ a:not([href]),
 .floating-wa {
   position: fixed; bottom: 24px; right: 24px; z-index: 900;
   width: 56px; height: 56px; border-radius: 50%;
-  background: #25D366; color: white;
+  background: var(--teal); color: white;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.5rem; box-shadow: 0 4px 20px rgba(37,211,102,0.45);
+  font-size: 1.5rem; box-shadow: 0 4px 20px rgba(0,128,128,0.45);
   transition: var(--transition); cursor: pointer;
   text-decoration: none;
 }
-.floating-wa:hover { transform: scale(1.1); box-shadow: 0 8px 32px rgba(37,211,102,0.5); }
+.floating-wa:hover { transform: scale(1.1); box-shadow: 0 8px 32px rgba(0,128,128,0.5); }
 .floating-wa-tooltip {
   position: absolute; right: 64px; white-space: nowrap;
   background: white; color: var(--text);
@@ -1370,6 +1415,7 @@ a:not([href]),
 .toast-icon { font-size: 1.2rem; }
 .toast.success { border-left-color: var(--teal); }
 .toast.error { border-left-color: #e8533a; }
+.toast.info { border-left-color: var(--gold); }
 
 /* ══════════════════════════════════════════
    SEARCH
@@ -1574,8 +1620,8 @@ a:not([href]),
 ══════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .nav-links, .nav-left, .nav-right .nav-link { display: none; }
-  .nav-inner { grid-template-columns: auto 1fr; }
-  .nav-logo { grid-column: 1; }
+  .nav-inner { grid-template-columns: auto 1fr; height: 64px !important; }
+  .nav-logo { grid-column: 1; font-size: 1.8rem !important; letter-spacing: 0.16em !important; }
   .nav-right { grid-column: 2; }
   .hamburger { display: flex; }
   .category-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1650,7 +1696,8 @@ a:not([href]),
 }
 @media (max-width: 480px) {
   .nav-inner { padding: 0 16px; }
-  .hero-content { padding: 0 24px 80px; }
+  .hero-split { flex-direction: column; padding: 140px 24px 48px; gap: 32px; }
+  .hero-split-img { flex: none; height: 52vw; min-height: 260px; width: 100%; }
   .hero-actions { flex-direction: column; align-items: flex-start; }
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .category-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
@@ -1668,11 +1715,9 @@ a:not([href]),
 <body>
 
 <!-- ANNOUNCEMENT BAR -->
-<div class="announcement">
-  🌿 Free delivery on orders above <strong>₹2999</strong> &nbsp;|&nbsp; Handcrafted with love</div>
 
 <!-- HEADER -->
-<header class="header" id="header" style="top: 40px;">
+<header class="header" id="header" style="top: 0;">
   <div class="nav-inner">
     <div class="nav-left"></div>
     <div class="nav-logo" onclick="showPage('home')">AARK</div>
@@ -1701,14 +1746,14 @@ a:not([href]),
 <div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
 <div class="side-menu" id="sideMenu">
   <button class="side-menu-close" onclick="closeSideMenu()" aria-label="Close menu">✕</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showPage('shop')">All Products</button>
+  <button class="side-menu-item" onclick="closeSideMenu();clearFilters();showPage('shop')">Shop All</button>
   <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('straight-cut-kurtis')">The Riju Series</button>
   <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('short-tops')">The Alpa Series</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('long-frocks')">Ananta Series</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('long-frocks')">The Ananta Series</button>
   <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('short-frocks')">The Kriti Series</button>
   <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">The Aira Series</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('mens-kurtas')">Arjuna Series</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showPage('collections')">Mom &amp; Kids Matching</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('mens-kurtas')">The Arjuna Series</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showPage('collections')">The Mom &amp; Kids Collection</button>
   <button class="side-menu-item" onclick="closeSideMenu();showPage('new')">New Arrivals</button>
   <div class="side-menu-divider"></div>
   <button class="side-menu-secondary" onclick="closeSideMenu();showPage('about')">About AARK</button>
@@ -1729,7 +1774,7 @@ a:not([href]),
   <a onclick="showPage('contact'); toggleMobileNav()">Contact</a>
   <div class="mobile-nav-footer">
     <a class="btn btn-whatsapp btn-sm" href="https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC?mode=gi_t" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg> WhatsApp Community</a>
-    <a class="btn btn-outline-teal btn-sm" href="https://instagram.com/aark.fusion" target="_blank">📸 Instagram</a>
+    <a class="btn btn-outline-teal btn-sm" href="https://instagram.com/aark.fusion" target="_blank" style="display:inline-flex;align-items:center;gap:6px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg> Instagram</a>
   </div>
 </nav>
 
@@ -1762,9 +1807,9 @@ a:not([href]),
       <div class="search-chip-row">
         <button class="search-chip" type="button" onclick="applySearchSuggestion('Riju')">The Riju Series</button>
         <button class="search-chip" type="button" onclick="applySearchSuggestion('Alpa')">The Alpa Series</button>
-        <button class="search-chip" type="button" onclick="applySearchSuggestion('Ananta')">Ananta Series</button>
+        <button class="search-chip" type="button" onclick="applySearchSuggestion('Ananta')">The Ananta Series</button>
         <button class="search-chip" type="button" onclick="applySearchSuggestion('Aira')">The Aira Series</button>
-        <button class="search-chip" type="button" onclick="applySearchSuggestion('Arjuna')">Arjuna Series</button>
+        <button class="search-chip" type="button" onclick="applySearchSuggestion('Arjuna')">The Arjuna Series</button>
         <button class="search-chip" type="button" onclick="applySearchSuggestion('SC001')">SKU Search</button>
       </div>
       <div id="searchResultsWrap"></div>
@@ -1779,21 +1824,7 @@ a:not([href]),
 
   <!-- HERO -->
   <section class="hero">
-    <div class="hero-bg-img"></div>
-    <div class="hero-bg-overlay"></div>
-    <div class="hero-bg-pattern"></div>
-    <div class="hero-content">
-      <div class="hero-tag">New Collection Live</div>
-      <h1 class="hero-title">
-        Tradition,<br>
-        <em>styled for today</em>
-      </h1>
-      <p class="hero-sub">Premium ethnic wear for women, kids and families — rooted in culture, designed for the modern woman.</p>
-    </div>
-    <div class="hero-scroll" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
-      <div class="scroll-line"></div>
-      SCROLL
-    </div>
+    <img class="hero-img" src="hero.png" alt="AARK Collection">
   </section>
 
   <!-- COLLECTIONS MOSAIC (home) -->
@@ -1816,10 +1847,10 @@ a:not([href]),
       </div>
     </div>
     <div class="ace-item ace-ananta" onclick="showShopWithFilter('long-frocks')">
-      <img src="catalog-images/LF001_1200.jpg" alt="Ananta Series">
+      <img src="catalog-images/LF001_1200.jpg" alt="The Ananta Series">
       <div class="ace-overlay">
         <div class="ef-label">Women</div>
-        <h2 class="editorial-feature-title">Ananta Series</h2>
+        <h2 class="editorial-feature-title">The Ananta Series</h2>
         <div class="editorial-feature-sub">6 Styles · Long Frocks</div>
       </div>
     </div>
@@ -1840,18 +1871,18 @@ a:not([href]),
       </div>
     </div>
     <div class="ace-item ace-arjuna" onclick="showShopWithFilter('mens-kurtas')">
-      <img src="mens_collection/teal_front.png" alt="Arjuna Series">
+      <img src="mens_collection/teal_front.png" alt="The Arjuna Series">
       <div class="ace-overlay">
         <div class="ef-label">Men</div>
-        <h2 class="editorial-feature-title">Arjuna Series</h2>
+        <h2 class="editorial-feature-title">The Arjuna Series</h2>
         <div class="editorial-feature-sub">2 Styles · Men's Kurtas</div>
       </div>
     </div>
     <div class="ace-item ace-momkids" onclick="showPage('collections')">
-      <img src="catalog-images/mom_kids.jpg" alt="Mom &amp; Kids Matching">
+      <img src="catalog-images/mom_kids.jpg" alt="The Mom &amp; Kids Collection">
       <div class="ace-overlay">
         <div class="ef-label">Family</div>
-        <h2 class="editorial-feature-title">Mom &amp; Kids Matching</h2>
+        <h2 class="editorial-feature-title">The Mom &amp; Kids Collection</h2>
         <div class="editorial-feature-sub">Signature Family Styling</div>
       </div>
     </div>
@@ -1884,18 +1915,18 @@ a:not([href]),
     <div class="marquee-track">
       <div class="marquee-item"><span class="marquee-dot">✦</span> The Riju Series</div>
       <div class="marquee-item"><span class="marquee-dot">✦</span> The Alpa Series</div>
-      <div class="marquee-item"><span class="marquee-dot">✦</span> Ananta Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Ananta Series</div>
       <div class="marquee-item"><span class="marquee-dot">✦</span> The Kriti Series</div>
       <div class="marquee-item"><span class="marquee-dot">✦</span> The Aira Series</div>
-      <div class="marquee-item"><span class="marquee-dot">✦</span> Arjuna Series</div>
-      <div class="marquee-item"><span class="marquee-dot">✦</span> Matching Mom & Kids Looks</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Arjuna Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Mom & Kids Collection</div>
       <div class="marquee-item"><span class="marquee-dot">✦</span> The Riju Series</div>
       <div class="marquee-item"><span class="marquee-dot">✦</span> The Alpa Series</div>
-      <div class="marquee-item"><span class="marquee-dot">✦</span> Ananta Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Ananta Series</div>
       <div class="marquee-item"><span class="marquee-dot">✦</span> The Kriti Series</div>
       <div class="marquee-item"><span class="marquee-dot">✦</span> The Aira Series</div>
-      <div class="marquee-item"><span class="marquee-dot">✦</span> Arjuna Series</div>
-      <div class="marquee-item"><span class="marquee-dot">✦</span> Matching Mom & Kids Looks</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Arjuna Series</div>
+      <div class="marquee-item"><span class="marquee-dot">✦</span> The Mom & Kids Collection</div>
     </div>
   </div>
 
@@ -1943,7 +1974,7 @@ a:not([href]),
       <div class="instagram-grid">
       </div>
       <div class="text-center mt-24">
-        <a class="btn btn-outline-teal" href="https://instagram.com/aark.fusion" target="_blank">Follow @aark.fusion on Instagram →</a>
+        <a class="btn btn-outline-teal" href="https://instagram.com/aark.fusion" target="_blank" style="display:inline-flex;align-items:center;gap:8px;"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;flex-shrink:0;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg> Follow @aark.fusion on Instagram →</a>
       </div>
     </div>
   </section>
@@ -1986,7 +2017,7 @@ a:not([href]),
   <section class="newsletter-section">
     <div class="newsletter-inner">
       <div class="section-label">Stay Connected</div>
-      <h2 class="section-title" style="font-size:2.4rem;">Be First to Know About<br><em>New Collections</em></h2>
+      <h2 class="section-title" style="font-size:2.4rem;">Be First to Know About<br><em style="color:var(--gold-light);">New Collections</em></h2>
       <p class="section-sub">Exclusive previews, festive drops, style tips, and special offers for our community.</p>
       <div class="newsletter-form">
         <input class="newsletter-input" type="email" placeholder="Enter your email address" id="emailInput">
@@ -1998,70 +2029,13 @@ a:not([href]),
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <div class="logo">AARK</div>
-        <p>Tradition, styled for today. Premium ethnic wear crafted with love, for women, kids and families who celebrate culture through fashion.</p>
-        <div class="footer-social">
-          <a class="social-btn" href="https://instagram.com/aark.fusion" target="_blank">📸</a>
-          <a class="social-btn" href="https://wa.me/919000107301" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;display:block;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></a>
-          <a class="social-btn" href="https://maps.google.com/?q=17.440479,78.420235" target="_blank">📍</a>
-          <a class="social-btn" href="https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC?mode=gi_t" target="_blank">👥</a>
-        </div>
-      </div>
-      <div class="footer-col">
-        <h5>Quick Links</h5>
-        <ul>
-          <li><a onclick="showPage('shop')">Shop All</a></li>
-          <li><a onclick="showPage('new')">New Arrivals</a></li>
-          <li><a onclick="showPage('collections')">Collections</a></li>
-          <li><a onclick="showPage('about')">About AARK</a></li>
-          <li><a onclick="showPage('contact')">Contact Us</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Help</h5>
-        <ul>
-          <li><a onclick="showPage('sizechart')">Size Chart</a></li>
-          <li><a onclick="showPage('faq')">FAQ</a></li>
-          <li><a onclick="showPage('faq')">Shipping Policy</a></li>
-          <li><a onclick="showPage('faq')">Return & Exchange</a></li>
-          <li><a onclick="showPage('faq')">Custom Orders</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h5>Contact</h5>
-        <div class="footer-contact-item"><span class="icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;display:block;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span><div><strong style="color:rgba(255,255,255,0.7)">WhatsApp</strong><br><a href="https://wa.me/919000107301" target="_blank">+91 90001 07301</a></div></div>
-        <div class="footer-contact-item"><span class="icon">📧</span><div><strong style="color:rgba(255,255,255,0.7)">Email</strong><br><a href="mailto:aarkfusion@gmail.com">aarkfusion@gmail.com</a></div></div>
-        <div class="footer-contact-item"><span class="icon">📸</span><div><strong style="color:rgba(255,255,255,0.7)">Instagram</strong><br><a href="https://instagram.com/aark.fusion" target="_blank">@aark.fusion</a></div></div>
-        <div class="footer-contact-item"><span class="icon">📍</span><div><strong style="color:rgba(255,255,255,0.7)">Location</strong><br><a href="https://maps.google.com/?q=17.440479,78.420235" target="_blank">Open Map Pin</a></div></div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 AARK All rights reserved. Made with <span style="color:#008080;" class="heart-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg></span> in India.</p>
-      <div class="payment-icons">
-        <div class="pay-icon">UPI</div>
-        <div class="pay-icon">COD</div>
-        <div class="pay-icon">Card</div>
-        <div class="pay-icon">GPay</div>
-        <div class="pay-icon">PhonePe</div>
-      </div>
-    </div>
-  </footer>
 </div>
 
 <!-- ══════════════════════════════════════════
      SHOP PAGE
 ══════════════════════════════════════════ -->
 <div id="page-shop" class="page">
-  <div class="inner-hero">
-    <h1>Shop <em>All</em></h1>
-    <p>Handpicked prints, premium fabrics, thoughtful designs.</p>
-    <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span>Shop All</span></div>
-  </div>
-  <section class="section" style="padding-top:48px;">
+  <section class="section page-top-section">
     <div class="container">
       <div class="shop-layout">
         <aside class="shop-sidebar">
@@ -2071,10 +2045,10 @@ a:not([href]),
             <div class="filter-options">
               <div class="filter-chip" data-filter-type="category" data-filter-value="straight-cut-kurtis" onclick="toggleFilter(this,'category','straight-cut-kurtis')">The Riju Series</div>
               <div class="filter-chip" data-filter-type="category" data-filter-value="short-tops" onclick="toggleFilter(this,'category','short-tops')">The Alpa Series</div>
-              <div class="filter-chip" data-filter-type="category" data-filter-value="long-frocks" onclick="toggleFilter(this,'category','long-frocks')">Ananta Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="long-frocks" onclick="toggleFilter(this,'category','long-frocks')">The Ananta Series</div>
               <div class="filter-chip" data-filter-type="category" data-filter-value="short-frocks" onclick="toggleFilter(this,'category','short-frocks')">The Kriti Series</div>
               <div class="filter-chip" data-filter-type="category" data-filter-value="kids-frocks" onclick="toggleFilter(this,'category','kids-frocks')">The Aira Series</div>
-              <div class="filter-chip" data-filter-type="category" data-filter-value="mens-kurtas" onclick="toggleFilter(this,'category','mens-kurtas')">Arjuna Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="mens-kurtas" onclick="toggleFilter(this,'category','mens-kurtas')">The Arjuna Series</div>
             </div>
           </div>
           <div class="filter-group">
@@ -2150,10 +2124,10 @@ a:not([href]),
       </div>
     </div>
     <div class="ace-item ace-ananta" onclick="showShopWithFilter('long-frocks')">
-      <img src="catalog-images/LF001_1200.jpg" alt="Ananta Series" loading="lazy">
+      <img src="catalog-images/LF001_1200.jpg" alt="The Ananta Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Women</div>
-        <h2 class="editorial-feature-title">Ananta Series</h2>
+        <h2 class="editorial-feature-title">The Ananta Series</h2>
         <div class="editorial-feature-sub">6 Styles · Long Frocks</div>
       </div>
     </div>
@@ -2174,18 +2148,18 @@ a:not([href]),
       </div>
     </div>
     <div class="ace-item ace-arjuna" onclick="showShopWithFilter('mens-kurtas')">
-      <img src="mens_collection/teal_front.png" alt="Arjuna Series" loading="lazy">
+      <img src="mens_collection/teal_front.png" alt="The Arjuna Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Men</div>
-        <h2 class="editorial-feature-title">Arjuna Series</h2>
+        <h2 class="editorial-feature-title">The Arjuna Series</h2>
         <div class="editorial-feature-sub">2 Styles · Men's Kurtas</div>
       </div>
     </div>
     <div class="ace-item ace-momkids" onclick="showPage('collections')">
-      <img src="catalog-images/mom_kids.jpg" alt="Mom & Kids Matching" loading="lazy">
+      <img src="catalog-images/mom_kids.jpg" alt="The Mom & Kids Collection" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Family</div>
-        <h2 class="editorial-feature-title">Mom & Kids Matching</h2>
+        <h2 class="editorial-feature-title">The Mom & Kids Collection</h2>
         <div class="editorial-feature-sub">Signature Family Styling</div>
       </div>
     </div>
@@ -2196,7 +2170,7 @@ a:not([href]),
      PRODUCT DETAIL PAGE
 ══════════════════════════════════════════ -->
 <div id="page-product" class="page">
-  <section class="section" style="padding-top:100px;">
+  <section class="section page-top-section">
     <div class="container">
       <div class="product-detail" id="productDetailContent"></div>
       <div style="margin-top:72px;">
@@ -2316,7 +2290,7 @@ a:not([href]),
           <form
             id="contactForm"
             class="contact-form"
-            action="https://formsubmit.co/ajax/aarkfusion@gmail.com"
+            action="https://formsubmit.co/ajax/sales.aarkfusion@gmail.com"
             method="POST"
             onsubmit="return sendContactForm(event)"
           >
@@ -2368,12 +2342,12 @@ a:not([href]),
             <div><h4>WhatsApp</h4><p>+91 90001 07301</p><p style="margin-top:4px;font-size:0.75rem;color:var(--teal);">Fastest response for orders, sizing, and custom requests</p></div>
           </div>
           <div class="contact-card" onclick="window.open('https://instagram.com/aark.fusion','_blank')">
-            <div class="contact-card-icon insta">📸</div>
+            <div class="contact-card-icon insta"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:1.1em;height:1.1em;vertical-align:middle;display:inline-block;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></div>
             <div><h4>Instagram DM</h4><p>@aark.fusion</p><p style="margin-top:4px;font-size:0.75rem;color:var(--teal);">Browse the latest looks and message the brand directly</p></div>
           </div>
           <div class="contact-card">
             <div class="contact-card-icon teal">📧</div>
-            <div><h4>Email</h4><p><a href="mailto:aarkfusion@gmail.com">aarkfusion@gmail.com</a></p><p style="margin-top:4px;font-size:0.75rem;color:var(--teal);">For detailed queries and wholesale</p></div>
+            <div><h4>Email</h4><p><a href="mailto:sales.aarkfusion@gmail.com">sales.aarkfusion@gmail.com</a></p><p style="margin-top:4px;font-size:0.75rem;color:var(--teal);">For detailed queries and wholesale</p></div>
           </div>
           <div class="contact-card" onclick="window.open('https://maps.google.com/?q=17.440479,78.420235','_blank')">
             <div class="contact-card-icon teal">📍</div>
@@ -2437,6 +2411,10 @@ a:not([href]),
             </table>
           </div>
           <div class="measure-tip"><span class="icon">💡</span><p><strong>How to measure:</strong> Use a soft measuring tape. Measure your bust at the fullest point, waist at the narrowest point, and hips at the fullest point. Always measure over light clothing. If between sizes, we recommend sizing up for comfort.</p></div>
+          <div class="how-to-measure">
+            <h4>How to Measure</h4>
+            <img src="how-to-measure/women.png" alt="How to measure — Women">
+          </div>
         </div>
         <div id="sizeTab-kids" style="display:none;">
           <h3 style="font-family:var(--serif);font-size:1.3rem;margin-bottom:16px;">Kids Frocks & Kurtas</h3>
@@ -2453,6 +2431,11 @@ a:not([href]),
               </tbody>
             </table>
           </div>
+          <div class="measure-tip"><span class="icon">💡</span><p><strong>How to measure:</strong> Measure height without shoes. Chest is measured at the fullest point. For dress length, measure from shoulder to desired hem. When between sizes, size up for room to grow.</p></div>
+          <div class="how-to-measure">
+            <h4>How to Measure</h4>
+            <img src="how-to-measure/kids.png" alt="How to measure — Kids">
+          </div>
         </div>
         <div id="sizeTab-mens" style="display:none;">
           <h3 style="font-family:var(--serif);font-size:1.3rem;margin-bottom:16px;">Men's Kurtas</h3>
@@ -2467,6 +2450,11 @@ a:not([href]),
                 <tr><td><strong>XXL</strong></td><td>104–110</td><td>46–48</td><td>114–116</td><td>66–68</td></tr>
               </tbody>
             </table>
+          </div>
+          <div class="measure-tip"><span class="icon">💡</span><p><strong>How to measure:</strong> Measure chest at the fullest point. Shoulder width is measured across the back from seam to seam. Kurta length is from the back of the neck to the hem. Sleeve length is from shoulder seam to wrist.</p></div>
+          <div class="how-to-measure">
+            <h4>How to Measure</h4>
+            <img src="how-to-measure/men.png" alt="How to measure — Men">
           </div>
         </div>
         <div style="background:var(--teal-pale);border-radius:var(--radius-lg);padding:24px 28px;margin-top:32px;">
@@ -2524,6 +2512,84 @@ a:not([href]),
 </div>
 
 <!-- ══════════════════════════════════════════
+     SHARED FOOTER
+══════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">AARK</div>
+      <p>Tradition, styled for today. Premium ethnic wear crafted with love, for women, kids and families who celebrate culture through fashion.</p>
+      <div class="footer-social">
+        <a class="social-btn" href="https://instagram.com/aark.fusion" target="_blank" title="Instagram">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:block;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+        </a>
+        <a class="social-btn" href="https://wa.me/919000107301" target="_blank" title="WhatsApp">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;display:block;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        </a>
+        <a class="social-btn" href="https://maps.google.com/?q=17.440479,78.420235" target="_blank" title="Location">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:block;"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </a>
+        <a class="social-btn" href="https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC?mode=gi_t" target="_blank" title="WhatsApp Community">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;display:block;"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h5>Quick Links</h5>
+      <ul>
+        <li><a onclick="showPage('shop')">Shop All</a></li>
+        <li><a onclick="showPage('new')">New Arrivals</a></li>
+        <li><a onclick="showPage('collections')">Collections</a></li>
+        <li><a onclick="showPage('about')">About AARK</a></li>
+        <li><a onclick="showPage('contact')">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Help</h5>
+      <ul>
+        <li><a onclick="showPage('sizechart')">Size Chart</a></li>
+        <li><a onclick="showPage('faq')">FAQ</a></li>
+        <li><a onclick="showPage('faq')">Shipping Policy</a></li>
+        <li><a onclick="showPage('faq')">Return &amp; Exchange</a></li>
+        <li><a onclick="showPage('faq')">Custom Orders</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <div class="footer-contact-item">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="currentColor" style="width:20px;height:20px;display:block;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg></span>
+        <div><strong style="color:rgba(255,255,255,0.7)">WhatsApp</strong><br><a href="https://wa.me/919000107301" target="_blank">+91 90001 07301</a></div>
+      </div>
+      <div class="footer-contact-item">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+        <div><strong style="color:rgba(255,255,255,0.7)">Email</strong><br><a href="mailto:sales.aarkfusion@gmail.com">sales.aarkfusion@gmail.com</a></div>
+      </div>
+      <div class="footer-contact-item">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg></span>
+        <div><strong style="color:rgba(255,255,255,0.7)">Instagram</strong><br><a href="https://instagram.com/aark.fusion" target="_blank">@aark.fusion</a></div>
+      </div>
+      <div class="footer-contact-item">
+        <span class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="width:20px;height:20px;display:block;"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+        <div><strong style="color:rgba(255,255,255,0.7)">Location</strong><br><a href="https://maps.google.com/?q=17.440479,78.420235" target="_blank">Open Map Pin</a></div>
+      </div>
+    </div>
+  </div>
+  <div style="background:var(--teal);text-align:center;padding:9px 24px;font-size:0.75rem;letter-spacing:0.1em;color:white;">
+    🌿 Free delivery on orders above <strong style="color:var(--gold-light);">₹2999</strong> &nbsp;|&nbsp; Handcrafted with love
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 AARK All rights reserved. Made with <span style="color:#008080;" class="heart-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg></span> in India.</p>
+    <div class="payment-icons">
+      <div class="pay-icon">UPI</div>
+      <div class="pay-icon">COD</div>
+      <div class="pay-icon">Card</div>
+      <div class="pay-icon">GPay</div>
+      <div class="pay-icon">PhonePe</div>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════
      CART SIDEBAR
 ══════════════════════════════════════════ -->
 <div class="cart-overlay" id="cartOverlay" onclick="closeCart()"></div>
@@ -2557,6 +2623,10 @@ a:not([href]),
             <tr><td>XXL</td><td>100–106</td><td>84–90</td><td>108–114</td></tr>
           </tbody>
         </table>
+      </div>
+      <div class="how-to-measure" style="margin-top:24px;">
+        <h4>How to Measure</h4>
+        <img src="how-to-measure/women.png" alt="How to measure — Women">
       </div>
       <button class="btn btn-outline-teal btn-sm" style="margin-top:16px;" onclick="closeSizeModal();showPage('sizechart')">Full Size Chart →</button>
     </div>
@@ -2617,7 +2687,7 @@ const SERIES_META = {
     fitNote: 'Easy short-top shape designed for relaxed styling and layering.',
   },
   LF: {
-    series: 'Ananta Series',
+    series: 'The Ananta Series',
     cat: 'long-frocks',
     categoryLabel: 'Long Frocks',
     productLabel: 'Long Frock',
@@ -2644,7 +2714,7 @@ const SERIES_META = {
     fitNote: 'Kid-friendly fit with easy movement and comfortable wear.',
   },
   AR: {
-    series: 'Arjuna Series',
+    series: 'The Arjuna Series',
     cat: 'mens-kurtas',
     categoryLabel: "Men's Kurtas",
     productLabel: 'Kurta',
@@ -2706,8 +2776,8 @@ const MENS_PRODUCTS = [
     prefix: 'AR',
     sequence: 1,
     categoryLabel: "Men's Kurtas",
-    series: 'Arjuna Series',
-    name: 'Arjuna Series Teal Kurta',
+    series: 'The Arjuna Series',
+    name: 'The Arjuna Series Teal Kurta',
     price: null,
     priceLabel: 'Price on request',
     image: 'mens_collection/teal_front.png',
@@ -2716,10 +2786,10 @@ const MENS_PRODUCTS = [
       'mens_collection/teal_front.png',
       'mens_collection/teal_back.png',
     ],
-    desc: 'Arjuna Series men\'s kurta in teal with front and back views available from the new mens collection folder. Share the product code on WhatsApp to confirm price and order details.',
+    desc: 'The Arjuna Series men\'s kurta in teal with front and back views available from the new mens collection folder. Share the product code on WhatsApp to confirm price and order details.',
     fabric: 'Premium Cotton',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-    tags: ['Arjuna Series', "Men's Kurtas", 'AR001', 'Teal'],
+    tags: ['The Arjuna Series', "Men's Kurtas", 'AR001', 'Teal'],
     badge: 'new',
     featured: true,
     fitNote: 'Classic men\'s kurta silhouette with a clean mandarin collar and a polished festive finish.',
@@ -2732,8 +2802,8 @@ const MENS_PRODUCTS = [
     prefix: 'AR',
     sequence: 2,
     categoryLabel: "Men's Kurtas",
-    series: 'Arjuna Series',
-    name: 'Arjuna Series White Kurta',
+    series: 'The Arjuna Series',
+    name: 'The Arjuna Series White Kurta',
     price: null,
     priceLabel: 'Price on request',
     image: 'mens_collection/white_front.png',
@@ -2742,10 +2812,10 @@ const MENS_PRODUCTS = [
       'mens_collection/white_front.png',
       'mens_collection/white_back.png',
     ],
-    desc: 'Arjuna Series men\'s kurta in white with front and back views available from the new mens collection folder. Share the product code on WhatsApp to confirm price and order details.',
+    desc: 'The Arjuna Series men\'s kurta in white with front and back views available from the new mens collection folder. Share the product code on WhatsApp to confirm price and order details.',
     fabric: 'Premium Cotton',
     sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-    tags: ['Arjuna Series', "Men's Kurtas", 'AR002', 'White'],
+    tags: ['The Arjuna Series', "Men's Kurtas", 'AR002', 'White'],
     badge: 'new',
     featured: true,
     fitNote: 'Clean white kurta styling with a versatile silhouette that works for celebrations, pujas, and family looks.',
@@ -2893,6 +2963,8 @@ function showPage(pageId, addToHistory = true) {
   if (pg) {
     pg.classList.add('active');
     window.scrollTo(0, 0);
+    document.getElementById('header').classList.remove('scrolled');
+    document.body.classList.remove('nav-scrolled');
   }
   document.getElementById('mobileNav').classList.remove('open');
   closeSearch();
@@ -3185,14 +3257,17 @@ function openProduct(id, addToHistory = true) {
         </div>
       </div>
   ` : '';
+  const inWishlist = wishlist.some(w => w.id === p.id);
   const ctaRowHTML = cartEnabled ? `
       <div class="cta-row">
         <button class="btn btn-teal btn-lg" style="flex:1;" onclick="addToCartFromDetail()">🛒 Add to Cart</button>
         <button class="btn btn-primary btn-lg" style="flex:1;" onclick="addToCartFromDetail();openCart()">Buy Now</button>
+        <button id="detailWishlistBtn" class="product-action-btn wishlist${inWishlist ? ' active' : ''}" onclick="toggleWishlistFromDetail()" title="Add to Wishlist" style="width:48px;height:48px;flex-shrink:0;border-radius:var(--radius);">${getHeartIconMarkup()}</button>
       </div>
   ` : `
-      <div style="background:var(--cream-dark);border-radius:12px;padding:14px 16px;font-size:0.84rem;color:var(--text-muted);margin-bottom:16px;">
-        Price for this kurta is available on WhatsApp. Use the button below and mention product code <strong style="color:var(--text)">${p.sku}</strong>.
+      <div style="background:var(--cream-dark);border-radius:12px;padding:14px 16px;font-size:0.84rem;color:var(--text-muted);margin-bottom:16px;display:flex;align-items:center;gap:12px;">
+        <span style="flex:1;">Price for this kurta is available on WhatsApp. Use the button below and mention product code <strong style="color:var(--text)">${p.sku}</strong>.</span>
+        <button id="detailWishlistBtn" class="product-action-btn wishlist${inWishlist ? ' active' : ''}" onclick="toggleWishlistFromDetail()" title="Add to Wishlist" style="width:48px;height:48px;flex-shrink:0;border-radius:var(--radius);">${getHeartIconMarkup()}</button>
       </div>
   `;
   const productUrl = `https://aarkfusion.com/#product-${p.sku}`;
@@ -3341,7 +3416,9 @@ function renderCart() {
 }
 
 function updateCartQty(index, delta) {
-  cart[index].qty = Math.max(1, cart[index].qty + delta);
+  const newQty = cart[index].qty + delta;
+  if (newQty < 1) { removeFromCart(index); return; }
+  cart[index].qty = newQty;
   renderCart();
 }
 function removeFromCart(index) {
@@ -3357,11 +3434,8 @@ function addToCart(id) {
     showToast('Price available on WhatsApp for this style', 'success');
     return;
   }
-  const defaultSize = getDefaultSize(p);
-  const existing = cart.find(c => c.id === id && c.selectedSize === defaultSize);
-  if (existing) { existing.qty++; } else { cart.push({ ...p, qty: 1, selectedSize: defaultSize }); }
-  renderCart();
-  showToast(`${p.name} added to cart 🛒`, 'success');
+  openProduct(id);
+  showToast('Pick a size to add to cart', 'info');
 }
 function addToCartFromDetail() {
   if (!currentProduct) return;
@@ -3370,7 +3444,20 @@ function addToCartFromDetail() {
     showToast('Shared on WhatsApp for pricing', 'success');
     return;
   }
-  const selectedSize = document.querySelector('.size-opt.active')?.textContent || currentProduct.sizes[0];
+  const activeSizeEl = document.querySelector('.size-opt.active');
+  if (!activeSizeEl) {
+    const sizeSection = document.querySelector('.size-options');
+    if (sizeSection) {
+      sizeSection.style.transition = 'outline 0s';
+      sizeSection.style.outline = '2px solid var(--teal)';
+      sizeSection.style.borderRadius = '6px';
+      setTimeout(() => { sizeSection.style.outline = ''; }, 1200);
+      sizeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    showToast('Please pick a size', 'error');
+    return;
+  }
+  const selectedSize = activeSizeEl.textContent;
   const qty = parseInt(document.getElementById('detailQty')?.value || 1);
   const existing = cart.find(c => c.id === currentProduct.id && c.selectedSize === selectedSize);
   if (existing) { existing.qty += qty; } else { cart.push({ ...currentProduct, qty, selectedSize }); }
@@ -3402,6 +3489,11 @@ function toggleWishlist(id, btn) {
     btn.classList.add('active');
     showToast(`${p.name} saved to wishlist ❤️`, 'success');
   }
+}
+function toggleWishlistFromDetail() {
+  if (!currentProduct) return;
+  const btn = document.getElementById('detailWishlistBtn');
+  toggleWishlist(currentProduct.id, btn);
 }
 
 // ══════════════════════════════════════════
@@ -3488,7 +3580,8 @@ function showToast(msg, type = 'success') {
   const container = document.getElementById('toastContainer');
   const toast = document.createElement('div');
   toast.className = `toast ${type}`;
-  toast.innerHTML = `<span class="toast-icon">${type === 'success' ? '✅' : '❌'}</span><span>${msg}</span>`;
+  const icon = type === 'success' ? '✅' : type === 'info' ? 'ℹ️' : '❌';
+  toast.innerHTML = `<span class="toast-icon">${icon}</span><span>${msg}</span>`;
   container.appendChild(toast);
   setTimeout(() => toast.remove(), 3000);
 }
@@ -3515,7 +3608,9 @@ function closeSideMenu() {
 // SCROLL HEADER
 // ══════════════════════════════════════════
 window.addEventListener('scroll', () => {
-  document.getElementById('header').classList.toggle('scrolled', window.scrollY > 60);
+  const scrolled = window.scrollY > 80;
+  document.getElementById('header').classList.toggle('scrolled', scrolled);
+  document.body.classList.toggle('nav-scrolled', scrolled);
 });
 
 // ══════════════════════════════════════════
