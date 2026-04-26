@@ -81,9 +81,12 @@ a:not([href]),
 .header.scrolled { box-shadow: var(--shadow-sm); }
 .nav-inner {
   max-width: 1280px; margin: 0 auto;
-  display: flex; align-items: center; justify-content: space-between;
+  display: grid; grid-template-columns: 1fr auto 1fr;
+  align-items: center;
   padding: 0 24px; height: 68px;
 }
+.nav-left { display: flex; align-items: center; gap: 32px; justify-content: flex-start; }
+.nav-right { display: flex; align-items: center; justify-content: flex-end; gap: 16px; }
 .nav-logo {
   font-family: var(--serif);
   font-size: 2rem; font-weight: 600; letter-spacing: 0.18em;
@@ -172,29 +175,129 @@ a:not([href]),
 }
 
 /* ══════════════════════════════════════════
+   SIDE MENU PANEL (Gucci style)
+══════════════════════════════════════════ */
+.side-menu-overlay {
+  position: fixed; inset: 0; z-index: 1100;
+  background: rgba(0,0,0,0.38);
+  backdrop-filter: blur(3px);
+  opacity: 0; visibility: hidden;
+  transition: opacity 0.38s ease, visibility 0.38s;
+}
+.side-menu-overlay.open { opacity: 1; visibility: visible; }
+.side-menu {
+  position: fixed; top: 0; right: 0; bottom: 0;
+  width: 420px; max-width: 92vw;
+  background: white; z-index: 1101;
+  transform: translateX(100%);
+  transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
+  overflow-y: auto; padding: 72px 52px 48px;
+  display: flex; flex-direction: column;
+}
+.side-menu.open { transform: translateX(0); }
+.side-menu-close {
+  position: absolute; top: 20px; right: 20px;
+  width: 44px; height: 44px; border-radius: 50%;
+  background: #111; color: white; border: none;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 1.1rem; flex-shrink: 0;
+  transition: background 0.2s;
+}
+.side-menu-close:hover { background: #333; }
+.side-menu-item {
+  display: block; font-family: var(--serif); font-size: 1.7rem;
+  font-weight: 400; color: var(--text); padding: 9px 0;
+  cursor: pointer; border: none; background: none;
+  text-align: left; width: 100%; transition: color 0.2s;
+  line-height: 1.2;
+}
+.side-menu-item:hover { color: var(--teal); }
+.side-menu-divider { height: 1px; background: var(--light-grey); margin: 28px 0; }
+.side-menu-secondary {
+  display: block; font-size: 0.85rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--warm-grey); padding: 8px 0;
+  cursor: pointer; border: none; background: none; text-align: left;
+  width: 100%; transition: color 0.2s;
+}
+.side-menu-secondary:hover { color: var(--text); }
+.menu-trigger {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em;
+  text-transform: uppercase; cursor: pointer; color: var(--text);
+  background: none; border: none; padding: 4px 0;
+  transition: color 0.2s;
+}
+.menu-trigger:hover { color: var(--teal); }
+.menu-trigger svg { flex-shrink: 0; }
+
+/* ══════════════════════════════════════════
+   MEGA MENU
+══════════════════════════════════════════ */
+.nav-item-wrap { position: static; }
+.mega-menu {
+  position: fixed; top: 68px; left: 0; right: 0;
+  background: white;
+  border-bottom: 1px solid var(--light-grey);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.07);
+  padding: 48px 80px;
+  display: flex; gap: 72px; justify-content: center;
+  opacity: 0; visibility: hidden;
+  transform: translateY(-6px);
+  transition: opacity 0.22s ease, transform 0.22s ease, visibility 0.22s;
+  z-index: 998; pointer-events: none;
+}
+.nav-item-wrap:hover .mega-menu { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: all; }
+.mega-menu:hover { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: all; }
+.mega-col { min-width: 130px; }
+.mega-heading {
+  font-size: 0.62rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--warm-grey); font-weight: 600;
+  margin-bottom: 18px; padding-bottom: 10px;
+  border-bottom: 1px solid var(--light-grey);
+}
+.mega-link {
+  display: block; font-family: var(--serif); font-size: 1rem; font-weight: 400;
+  color: var(--text); padding: 6px 0; cursor: pointer; transition: color 0.2s;
+}
+.mega-link:hover { color: var(--teal); }
+.mega-divider { width: 1px; background: var(--light-grey); align-self: stretch; }
+
+/* ══════════════════════════════════════════
    HERO
 ══════════════════════════════════════════ */
 .hero {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; display: flex; align-items: flex-end; justify-content: flex-start;
   position: relative; overflow: hidden;
+  background: #111;
+}
+/* BACKUP GRADIENT — remove comment below to restore original hero:
+.hero-gradient-backup {
   background: linear-gradient(135deg, #006666 0%, #008080 45%, #00a3a3 100%);
 }
-.hero-bg-pattern {
-  position: absolute; inset: 0; opacity: 0.06;
-  background-image: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M40 0L80 40L40 80L0 40Z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+*/
+.hero-bg-img {
+  position: absolute; inset: 0;
+  background: url('catalog-images/LF001_1200.jpg') center 20% / cover no-repeat;
 }
+.hero-bg-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 100%),
+              linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 40%);
+}
+.hero-bg-pattern { display: none; }
 .hero-content {
   position: relative; z-index: 2;
-  text-align: center; padding: 120px 24px 80px;
-  max-width: 900px;
+  text-align: left; padding: 0 60px 100px;
+  max-width: 680px;
 }
 .hero-tag {
-  display: inline-flex; align-items: center; gap: 8px;
-  background: rgba(201,168,76,0.15); border: 1px solid rgba(201,168,76,0.4);
-  color: var(--gold-light); padding: 6px 18px;
-  border-radius: 40px; font-size: 0.72rem; letter-spacing: 0.18em;
-  text-transform: uppercase; margin-bottom: 28px;
+  display: inline-flex; align-items: center; gap: 10px;
+  color: var(--gold-light); font-size: 0.7rem; letter-spacing: 0.22em;
+  text-transform: uppercase; margin-bottom: 24px;
   animation: fadeUp 0.6s ease 0.2s both;
+}
+.hero-tag::before {
+  content: ''; display: block; width: 32px; height: 1px; background: var(--gold-light);
 }
 .hero-title {
   font-family: var(--serif); font-size: clamp(3rem, 8vw, 6.5rem);
@@ -204,12 +307,12 @@ a:not([href]),
 }
 .hero-title em { font-style: italic; color: var(--gold-light); }
 .hero-sub {
-  font-size: 1rem; color: rgba(255,255,255,0.75); letter-spacing: 0.06em;
-  max-width: 480px; margin: 0 auto 44px;
+  font-size: 1rem; color: rgba(255,255,255,0.75); letter-spacing: 0.04em;
+  max-width: 420px; margin: 0 0 44px;
   animation: fadeUp 0.6s ease 0.6s both;
 }
 .hero-actions {
-  display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+  display: flex; gap: 16px; justify-content: flex-start; flex-wrap: wrap;
   animation: fadeUp 0.6s ease 0.8s both;
 }
 @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
@@ -238,10 +341,9 @@ a:not([href]),
   transform: none !important; box-shadow: none !important;
 }
 .btn-primary {
-  background: var(--gold); color: white;
-  box-shadow: 0 4px 20px rgba(201,168,76,0.35);
+  background: #111111; color: white;
 }
-.btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,168,76,0.45); }
+.btn-primary:hover { background: #333333; }
 .btn-outline-white {
   background: transparent; color: white;
   border: 1px solid rgba(255,255,255,0.5);
@@ -253,10 +355,10 @@ a:not([href]),
 }
 .btn-outline-teal:hover { background: var(--teal); color: white; transform: translateY(-2px); }
 .btn-teal {
-  background: var(--teal); color: white;
-  box-shadow: 0 4px 20px rgba(0,128,128,0.3);
+  background: transparent; color: var(--teal);
+  border: 1.5px solid var(--teal);
 }
-.btn-teal:hover { background: var(--teal-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,128,128,0.4); }
+.btn-teal:hover { background: var(--teal); color: white; }
 .btn-whatsapp {
   background: #25D366; color: white;
   box-shadow: 0 4px 20px rgba(37,211,102,0.3);
@@ -269,10 +371,10 @@ a:not([href]),
 /* ══════════════════════════════════════════
    SECTIONS SHARED
 ══════════════════════════════════════════ */
-.section { padding: 80px 24px; }
-.section-sm { padding: 48px 24px; }
+.section { padding: 120px 24px; }
+.section-sm { padding: 64px 24px; }
 .container { max-width: 1280px; margin: 0 auto; }
-.section-header { text-align: center; margin-bottom: 56px; }
+.section-header { text-align: center; margin-bottom: 80px; }
 .section-label {
   display: inline-block; font-size: 0.7rem; letter-spacing: 0.22em;
   text-transform: uppercase; color: var(--gold); font-weight: 500;
@@ -312,13 +414,18 @@ a:not([href]),
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
+.category-grid-editorial {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
 .category-card {
-  position: relative; overflow: hidden; border-radius: var(--radius-lg);
+  position: relative; overflow: hidden; border-radius: 0;
   cursor: pointer; aspect-ratio: 3/4;
   background: var(--cream-dark);
   transition: var(--transition);
 }
-.category-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.category-card:hover { transform: none; box-shadow: none; }
 .category-card:hover .cat-img { transform: scale(1.06); }
 .cat-img {
   width: 100%; height: 100%; object-fit: cover;
@@ -326,17 +433,17 @@ a:not([href]),
 }
 .cat-overlay {
   position: absolute; inset: 0;
-  background: linear-gradient(to top, rgba(0,128,128,0.85) 0%, rgba(0,128,128,0.1) 50%, transparent 100%);
+  background: linear-gradient(to top, rgba(0,0,0,0.72) 0%, rgba(0,0,0,0.15) 50%, transparent 100%);
 }
 .cat-info {
   position: absolute; bottom: 0; left: 0; right: 0;
-  padding: 24px 20px;
+  padding: 20px 16px;
 }
 .cat-name {
-  font-family: var(--serif); font-size: 1.4rem;
-  color: white; font-weight: 500; margin-bottom: 4px;
+  font-family: var(--serif); font-size: 1.1rem;
+  color: white; font-weight: 300; margin-bottom: 4px; line-height: 1.2;
 }
-.cat-count { font-size: 0.72rem; color: rgba(255,255,255,0.7); letter-spacing: 0.1em; }
+.cat-count { font-size: 0.65rem; color: rgba(255,255,255,0.65); letter-spacing: 0.12em; text-transform: uppercase; }
 .cat-arrow {
   position: absolute; top: 16px; right: 16px;
   width: 36px; height: 36px; border-radius: 50%;
@@ -352,15 +459,14 @@ a:not([href]),
    PRODUCT CARDS
 ══════════════════════════════════════════ */
 .product-grid {
-  display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 32px;
 }
 .product-card {
-  background: white; border-radius: var(--radius-lg);
+  background: white; border-radius: 0;
   overflow: hidden; transition: var(--transition);
-  box-shadow: var(--shadow-sm);
   cursor: pointer;
 }
-.product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.product-card:hover { transform: none; box-shadow: none; }
 .product-img-wrap {
   position: relative; overflow: hidden; aspect-ratio: 3/4;
   background: var(--cream-dark);
@@ -507,6 +613,141 @@ a:not([href]),
 .editorial-content .section-title { color: white; text-align: left; }
 .editorial-content .section-title em { color: var(--gold-light); }
 .editorial-content p { color: rgba(255,255,255,0.75); margin-top: 16px; margin-bottom: 32px; font-size: 0.95rem; line-height: 1.8; }
+
+/* ══════════════════════════════════════════
+   COLLECTION STRIP (Gucci-style below hero)
+══════════════════════════════════════════ */
+.collection-strip {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  height: 56vh;
+  min-height: 360px;
+  width: 100%;
+}
+.collection-tile {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  background: #111;
+}
+.collection-tile img {
+  width: 100%;
+  height: calc(100% - 48px);
+  object-fit: cover;
+  object-position: center 10%;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.collection-tile:hover img { transform: scale(1.05); }
+.collection-tile-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 48px;
+  background: #0d0d0d;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--sans);
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-align: center;
+  padding: 0 8px;
+  line-height: 1.3;
+}
+
+/* ══════════════════════════════════════════
+   ALL COLLECTIONS EDITORIAL MOSAIC
+══════════════════════════════════════════ */
+.ace-section {
+  display: grid;
+  grid-template-columns: 2.2fr 1.2fr 1fr 1.3fr;
+  grid-template-rows: 42vh 30vh 34vh;
+  gap: 4px;
+  background: #f5f4f2;
+  min-height: 600px;
+}
+/* Mosaic span assignments */
+.ace-riju   { grid-column: 1;     grid-row: 1 / 3; }  /* tall left — spans 2 rows */
+.ace-alpa   { grid-column: 2 / 4; grid-row: 1;     }  /* wide top-centre — spans 2 cols */
+.ace-ananta { grid-column: 4;     grid-row: 1;     }  /* top right */
+.ace-kriti  { grid-column: 2;     grid-row: 2;     }  /* mid left */
+.ace-aira   { grid-column: 3 / 5; grid-row: 2;     }  /* mid right — spans 2 cols */
+.ace-arjuna { grid-column: 1 / 3; grid-row: 3;     }  /* bottom left — spans 2 cols */
+.ace-momkids{ grid-column: 3 / 5; grid-row: 3;     }  /* bottom right — spans 2 cols */
+
+.ace-item {
+  position: relative; overflow: hidden; cursor: pointer;
+  background: #1a1a1a;
+}
+.ace-item img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 15%;
+  transition: transform 0.6s ease; display: block;
+}
+.ace-item:hover img { transform: scale(1.04); }
+
+/* Per-panel position tuning so garments aren't cut */
+.ace-riju img    { object-position: center 10%; }
+.ace-alpa img    { object-position: center 20%; }
+.ace-ananta img  { object-position: center 10%; }
+.ace-kriti img   { object-position: center 15%; }
+.ace-aira img    { object-position: center 20%; }
+.ace-arjuna img  { object-position: center 20%; }
+.ace-momkids img { object-position: center center; }
+.ace-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.70) 0%, rgba(0,0,0,0.10) 45%, transparent 70%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 28px 24px; color: white;
+  transition: background 0.4s ease;
+}
+.ace-item:hover .ace-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.80) 0%, rgba(0,0,0,0.18) 50%, transparent 75%);
+}
+.ace-riju .ace-overlay   { padding: 36px 32px; }
+.ace-arjuna .ace-overlay,
+.ace-momkids .ace-overlay { padding: 24px 24px; }
+.ace-kriti .ace-overlay,
+.ace-aira .ace-overlay,
+.ace-ananta .ace-overlay  { padding: 20px 18px; }
+.editorial-feature-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 50%, transparent 100%);
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 40px 36px; color: white;
+  transition: background 0.4s ease;
+}
+.editorial-feature-item:hover .editorial-feature-overlay {
+  background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.25) 50%, transparent 100%);
+}
+.editorial-feature-overlay .ef-label {
+  font-size: 0.68rem; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--gold-light); margin-bottom: 10px;
+}
+.editorial-feature-title {
+  font-family: var(--serif); font-weight: 300; line-height: 1.15;
+  margin-bottom: 8px;
+}
+.editorial-feature-item:not(.ef-small) .editorial-feature-title { font-size: clamp(1.8rem, 3vw, 3rem); }
+.ef-small .editorial-feature-title { font-size: 1.3rem; }
+.editorial-feature-sub {
+  font-size: 0.75rem; letter-spacing: 0.14em; text-transform: uppercase;
+  opacity: 0.65; margin-bottom: 24px;
+}
+.ef-small .editorial-feature-sub { display: none; }
+.ef-small .editorial-feature-overlay { padding: 24px 24px; }
+.ef-cta {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase;
+  color: white; border-bottom: 1px solid rgba(255,255,255,0.5);
+  padding-bottom: 2px; transition: border-color 0.3s;
+}
+.ef-cta:hover { border-color: white; }
 
 /* ══════════════════════════════════════════
    TESTIMONIALS
@@ -1332,7 +1573,10 @@ a:not([href]),
    RESPONSIVE
 ══════════════════════════════════════════ */
 @media (max-width: 1024px) {
-  .nav-links { display: none; }
+  .nav-links, .nav-left, .nav-right .nav-link { display: none; }
+  .nav-inner { grid-template-columns: auto 1fr; }
+  .nav-logo { grid-column: 1; }
+  .nav-right { grid-column: 2; }
   .hamburger { display: flex; }
   .category-grid { grid-template-columns: repeat(2, 1fr); }
   .product-grid { grid-template-columns: repeat(2, 1fr); }
@@ -1377,7 +1621,24 @@ a:not([href]),
   .newsletter-form { flex-direction: column; border-radius: 12px; }
   .newsletter-form .btn { margin: 4px; }
   .editorial-content { padding: 40px 28px; }
-  .section { padding: 56px 16px; }
+  .section { padding: 72px 16px; }
+  .collection-strip {
+    grid-template-columns: repeat(4, 1fr);
+    height: auto;
+    min-height: unset;
+  }
+  .collection-strip .collection-tile { height: 240px; }
+  .collection-strip .collection-tile:nth-child(n+5) { display: none; }
+  .ace-section {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  }
+  .ace-riju, .ace-alpa, .ace-ananta,
+  .ace-kriti, .ace-aira, .ace-arjuna, .ace-momkids {
+    grid-column: auto; grid-row: auto;
+    min-height: 280px;
+  }
+  .ace-riju, .ace-alpa { min-height: 340px; }
   .trust-row { gap: 16px; }
   .cta-row { flex-direction: column; }
   .faq-grid { grid-template-columns: 1fr; }
@@ -1389,9 +1650,15 @@ a:not([href]),
 }
 @media (max-width: 480px) {
   .nav-inner { padding: 0 16px; }
-  .hero-actions { flex-direction: column; align-items: center; }
+  .hero-content { padding: 0 24px 80px; }
+  .hero-actions { flex-direction: column; align-items: flex-start; }
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .category-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .ace-section { grid-template-columns: 1fr 1fr; }
+  .ace-riju, .ace-alpa, .ace-ananta,
+  .ace-kriti, .ace-aira, .ace-arjuna, .ace-momkids {
+    grid-column: auto; grid-row: auto; min-height: 200px;
+  }
   .instagram-grid { grid-template-columns: repeat(2, 1fr); }
   .product-info { padding: 12px 14px 14px; }
   .product-name { font-size: 0.95rem; }
@@ -1407,31 +1674,48 @@ a:not([href]),
 <!-- HEADER -->
 <header class="header" id="header" style="top: 40px;">
   <div class="nav-inner">
-    <div class="nav-logo" onclick="showPage('home')">AARK<span>.</span></div>
-    <nav class="nav-links">
-      <button type="button" class="nav-link" onclick="showPage('shop')">Shop</button>
-      <button type="button" class="nav-link" onclick="showPage('collections')">Collections</button>
-      <button type="button" class="nav-link" onclick="showPage('new')">New Arrivals</button>
-      <button type="button" class="nav-link" onclick="showPage('about')">About</button>
-      <button type="button" class="nav-link" onclick="showPage('contact')">Contact</button>
-    </nav>
-    <div class="nav-actions">
-      <div class="nav-icon-btn" onclick="toggleSearch()" title="Search">🔍</div>
+    <div class="nav-left"></div>
+    <div class="nav-logo" onclick="showPage('home')">AARK</div>
+    <div class="nav-right">
+      <div class="nav-icon-btn" onclick="toggleSearch()" title="Search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
+      </div>
       <div class="nav-icon-btn wishlist-nav" onclick="showPage('wishlist')" title="Wishlist">
         <span class="heart-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg>
         </span>
       </div>
       <div class="nav-icon-btn" onclick="openCart()" title="Cart" style="position:relative">
-        🛒
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         <div class="cart-badge" id="cartBadge">0</div>
       </div>
-      <button class="hamburger" onclick="toggleMobileNav()" id="hamburger">
-        <span></span><span></span><span></span>
+      <button class="menu-trigger" onclick="openSideMenu()" title="Menu">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="0" y1="1" x2="20" y2="1"/><line x1="0" y1="7" x2="20" y2="7"/><line x1="0" y1="13" x2="20" y2="13"/></svg>
+        MENU
       </button>
     </div>
   </div>
 </header>
+
+<!-- SIDE MENU PANEL -->
+<div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
+<div class="side-menu" id="sideMenu">
+  <button class="side-menu-close" onclick="closeSideMenu()" aria-label="Close menu">✕</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showPage('shop')">All Products</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('straight-cut-kurtis')">The Riju Series</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('short-tops')">The Alpa Series</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('long-frocks')">Ananta Series</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('short-frocks')">The Kriti Series</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">The Aira Series</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('mens-kurtas')">Arjuna Series</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showPage('collections')">Mom &amp; Kids Matching</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showPage('new')">New Arrivals</button>
+  <div class="side-menu-divider"></div>
+  <button class="side-menu-secondary" onclick="closeSideMenu();showPage('about')">About AARK</button>
+  <button class="side-menu-secondary" onclick="closeSideMenu();showPage('sizechart')">Size Chart</button>
+  <button class="side-menu-secondary" onclick="closeSideMenu();showPage('faq')">FAQ</button>
+  <button class="side-menu-secondary" onclick="closeSideMenu();showPage('contact')">Contact</button>
+</div>
 
 <!-- MOBILE NAV -->
 <nav class="mobile-nav" id="mobileNav">
@@ -1457,7 +1741,7 @@ a:not([href]),
   <div class="search-panel" onclick="event.stopPropagation()">
     <div class="search-header">
       <div class="search-input-row">
-        <div class="search-icon">🔍</div>
+        <div class="search-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg></div>
         <input
           class="search-input"
           id="searchInput"
@@ -1495,22 +1779,81 @@ a:not([href]),
 
   <!-- HERO -->
   <section class="hero">
+    <div class="hero-bg-img"></div>
+    <div class="hero-bg-overlay"></div>
     <div class="hero-bg-pattern"></div>
     <div class="hero-content">
-      <div class="hero-tag">✦ New Collection Live</div>
+      <div class="hero-tag">New Collection Live</div>
       <h1 class="hero-title">
         Tradition,<br>
         <em>styled for today</em>
       </h1>
       <p class="hero-sub">Premium ethnic wear for women, kids and families — rooted in culture, designed for the modern woman.</p>
-      <div class="hero-actions">
-        <button class="btn btn-primary btn-lg" onclick="showPage('shop')">Shop Collection</button>
-        <button class="btn btn-outline-white btn-lg" onclick="showPage('collections')">Explore Looks</button>
-      </div>
     </div>
     <div class="hero-scroll" onclick="document.getElementById('features').scrollIntoView({behavior:'smooth'})">
       <div class="scroll-line"></div>
       SCROLL
+    </div>
+  </section>
+
+  <!-- COLLECTIONS MOSAIC (home) -->
+  <section class="ace-section">
+    <div class="ace-item ace-riju" onclick="showShopWithFilter('straight-cut-kurtis')">
+      <img src="catalog-images/SC001_870.jpg" alt="The Riju Series">
+      <div class="ace-overlay">
+        <div class="ef-label">Featured Series</div>
+        <h2 class="editorial-feature-title">The Riju Series</h2>
+        <div class="editorial-feature-sub">Straight Cut Kurtis &nbsp;·&nbsp; 12 Styles</div>
+        <span class="ef-cta">Discover the collection &nbsp;→</span>
+      </div>
+    </div>
+    <div class="ace-item ace-alpa" onclick="showShopWithFilter('short-tops')">
+      <img src="catalog-images/ST001_800.jpg" alt="The Alpa Series">
+      <div class="ace-overlay">
+        <div class="ef-label">Women</div>
+        <h2 class="editorial-feature-title">The Alpa Series</h2>
+        <div class="editorial-feature-sub">15 Styles · Short Tops</div>
+      </div>
+    </div>
+    <div class="ace-item ace-ananta" onclick="showShopWithFilter('long-frocks')">
+      <img src="catalog-images/LF001_1200.jpg" alt="Ananta Series">
+      <div class="ace-overlay">
+        <div class="ef-label">Women</div>
+        <h2 class="editorial-feature-title">Ananta Series</h2>
+        <div class="editorial-feature-sub">6 Styles · Long Frocks</div>
+      </div>
+    </div>
+    <div class="ace-item ace-kriti" onclick="showShopWithFilter('short-frocks')">
+      <img src="catalog-images/SF001_1150.jpg" alt="The Kriti Series">
+      <div class="ace-overlay">
+        <div class="ef-label">Women</div>
+        <h2 class="editorial-feature-title">The Kriti Series</h2>
+        <div class="editorial-feature-sub">5 Styles · Short Frocks</div>
+      </div>
+    </div>
+    <div class="ace-item ace-aira" onclick="showShopWithFilter('kids-frocks')">
+      <img src="catalog-images/KF001_570.jpg" alt="The Aira Series">
+      <div class="ace-overlay">
+        <div class="ef-label">Kids</div>
+        <h2 class="editorial-feature-title">The Aira Series</h2>
+        <div class="editorial-feature-sub">3 Styles · Kids Frocks</div>
+      </div>
+    </div>
+    <div class="ace-item ace-arjuna" onclick="showShopWithFilter('mens-kurtas')">
+      <img src="mens_collection/teal_front.png" alt="Arjuna Series">
+      <div class="ace-overlay">
+        <div class="ef-label">Men</div>
+        <h2 class="editorial-feature-title">Arjuna Series</h2>
+        <div class="editorial-feature-sub">2 Styles · Men's Kurtas</div>
+      </div>
+    </div>
+    <div class="ace-item ace-momkids" onclick="showPage('collections')">
+      <img src="catalog-images/mom_kids.jpg" alt="Mom &amp; Kids Matching">
+      <div class="ace-overlay">
+        <div class="ef-label">Family</div>
+        <h2 class="editorial-feature-title">Mom &amp; Kids Matching</h2>
+        <div class="editorial-feature-sub">Signature Family Styling</div>
+      </div>
     </div>
   </section>
 
@@ -1556,112 +1899,6 @@ a:not([href]),
     </div>
   </div>
 
-  <!-- SHOP BY CATEGORY -->
-  <section class="section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-label">Shop by Category</div>
-        <h2 class="section-title">Find Your <em>Perfect Look</em></h2>
-        <div class="divider"></div>
-        <p class="section-sub">Browse the real catalog by series, silhouette, and family styling sets from the images in your folder.</p>
-      </div>
-      <div class="category-grid">
-        <div class="category-card" onclick="showShopWithFilter('straight-cut-kurtis')">
-          <img class="cat-img" src="catalog-images/SC001_870.jpg" alt="Straight Cut Kurtis">
-          <div class="cat-overlay"></div>
-          <div class="cat-info"><div class="cat-name">Straight Cut Kurtis</div><div class="cat-count">12 styles · The Riju Series</div></div>
-          <div class="cat-arrow">→</div>
-        </div>
-        <div class="category-card" onclick="showShopWithFilter('short-tops')">
-          <img class="cat-img" src="catalog-images/ST001_800.jpg" alt="Short Tops">
-          <div class="cat-overlay"></div>
-          <div class="cat-info"><div class="cat-name">Short Tops</div><div class="cat-count">15 styles · The Alpa Series</div></div>
-          <div class="cat-arrow">→</div>
-        </div>
-        <div class="category-card" onclick="showShopWithFilter('long-frocks')">
-          <img class="cat-img" src="catalog-images/LF001_1200.jpg" alt="Long Frocks">
-          <div class="cat-overlay"></div>
-          <div class="cat-info"><div class="cat-name">Long Frocks</div><div class="cat-count">6 styles · Ananta Series</div></div>
-          <div class="cat-arrow">→</div>
-        </div>
-        <div class="category-card" onclick="showShopWithFilter('short-frocks')">
-          <img class="cat-img" src="catalog-images/SF001_1150.jpg" alt="Short Frocks">
-          <div class="cat-overlay"></div>
-          <div class="cat-info"><div class="cat-name">Short Frocks</div><div class="cat-count">5 styles · The Kriti Series</div></div>
-          <div class="cat-arrow">→</div>
-        </div>
-      </div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-top:16px;">
-        <div class="category-card" onclick="showShopWithFilter('kids-frocks')" style="aspect-ratio:2/1;">
-          <img class="cat-img" src="catalog-images/KF001_570.jpg" alt="Kids Frocks">
-          <div class="cat-overlay"></div>
-          <div class="cat-info" style="padding:14px;"><div class="cat-name" style="font-size:1.1rem;">Kids Frocks</div><div class="cat-count">3 styles · The Aira Series</div></div>
-          <div class="cat-arrow">→</div>
-        </div>
-        <div class="category-card" onclick="showShopWithFilter('mens-kurtas')" style="aspect-ratio:2/1;">
-          <img class="cat-img" src="mens_collection/teal_front.png" alt="Men's Kurtas">
-          <div class="cat-overlay"></div>
-          <div class="cat-info" style="padding:14px;"><div class="cat-name" style="font-size:1.1rem;">Men's Kurtas</div><div class="cat-count">2 styles · Arjuna Series</div></div>
-          <div class="cat-arrow">→</div>
-        </div>
-        <div class="category-card" onclick="showPage('collections')" style="aspect-ratio:2/1;">
-          <img class="cat-img" src="catalog-images/mom_kids.jpg" alt="Mom and kids matching collection">
-          <div class="cat-overlay"></div>
-          <div class="cat-info" style="padding:14px;"><div class="cat-name" style="font-size:1.1rem;">Mom & Kids Matching</div><div class="cat-count">Signature family styling story</div></div>
-          <div class="cat-arrow">→</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- NEW ARRIVALS -->
-  <section class="section" style="background:white; padding-top:72px; padding-bottom:72px;">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-label">Fresh off the rack</div>
-        <h2 class="section-title">New <em>Arrivals</em></h2>
-        <div class="divider"></div>
-      </div>
-      <div class="product-grid" id="newArrivalsGrid"></div>
-      <div class="text-center mt-40">
-        <button class="btn btn-outline-teal btn-lg" onclick="showPage('new')">View All New Arrivals</button>
-      </div>
-    </div>
-  </section>
-
-  <!-- EDITORIAL BANNER -->
-  <section class="section">
-    <div class="container">
-      <div class="editorial-banner">
-        <div class="editorial-img">
-          <img src="catalog-images/mom_kids.jpg" alt="Mom and kids coordinated outfits">
-        </div>
-        <div class="editorial-content">
-          <div class="section-label">Spotlight Collection</div>
-          <h2 class="section-title" style="text-align:left;">Matching <em>Mom & Kids</em><br>Moments</h2>
-          <p>Use the new family styling image as a collection spotlight and guide shoppers into coordinated looks. It adds an instant branded story to the catalog instead of relying on generic placeholders.</p>
-          <button class="btn btn-primary" onclick="showPage('collections')">Explore Collections →</button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FEATURED STYLES -->
-  <section class="section" style="background:var(--cream-dark);">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-label">Catalog Highlights</div>
-        <h2 class="section-title">Featured <em>Styles</em></h2>
-        <div class="divider"></div>
-        <p class="section-sub">A mix of standout pieces across the current catalog, organized from the real product photos in your folder.</p>
-      </div>
-      <div class="product-grid" id="bestSellersGrid"></div>
-      <div class="text-center mt-40">
-        <button class="btn btn-teal btn-lg" onclick="showPage('shop')">View All Products</button>
-      </div>
-    </div>
-  </section>
-
   <!-- SHOP BY OCCASION -->
   <section class="section" style="background:white;">
     <div class="container">
@@ -1704,14 +1941,6 @@ a:not([href]),
         <div class="divider"></div>
       </div>
       <div class="instagram-grid">
-        <div class="insta-item"><img src="customer_images/image.png" alt="AARK customer on Instagram" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
-        <div class="insta-item"><img src="customer_images/image1.png" alt="AARK customer style photo" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
-        <div class="insta-item"><img src="customer_images/image2.png" alt="Customer wearing AARK outfit" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
-        <div class="insta-item"><img src="customer_images/image3.png" alt="AARK customer look" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
-        <div class="insta-item"><img src="customer_images/image4.png" alt="Customer photo featuring AARK wear" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
-        <div class="insta-item"><img src="customer_images/image5.png" alt="AARK customer featured on Instagram" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
-        <div class="insta-item"><img src="customer_images/image6.png" alt="Customer look in AARK collection" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
-        <div class="insta-item"><img src="customer_images/image7.png" alt="AARK customer community photo" loading="lazy"><div class="insta-overlay">📷<span>@aark.fusion</span></div></div>
       </div>
       <div class="text-center mt-24">
         <a class="btn btn-outline-teal" href="https://instagram.com/aark.fusion" target="_blank">Follow @aark.fusion on Instagram →</a>
@@ -1773,7 +2002,7 @@ a:not([href]),
   <footer class="footer">
     <div class="footer-grid">
       <div class="footer-brand">
-        <div class="logo">AARK<span>.</span></div>
+        <div class="logo">AARK</div>
         <p>Tradition, styled for today. Premium ethnic wear crafted with love, for women, kids and families who celebrate culture through fashion.</p>
         <div class="footer-social">
           <a class="social-btn" href="https://instagram.com/aark.fusion" target="_blank">📸</a>
@@ -1811,7 +2040,7 @@ a:not([href]),
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2026 AARK. All rights reserved. Made with <span style="color:#008080;" class="heart-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg></span> in India.</p>
+      <p>© 2026 AARK All rights reserved. Made with <span style="color:#008080;" class="heart-icon" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg></span> in India.</p>
       <div class="payment-icons">
         <div class="pay-icon">UPI</div>
         <div class="pay-icon">COD</div>
@@ -1902,37 +2131,62 @@ a:not([href]),
     <p>Curated stories told through fabric, print, and craftsmanship.</p>
     <div class="breadcrumb"><a onclick="showPage('home')">Home</a><span>/</span><span>Collections</span></div>
   </div>
-  <section class="section" style="padding-top:48px;">
-    <div class="container">
-      <div class="collections-grid">
-        <div class="collection-hero-card" onclick="showPage('shop')">
-          <img src="catalog-images/mom_kids.jpg" alt="Mom and kids matching collection">
-          <div class="collection-card-overlay"><h3>Mom & Kids Story</h3><p>Matching outfits and family styling inspiration</p><button class="btn btn-primary btn-sm">Explore →</button></div>
-        </div>
-        <div class="collection-hero-card" onclick="showShopWithFilter('straight-cut-kurtis')">
-          <img src="catalog-images/SC001_870.jpg" alt="The Riju Series">
-          <div class="collection-card-overlay"><h3>The Riju Series</h3><p>12 straight cut kurtis</p><button class="btn btn-primary btn-sm">Explore →</button></div>
-        </div>
-        <div class="collection-hero-card" onclick="showShopWithFilter('short-tops')">
-          <img src="catalog-images/ST001_800.jpg" alt="The Alpa Series">
-          <div class="collection-card-overlay"><h3>The Alpa Series</h3><p>15 short tops</p><button class="btn btn-primary btn-sm">Explore →</button></div>
-        </div>
-        <div class="collection-hero-card" onclick="showShopWithFilter('long-frocks')">
-          <img src="catalog-images/LF001_1200.jpg" alt="Ananta Series">
-          <div class="collection-card-overlay"><h3>Ananta Series</h3><p>6 long frocks</p><button class="btn btn-primary btn-sm">Explore →</button></div>
-        </div>
-        <div class="collection-hero-card" onclick="showShopWithFilter('short-frocks')">
-          <img src="catalog-images/SF001_1150.jpg" alt="The Kriti Series">
-          <div class="collection-card-overlay"><h3>The Kriti Series</h3><p>5 short frocks</p><button class="btn btn-primary btn-sm">Explore →</button></div>
-        </div>
-        <div class="collection-hero-card" onclick="showShopWithFilter('kids-frocks')">
-          <img src="catalog-images/KF001_570.jpg" alt="The Aira Series">
-          <div class="collection-card-overlay"><h3>The Aira Series</h3><p>3 kids frocks</p><button class="btn btn-primary btn-sm">Explore →</button></div>
-        </div>
-        <div class="collection-hero-card" onclick="showShopWithFilter('mens-kurtas')">
-          <img src="mens_collection/teal_front.png" alt="Arjuna Series">
-          <div class="collection-card-overlay"><h3>Arjuna Series</h3><p>2 men's kurtas with front and back views</p><button class="btn btn-primary btn-sm">Explore →</button></div>
-        </div>
+  <section class="ace-section">
+    <div class="ace-item ace-riju" onclick="showShopWithFilter('straight-cut-kurtis')">
+      <img src="catalog-images/SC001_870.jpg" alt="The Riju Series" loading="lazy">
+      <div class="ace-overlay">
+        <div class="ef-label">Featured Series</div>
+        <h2 class="editorial-feature-title">The Riju Series</h2>
+        <div class="editorial-feature-sub">Straight Cut Kurtis &nbsp;·&nbsp; 12 Styles</div>
+        <span class="ef-cta">Discover the collection &nbsp;→</span>
+      </div>
+    </div>
+    <div class="ace-item ace-alpa" onclick="showShopWithFilter('short-tops')">
+      <img src="catalog-images/ST001_800.jpg" alt="The Alpa Series" loading="lazy">
+      <div class="ace-overlay">
+        <div class="ef-label">Women</div>
+        <h2 class="editorial-feature-title">The Alpa Series</h2>
+        <div class="editorial-feature-sub">15 Styles · Short Tops</div>
+      </div>
+    </div>
+    <div class="ace-item ace-ananta" onclick="showShopWithFilter('long-frocks')">
+      <img src="catalog-images/LF001_1200.jpg" alt="Ananta Series" loading="lazy">
+      <div class="ace-overlay">
+        <div class="ef-label">Women</div>
+        <h2 class="editorial-feature-title">Ananta Series</h2>
+        <div class="editorial-feature-sub">6 Styles · Long Frocks</div>
+      </div>
+    </div>
+    <div class="ace-item ace-kriti" onclick="showShopWithFilter('short-frocks')">
+      <img src="catalog-images/SF001_1150.jpg" alt="The Kriti Series" loading="lazy">
+      <div class="ace-overlay">
+        <div class="ef-label">Women</div>
+        <h2 class="editorial-feature-title">The Kriti Series</h2>
+        <div class="editorial-feature-sub">5 Styles · Short Frocks</div>
+      </div>
+    </div>
+    <div class="ace-item ace-aira" onclick="showShopWithFilter('kids-frocks')">
+      <img src="catalog-images/KF001_570.jpg" alt="The Aira Series" loading="lazy">
+      <div class="ace-overlay">
+        <div class="ef-label">Kids</div>
+        <h2 class="editorial-feature-title">The Aira Series</h2>
+        <div class="editorial-feature-sub">3 Styles · Kids Frocks</div>
+      </div>
+    </div>
+    <div class="ace-item ace-arjuna" onclick="showShopWithFilter('mens-kurtas')">
+      <img src="mens_collection/teal_front.png" alt="Arjuna Series" loading="lazy">
+      <div class="ace-overlay">
+        <div class="ef-label">Men</div>
+        <h2 class="editorial-feature-title">Arjuna Series</h2>
+        <div class="editorial-feature-sub">2 Styles · Men's Kurtas</div>
+      </div>
+    </div>
+    <div class="ace-item ace-momkids" onclick="showPage('collections')">
+      <img src="catalog-images/mom_kids.jpg" alt="Mom & Kids Matching" loading="lazy">
+      <div class="ace-overlay">
+        <div class="ef-label">Family</div>
+        <h2 class="editorial-feature-title">Mom & Kids Matching</h2>
+        <div class="editorial-feature-sub">Signature Family Styling</div>
       </div>
     </div>
   </section>
@@ -2710,7 +2964,7 @@ function buildSearchResultItem(product) {
       </div>
       <div class="search-result-copy">
         <div class="search-result-kicker">${product.categoryLabel}</div>
-        <div class="search-result-name">${product.name}</div>
+        <div class="search-result-name">${product.series}</div>
         <div class="search-result-meta">
           <span>${product.series}</span>
           <span>${product.sku}</span>
@@ -2872,10 +3126,8 @@ function isTypingTarget(target) {
 // GRID INITIALIZERS
 // ══════════════════════════════════════════
 function initHomeGrids() {
-  const newArrivals = sortProductList(products.filter(p => p.badge === 'new')).slice(0, 4);
-  const featuredStyles = sortProductList(products.filter(p => p.featured), 'series').slice(0, 4);
-  document.getElementById('newArrivalsGrid').innerHTML = newArrivals.map(buildProductCard).join('');
-  document.getElementById('bestSellersGrid').innerHTML = featuredStyles.map(buildProductCard).join('');
+  const homeProducts = sortProductList(products, 'series').slice(0, 8);
+  document.getElementById('homeProductGrid').innerHTML = homeProducts.map(buildProductCard).join('');
 }
 
 function initShopGrid() {
@@ -2958,11 +3210,11 @@ function openProduct(id, addToHistory = true) {
       <div class="detail-breadcrumb">
         <a onclick="showPage('home')">Home</a><span>/</span>
         <a onclick="showPage('shop')">Shop</a><span>/</span>
-        <span style="color:var(--text)">${p.name}</span>
+        <span style="color:var(--text)">${p.series}</span>
       </div>
       <div class="detail-cat">${p.categoryLabel}</div>
-      <h1 class="detail-name">${p.name}</h1>
-      <div class="detail-rating"><span>${p.series}</span><span>•</span><span>${p.sku}</span></div>
+      <h1 class="detail-name">${p.series}</h1>
+      <div class="detail-rating"><span>${p.sku}</span></div>
       <div class="detail-price">
         <span class="current">${getProductPriceLabel(p)}</span>
       </div>
@@ -3248,6 +3500,17 @@ function toggleMobileNav() {
   document.getElementById('mobileNav').classList.toggle('open');
 }
 
+function openSideMenu() {
+  document.getElementById('sideMenu').classList.add('open');
+  document.getElementById('sideMenuOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeSideMenu() {
+  document.getElementById('sideMenu').classList.remove('open');
+  document.getElementById('sideMenuOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
 // ══════════════════════════════════════════
 // SCROLL HEADER
 // ══════════════════════════════════════════
@@ -3372,6 +3635,12 @@ function toggleSearch() {
 
 document.addEventListener('keydown', event => {
   const searchOpen = document.getElementById('searchOverlay')?.classList.contains('open');
+
+  const sideMenuOpen = document.getElementById('sideMenu')?.classList.contains('open');
+  if (event.key === 'Escape' && sideMenuOpen) {
+    closeSideMenu();
+    return;
+  }
 
   if (event.key === 'Escape' && searchOpen) {
     closeSearch();
