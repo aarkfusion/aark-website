@@ -293,12 +293,7 @@ a:not([href]),
   position: relative;
 }
 body.nav-scrolled .hero { margin-top: 68px; }
-.hero::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 120px; z-index: 1; pointer-events: none;
-  background: linear-gradient(to bottom, #008080 0%, transparent 100%);
-}
+.hero::before { display: none; }
 .hero-bg-img { display: none; }
 .hero-img {
   width: 100%; display: block; position: relative; z-index: 0;
