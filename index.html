@@ -298,6 +298,25 @@ body.nav-scrolled .hero { margin-top: 68px; }
 .hero-img {
   width: 100%; display: block; position: relative; z-index: 0;
 }
+.hero-slide {
+  position: absolute; top: 0; left: 0; width: 100%;
+  opacity: 0; transition: opacity 1s ease-in-out;
+  line-height: 0;
+}
+.hero-slide.active { opacity: 1; }
+.hero-slide img { width: 100%; display: block; }
+.hero-slide:first-child { position: relative; }
+.hero-dots {
+  position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%);
+  display: flex; gap: 8px; z-index: 10;
+}
+.hero-dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: rgba(255,255,255,0.45);
+  border: none; cursor: pointer; padding: 0;
+  transition: background 0.3s, transform 0.3s;
+}
+.hero-dot.active { background: white; transform: scale(1.25); }
 .hero-bg-overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 100%),
@@ -1818,8 +1837,17 @@ body.nav-scrolled .page-top-section {
 <div id="page-home" class="page active">
 
   <!-- HERO -->
-  <section class="hero">
-    <img class="hero-img" src="hero.png" alt="AARK Collection">
+  <section class="hero" id="heroSection">
+    <div class="hero-slide active">
+      <img src="hero1.png" alt="AARK Collection">
+    </div>
+    <div class="hero-slide">
+      <img src="hero.png" alt="AARK Collection">
+    </div>
+    <div class="hero-dots">
+      <button class="hero-dot active" onclick="goToSlide(0)"></button>
+      <button class="hero-dot" onclick="goToSlide(1)"></button>
+    </div>
   </section>
 
   <!-- COLLECTIONS MOSAIC (home) -->
@@ -3724,6 +3752,29 @@ window.addEventListener('popstate', function(e) {
   if (state.type === 'product') openProduct(state.id, false);
   else if (state.type === 'page') showPage(state.pageId, false);
 });
+
+// ══════════════════════════════════════════
+// HERO SLIDESHOW
+// ══════════════════════════════════════════
+let heroCurrentSlide = 0;
+const heroSlideInterval = 4000;
+
+function goToSlide(index) {
+  const slides = document.querySelectorAll('.hero-slide');
+  const dots = document.querySelectorAll('.hero-dot');
+  slides[heroCurrentSlide].classList.remove('active');
+  dots[heroCurrentSlide].classList.remove('active');
+  heroCurrentSlide = index;
+  slides[heroCurrentSlide].classList.add('active');
+  dots[heroCurrentSlide].classList.add('active');
+}
+
+function nextHeroSlide() {
+  const slides = document.querySelectorAll('.hero-slide');
+  goToSlide((heroCurrentSlide + 1) % slides.length);
+}
+
+setInterval(nextHeroSlide, heroSlideInterval);
 
 // ══════════════════════════════════════════
 // INIT
