@@ -79,17 +79,18 @@ a:not([href]),
 /* ══════════════════════════════════════════
    HEADER / NAV
 ══════════════════════════════════════════ */
+/* Default state: transparent (home page at top — no JS needed, no flash) */
 .header {
   position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
-  background: var(--teal);
-  border-bottom: 1px solid rgba(255,255,255,0.15);
+  background: transparent;
+  border-bottom: 1px solid transparent;
+  box-shadow: none;
   transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.45s ease;
 }
-.header.scrolled { box-shadow: 0 2px 20px rgba(0,0,0,0.22); }
 .header::before {
   content: '';
   position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  opacity: 1; transition: opacity 0.5s ease;
+  opacity: 0; transition: opacity 0.5s ease;
   background:
     radial-gradient(ellipse 75% 90% at 8%  55%, rgba(0,180,190,0.28) 0%, transparent 58%),
     radial-gradient(ellipse 60% 75% at 88% 20%, rgba(0, 30, 55,0.42) 0%, transparent 54%),
@@ -97,12 +98,22 @@ a:not([href]),
     radial-gradient(ellipse 55% 70% at 28% 10%, rgba(0, 20, 45,0.32) 0%, transparent 50%),
     radial-gradient(ellipse 45% 60% at 70% 65%, rgba(0,190,200,0.18) 0%, transparent 48%);
 }
-/* ── Transparent over hero ── */
-body.hero-transparent .header { background: transparent; border-bottom-color: transparent; box-shadow: none; }
-body.hero-transparent .header::before { opacity: 0; }
-body.hero-transparent .nav-logo { color: white; }
-body.hero-transparent .nav-icon-btn { color: rgba(255,255,255,0.9); }
-body.hero-transparent .menu-trigger { color: rgba(255,255,255,0.9); }
+.nav-logo {
+  color: white;
+}
+.nav-icon-btn { color: rgba(255,255,255,0.9); }
+.menu-trigger { color: rgba(255,255,255,0.9); }
+
+/* Solid state: scrolled down OR on a non-home page */
+body.nav-solid .header {
+  background: var(--teal);
+  border-bottom-color: rgba(255,255,255,0.15);
+  box-shadow: 0 2px 20px rgba(0,0,0,0.22);
+}
+body.nav-solid .header::before { opacity: 1; }
+body.nav-solid .nav-logo { color: var(--gold-light); }
+body.nav-solid .nav-icon-btn { color: rgba(255,255,255,0.9); }
+body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
 
 .nav-inner {
   max-width: 1280px; margin: 0 auto;
@@ -116,16 +127,12 @@ body.hero-transparent .menu-trigger { color: rgba(255,255,255,0.9); }
 .nav-logo {
   font-family: 'EB Garamond', Georgia, serif;
   font-size: 6rem; font-weight: 400; letter-spacing: 6pt;
-  color: var(--gold-light);
   cursor: pointer;
   line-height: 1;
   transition: font-size 0.45s cubic-bezier(0.4,0,0.2,1), color 0.5s ease;
 }
-.header.scrolled .nav-logo {
-  font-size: 2rem;
-  letter-spacing: 6pt;
-}
-.nav-logo span { color: var(--gold-light); }
+.header.scrolled .nav-logo { font-size: 2rem; }
+.nav-logo span { color: inherit; }
 .nav-links {
   display: flex; align-items: center; gap: 32px;
 }
@@ -309,9 +316,7 @@ body.hero-transparent .menu-trigger { color: rgba(255,255,255,0.9); }
   position: absolute; top: 0; left: 0; right: 0;
   height: 260px; z-index: 5; pointer-events: none;
   background: linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, transparent 100%);
-  opacity: 0; transition: opacity 0.5s ease;
 }
-body.hero-transparent .hero::before { opacity: 1; }
 .hero-bg-img { display: none; }
 .hero-img {
   width: 100%; display: block; position: relative; z-index: 0;
@@ -722,7 +727,7 @@ body.hero-transparent .hero::before { opacity: 1; }
 .ace-section {
   display: grid;
   grid-template-columns: 2.2fr 1.2fr 1fr 1.3fr;
-  grid-template-rows: 42vh 30vh 34vh;
+  grid-template-rows: 52vh 38vh;
   gap: 4px;
   background: #f5f4f2;
   min-height: 600px;
@@ -1730,10 +1735,110 @@ body.hero-transparent .hero::before { opacity: 1; }
   .ace-kriti, .ace-aira, .ace-arjuna, .ace-momkids {
     grid-column: auto; grid-row: auto; min-height: 200px;
   }
+  .sc-card { flex: 0 0 85%; }
+  .sc-section { padding: 36px 0 44px; }
+  .sc-arrow { display: none; }
   .instagram-grid { grid-template-columns: repeat(2, 1fr); }
   .product-info { padding: 12px 14px 14px; }
   .product-name { font-size: 0.95rem; }
 }
+
+/* ══════════════════════════════════════════
+   SERIES CAROUSEL (home page)
+══════════════════════════════════════════ */
+.sc-section {
+  background: #f5f4f2;
+  padding: 56px 0 64px;
+  position: relative;
+}
+.sc-section-title {
+  text-align: center;
+  font-family: var(--serif);
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  font-weight: 300;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: #555;
+  margin-bottom: 36px;
+}
+.sc-outer {
+  position: relative;
+  margin: 0 56px;
+}
+.sc-viewport {
+  overflow: hidden;
+}
+.sc-track {
+  display: flex;
+  will-change: transform;
+}
+.sc-card {
+  flex: 0 0 calc(100% / 3);
+  box-sizing: border-box;
+  padding: 0 10px;
+  cursor: pointer;
+}
+.sc-img-wrap {
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.sc-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 10%;
+  display: block;
+  transition: transform 0.6s ease;
+}
+.sc-card:hover .sc-img-wrap img { transform: scale(1.04); }
+.sc-label {
+  text-align: center;
+  margin-top: 18px;
+  font-family: var(--serif);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  font-weight: 300;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: #1a1a1a;
+}
+.sc-arrow {
+  position: absolute;
+  top: calc(50% - 28px);
+  transform: translateY(-50%);
+  background: transparent;
+  border: 1px solid rgba(26,26,26,0.5);
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  font-size: 1rem;
+  color: #1a1a1a;
+  transition: background 0.25s, color 0.25s, border-color 0.25s;
+  line-height: 1;
+}
+.sc-arrow:hover { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+.sc-arrow-prev { left: -52px; }
+.sc-arrow-next { right: -52px; }
+.sc-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 28px;
+}
+.sc-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: rgba(26,26,26,0.25);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.3s, transform 0.3s;
+}
+.sc-dot.active { background: #1a1a1a; transform: scale(1.4); }
 </style>
 </head>
 <body>
@@ -1860,64 +1965,57 @@ body.hero-transparent .hero::before { opacity: 1; }
     </div>
   </section>
 
-  <!-- COLLECTIONS MOSAIC (home) -->
-  <section class="ace-section">
-    <div class="ace-item ace-riju" onclick="showShopWithFilter('straight-cut-kurtis')">
-      <img src="catalog-images/SC001_870.jpg" alt="The Riju Series">
-      <div class="ace-overlay">
-        <div class="ef-label">Featured Series</div>
-        <h2 class="editorial-feature-title">The Riju Series</h2>
-        <div class="editorial-feature-sub">Straight Cut Kurtis &nbsp;·&nbsp; 12 Styles</div>
-        <span class="ef-cta">Discover the collection &nbsp;→</span>
+  <!-- SERIES CAROUSEL (home) -->
+  <section class="sc-section">
+    <p class="sc-section-title">Our Collections</p>
+    <div class="sc-outer">
+      <button class="sc-arrow sc-arrow-prev" id="scPrev" aria-label="Previous">&#8592;</button>
+      <div class="sc-viewport" id="scViewport">
+        <div class="sc-track" id="scTrack">
+          <!-- real cards (5) -->
+          <div class="sc-card" onclick="showShopWithFilter('straight-cut-kurtis')">
+            <div class="sc-img-wrap"><img src="catalog-images/SC002_870.jpg" alt="The Riju Series" loading="lazy"></div>
+            <div class="sc-label">The Riju Series</div>
+          </div>
+          <div class="sc-card" onclick="showShopWithFilter('short-tops')">
+            <div class="sc-img-wrap"><img src="catalog-images/ST001_800.jpg" alt="The Alpa Series" loading="lazy"></div>
+            <div class="sc-label">The Alpa Series</div>
+          </div>
+          <div class="sc-card" onclick="showShopWithFilter('long-frocks')">
+            <div class="sc-img-wrap"><img src="catalog-images/LF001_1200.jpg" alt="The Ananta Series" loading="lazy"></div>
+            <div class="sc-label">The Ananta Series</div>
+          </div>
+          <div class="sc-card" onclick="showShopWithFilter('short-frocks')">
+            <div class="sc-img-wrap"><img src="catalog-images/SF001_1150.jpg" alt="The Kriti Series" loading="lazy"></div>
+            <div class="sc-label">The Kriti Series</div>
+          </div>
+          <div class="sc-card" onclick="showShopWithFilter('kids-frocks')">
+            <div class="sc-img-wrap"><img src="catalog-images/KF001_570.jpg" alt="The Aira Series" loading="lazy"></div>
+            <div class="sc-label">The Aira Series</div>
+          </div>
+          <!-- clones for seamless loop (first 3 repeated) -->
+          <div class="sc-card sc-clone" onclick="showShopWithFilter('straight-cut-kurtis')">
+            <div class="sc-img-wrap"><img src="catalog-images/SC002_870.jpg" alt="The Riju Series" loading="lazy"></div>
+            <div class="sc-label">The Riju Series</div>
+          </div>
+          <div class="sc-card sc-clone" onclick="showShopWithFilter('short-tops')">
+            <div class="sc-img-wrap"><img src="catalog-images/ST001_800.jpg" alt="The Alpa Series" loading="lazy"></div>
+            <div class="sc-label">The Alpa Series</div>
+          </div>
+          <div class="sc-card sc-clone" onclick="showShopWithFilter('long-frocks')">
+            <div class="sc-img-wrap"><img src="catalog-images/LF001_1200.jpg" alt="The Ananta Series" loading="lazy"></div>
+            <div class="sc-label">The Ananta Series</div>
+          </div>
+        </div>
       </div>
+      <button class="sc-arrow sc-arrow-next" id="scNext" aria-label="Next">&#8594;</button>
     </div>
-    <div class="ace-item ace-alpa" onclick="showShopWithFilter('short-tops')">
-      <img src="catalog-images/ST001_800.jpg" alt="The Alpa Series">
-      <div class="ace-overlay">
-        <div class="ef-label">Women</div>
-        <h2 class="editorial-feature-title">The Alpa Series</h2>
-        <div class="editorial-feature-sub">15 Styles · Short Tops</div>
-      </div>
-    </div>
-    <div class="ace-item ace-ananta" onclick="showShopWithFilter('long-frocks')">
-      <img src="catalog-images/LF001_1200.jpg" alt="The Ananta Series">
-      <div class="ace-overlay">
-        <div class="ef-label">Women</div>
-        <h2 class="editorial-feature-title">The Ananta Series</h2>
-        <div class="editorial-feature-sub">6 Styles · Long Frocks</div>
-      </div>
-    </div>
-    <div class="ace-item ace-kriti" onclick="showShopWithFilter('short-frocks')">
-      <img src="catalog-images/SF001_1150.jpg" alt="The Kriti Series">
-      <div class="ace-overlay">
-        <div class="ef-label">Women</div>
-        <h2 class="editorial-feature-title">The Kriti Series</h2>
-        <div class="editorial-feature-sub">5 Styles · Short Frocks</div>
-      </div>
-    </div>
-    <div class="ace-item ace-aira" onclick="showShopWithFilter('kids-frocks')">
-      <img src="catalog-images/KF001_570.jpg" alt="The Aira Series">
-      <div class="ace-overlay">
-        <div class="ef-label">Kids</div>
-        <h2 class="editorial-feature-title">The Aira Series</h2>
-        <div class="editorial-feature-sub">3 Styles · Kids Frocks</div>
-      </div>
-    </div>
-    <div class="ace-item ace-arjuna" onclick="showShopWithFilter('mens-kurtas')">
-      <img src="mens_collection/teal_front.png" alt="The Arjuna Series">
-      <div class="ace-overlay">
-        <div class="ef-label">Men</div>
-        <h2 class="editorial-feature-title">The Arjuna Series</h2>
-        <div class="editorial-feature-sub">2 Styles · Men's Kurtas</div>
-      </div>
-    </div>
-    <div class="ace-item ace-momkids" onclick="showPage('collections')">
-      <img src="catalog-images/mom_kids.jpg" alt="The Mom &amp; Kids Collection">
-      <div class="ace-overlay">
-        <div class="ef-label">Family</div>
-        <h2 class="editorial-feature-title">The Mom &amp; Kids Collection</h2>
-        <div class="editorial-feature-sub">Signature Family Styling</div>
-      </div>
+    <div class="sc-dots" id="scDots">
+      <button class="sc-dot active" onclick="scGoTo(0)"></button>
+      <button class="sc-dot" onclick="scGoTo(1)"></button>
+      <button class="sc-dot" onclick="scGoTo(2)"></button>
+      <button class="sc-dot" onclick="scGoTo(3)"></button>
+      <button class="sc-dot" onclick="scGoTo(4)"></button>
     </div>
   </section>
 
@@ -2989,7 +3087,7 @@ function showPage(pageId, addToHistory = true) {
     window.scrollTo(0, 0);
     document.getElementById('header').classList.remove('scrolled');
     document.body.classList.remove('nav-scrolled');
-    document.body.classList.toggle('hero-transparent', pageId === 'home');
+    document.body.classList.toggle('nav-solid', pageId !== 'home');
   }
   document.getElementById('mobileNav').classList.remove('open');
   closeSearch();
@@ -3656,11 +3754,11 @@ window.addEventListener('scroll', () => {
   if (y > 80) {
     header.classList.add('scrolled');
     document.body.classList.add('nav-scrolled');
-    if (!onHome) document.body.classList.remove('hero-transparent');
+    document.body.classList.add('nav-solid');
   } else if (y < 60) {
     header.classList.remove('scrolled');
     document.body.classList.remove('nav-scrolled');
-    if (onHome) document.body.classList.add('hero-transparent');
+    if (onHome) document.body.classList.remove('nav-solid');
   }
 });
 
@@ -3797,13 +3895,101 @@ function nextHeroSlide() {
 setInterval(nextHeroSlide, heroSlideInterval);
 
 // ══════════════════════════════════════════
+// SERIES CAROUSEL
+// ══════════════════════════════════════════
+(function() {
+  const SC_TOTAL = 5;
+  const SC_VISIBLE = 3;
+  let scIdx = 0;
+  let scBusy = false;
+  let scTimer = null;
+
+  function scCardWidth() {
+    const vp = document.getElementById('scViewport');
+    return vp ? vp.offsetWidth / SC_VISIBLE : 0;
+  }
+
+  function scApply(animate) {
+    const track = document.getElementById('scTrack');
+    if (!track) return;
+    track.style.transition = animate ? 'transform 0.55s cubic-bezier(0.4,0,0.2,1)' : 'none';
+    track.style.transform = 'translateX(' + (-scIdx * scCardWidth()) + 'px)';
+  }
+
+  function scUpdateDots() {
+    const dots = document.querySelectorAll('.sc-dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === scIdx % SC_TOTAL));
+  }
+
+  function scStep(dir) {
+    if (scBusy) return;
+    scIdx += dir;
+    scBusy = true;
+    scApply(true);
+    scUpdateDots();
+  }
+
+  function scGoTo(i) {
+    if (scBusy) return;
+    scIdx = i;
+    scBusy = true;
+    scApply(true);
+    scUpdateDots();
+    scReset();
+  }
+  window.scGoTo = scGoTo;
+
+  function scOnTransitionEnd() {
+    if (scIdx >= SC_TOTAL) {
+      scIdx -= SC_TOTAL;
+      scApply(false);
+    } else if (scIdx < 0) {
+      scIdx += SC_TOTAL;
+      scApply(false);
+    }
+    scBusy = false;
+  }
+
+  function scReset() {
+    clearInterval(scTimer);
+    scTimer = setInterval(() => scStep(1), 5000);
+  }
+
+  function scInit() {
+    const track = document.getElementById('scTrack');
+    if (!track) return;
+
+    scApply(false);
+    track.addEventListener('transitionend', scOnTransitionEnd);
+
+    document.getElementById('scPrev').addEventListener('click', () => { scStep(-1); scReset(); });
+    document.getElementById('scNext').addEventListener('click', () => { scStep(1); scReset(); });
+
+    // Touch / swipe
+    const vp = document.getElementById('scViewport');
+    let tx = 0;
+    vp.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+    vp.addEventListener('touchend', e => {
+      const dx = e.changedTouches[0].clientX - tx;
+      if (Math.abs(dx) > 48) { scStep(dx < 0 ? 1 : -1); scReset(); }
+    });
+
+    // Recalculate on resize
+    window.addEventListener('resize', () => scApply(false));
+
+    scReset();
+  }
+
+  document.addEventListener('DOMContentLoaded', scInit);
+})();
+
+// ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
 loadCartFromStorage();
 renderCart();
 setupContactForm();
 initHomeGrids();
-document.body.classList.add('hero-transparent');
 
 // Handle direct URL with hash (e.g. shared WhatsApp product link)
 (function initFromHash() {
