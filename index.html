@@ -340,6 +340,19 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
   transition: background 0.3s, transform 0.3s;
 }
 .hero-dot.active { background: white; transform: scale(1.25); }
+.hero-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  z-index: 10; background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.4);
+  color: white; width: 46px; height: 46px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 1.1rem;
+  transition: background 0.25s, border-color 0.25s;
+  backdrop-filter: blur(4px);
+}
+.hero-arrow:hover { background: rgba(255,255,255,0.28); border-color: rgba(255,255,255,0.75); }
+.hero-arrow-prev { left: 20px; }
+.hero-arrow-next { right: 20px; }
 .hero-bg-overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to right, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.4) 55%, rgba(0,0,0,0.1) 100%),
@@ -1959,6 +1972,8 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
     <div class="hero-slide">
       <img src="hero.png" alt="AARK Collection">
     </div>
+    <button class="hero-arrow hero-arrow-prev" onclick="heroPrev()" aria-label="Previous">&#8592;</button>
+    <button class="hero-arrow hero-arrow-next" onclick="heroNext()" aria-label="Next">&#8594;</button>
     <div class="hero-dots">
       <button class="hero-dot active" onclick="goToSlide(0)"></button>
       <button class="hero-dot" onclick="goToSlide(1)"></button>
@@ -1982,7 +1997,7 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
             <div class="sc-label">The Alpa Series</div>
           </div>
           <div class="sc-card" onclick="showShopWithFilter('long-frocks')">
-            <div class="sc-img-wrap"><img src="catalog-images/LF001_1200.jpg" alt="The Ananta Series" loading="lazy"></div>
+            <div class="sc-img-wrap"><img src="catalog-images/LF006_1200.jpg" alt="The Ananta Series" loading="lazy"></div>
             <div class="sc-label">The Ananta Series</div>
           </div>
           <div class="sc-card" onclick="showShopWithFilter('short-frocks')">
@@ -2003,7 +2018,7 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
             <div class="sc-label">The Alpa Series</div>
           </div>
           <div class="sc-card sc-clone" onclick="showShopWithFilter('long-frocks')">
-            <div class="sc-img-wrap"><img src="catalog-images/LF001_1200.jpg" alt="The Ananta Series" loading="lazy"></div>
+            <div class="sc-img-wrap"><img src="catalog-images/LF006_1200.jpg" alt="The Ananta Series" loading="lazy"></div>
             <div class="sc-label">The Ananta Series</div>
           </div>
         </div>
@@ -2255,7 +2270,7 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
       </div>
     </div>
     <div class="ace-item ace-ananta" onclick="showShopWithFilter('long-frocks')">
-      <img src="catalog-images/LF001_1200.jpg" alt="The Ananta Series" loading="lazy">
+      <img src="catalog-images/LF006_1200.jpg" alt="The Ananta Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Women</div>
         <h2 class="editorial-feature-title">The Ananta Series</h2>
@@ -3876,6 +3891,7 @@ window.addEventListener('popstate', function(e) {
 // ══════════════════════════════════════════
 let heroCurrentSlide = 0;
 const heroSlideInterval = 4000;
+let heroTimer = null;
 
 function goToSlide(index) {
   const slides = document.querySelectorAll('.hero-slide');
@@ -3892,7 +3908,36 @@ function nextHeroSlide() {
   goToSlide((heroCurrentSlide + 1) % slides.length);
 }
 
-setInterval(nextHeroSlide, heroSlideInterval);
+function heroPrev() {
+  const slides = document.querySelectorAll('.hero-slide');
+  goToSlide((heroCurrentSlide - 1 + slides.length) % slides.length);
+  heroResetTimer();
+}
+
+function heroNext() {
+  const slides = document.querySelectorAll('.hero-slide');
+  goToSlide((heroCurrentSlide + 1) % slides.length);
+  heroResetTimer();
+}
+
+function heroResetTimer() {
+  clearInterval(heroTimer);
+  heroTimer = setInterval(nextHeroSlide, heroSlideInterval);
+}
+
+heroTimer = setInterval(nextHeroSlide, heroSlideInterval);
+
+// Hero swipe
+(function() {
+  const hero = document.getElementById('heroSection');
+  if (!hero) return;
+  let tx = 0;
+  hero.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  hero.addEventListener('touchend', e => {
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 48) { dx < 0 ? heroNext() : heroPrev(); }
+  });
+})();
 
 // ══════════════════════════════════════════
 // SERIES CAROUSEL
