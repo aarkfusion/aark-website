@@ -2964,7 +2964,31 @@ function escapeHtml(value) {
 }
 
 function buildProductDescription(meta, sku) {
-  return `${meta.series} ${meta.productLabel.toLowerCase()} from the AARK catalog. Product code ${sku}. A polished everyday style built from the actual product image set you shared.`;
+  const descMap = {
+    SC: [
+      'A beautifully crafted straight-cut kurti in a vibrant ethnic print. Designed for all-day comfort with a clean, polished silhouette that pairs effortlessly with churidars or palazzos.',
+      'An elegant everyday kurti featuring a rich ethnic motif. Tailored in a relaxed straight-cut fit, perfect for casual outings and festive occasions alike.',
+      'A refined straight-cut kurti with intricate print detailing. Made from breathable fabric that keeps you comfortable and stylish through the day.',
+    ],
+    ST: [
+      'A chic fusion top with a striking ethnic print. The relaxed fit and versatile length make it easy to style with leggings, palazzos, or jeans.',
+      'A modern fusion top featuring a bold kalamkari-inspired motif. Light, breathable, and designed for the woman who moves with ease and confidence.',
+      'An artfully printed fusion top that blends traditional patterns with contemporary silhouette. Pairs well with both ethnic and casual bottoms.',
+    ],
+    F0: [
+      'A flowing midi frock with a stunning hand-block print. Cut for graceful movement, this piece works beautifully for both everyday wear and festive gatherings.',
+      'An elegant frock adorned with a traditional ethnic motif. The relaxed A-line cut and premium fabric make it a go-to for celebrations and casual days alike.',
+      'A beautifully printed frock with a fluid drape and rich ethnic character. Designed to be worn from morning to evening without compromising comfort or style.',
+    ],
+    KF: [
+      'A cheerful kids frock in a playful ethnic print. Crafted in soft, breathable cotton for all-day comfort and easy movement.',
+      'A vibrant kids frock with a fun ethnic motif. Gentle on skin and easy to wear, making it perfect for festive occasions and everyday play.',
+    ],
+  };
+  const prefix = sku.slice(0, 2);
+  const seq = Number(sku.slice(2));
+  const pool = descMap[prefix] || descMap.SC;
+  return pool[(seq - 1) % pool.length] + ` Fabric: ${meta.fabric}. ${meta.fitNote}`;
 }
 
 const PRODUCT_IMAGES = {
@@ -3439,9 +3463,6 @@ function openProduct(id, addToHistory = true) {
         <span class="current">${getProductPriceLabel(p)}</span>
       </div>
       <p class="detail-desc">${p.desc}</p>
-      <div style="background:var(--teal-pale);border:1px solid rgba(0,128,128,0.18);border-radius:8px;padding:10px 14px;font-size:0.8rem;color:var(--teal);margin-bottom:16px;">
-        Series: ${p.series} · Product code: ${p.sku} · Fabric: ${p.fabric}
-      </div>
       <div class="size-section">
         <div class="size-label">
           <span>Select Size</span>
