@@ -1859,7 +1859,54 @@ body.nav-solid .nav-logo {
   transition: background 0.3s, transform 0.3s;
 }
 .sc-dot.active { background: #1a1a1a; transform: scale(1.4); }
-</style>
+/* ── IMAGE PROTECTION ───────────────────────────────────────── */
+img {
+  -webkit-user-drag: none;
+  user-drag: none;
+  -webkit-touch-callout: none;
+  pointer-events: auto;   /* keep hover effects */
+}
+
+/* ── CUSTOM CONTEXT MENU ────────────────────────────────────── */
+#ctx-menu {
+  position: fixed; z-index: 9999;
+  background: rgba(36, 36, 36, 0.78);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3),
+              inset 0 0.5px 0 rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 5px 0;
+  min-width: 268px;
+  opacity: 0; transform: scale(0.94) translateY(-4px);
+  transform-origin: top left;
+  transition: opacity 0.13s ease, transform 0.13s ease;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+}
+#ctx-menu.show {
+  opacity: 1; transform: scale(1) translateY(0);
+  pointer-events: auto;
+}
+.ctx-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 7px 14px;
+  font-size: 0.86rem; font-weight: 400;
+  color: rgba(255,255,255,0.93);
+  cursor: default;
+  transition: background 0.08s;
+  white-space: nowrap;
+  user-select: none;
+  border-radius: 6px;
+  margin: 0 4px;
+}
+.ctx-item-inner { display: flex; align-items: center; gap: 0; }
+.ctx-item:hover { background: rgba(30, 100, 215, 0.88); color: white; }
+.ctx-item.disabled { opacity: 0.35; pointer-events: none; }
+.ctx-item .ctx-arrow { font-size: 0.75rem; opacity: 0.55; margin-left: 8px; }
+.ctx-divider { height: 1px; background: rgba(255,255,255,0.12); margin: 4px 0; }
+.ctx-section { padding: 3px 0; }</style>
 </head>
 <body>
 
@@ -4016,11 +4063,184 @@ initHomeGrids();
     const prod = products.find(p => p.sku === sku);
     if (prod) { openProduct(prod.id, false); return; }
   }
+  if (hash.startsWith('#shop-')) {
+    const category = hash.replace('#shop-', '');
+    showShopWithFilter(category);
+    return;
+  }
   if (hash && hash.length > 1) {
     const pageId = hash.replace('#', '');
     if (document.getElementById('page-' + pageId)) { showPage(pageId, false); return; }
   }
   history.replaceState({ type: 'page', pageId: 'home' }, '', location.href);
+})();
+</script>
+
+<!-- CUSTOM CONTEXT MENU -->
+<div id="ctx-menu" role="menu" aria-label="Options">
+  <!-- Link section -->
+  <div class="ctx-section">
+    <div class="ctx-item" id="ctx-tab">Open Link in New Tab</div>
+    <div class="ctx-item" id="ctx-win">Open Link in New Window</div>
+    <div class="ctx-item" id="ctx-split">Open Link in Split View</div>
+    <div class="ctx-item" id="ctx-incognito">Open Link in Incognito Window</div>
+    <div class="ctx-item" id="ctx-as">Open Link as<span class="ctx-arrow">›</span></div>
+  </div>
+  <div class="ctx-divider"></div>
+  <!-- QR -->
+  <div class="ctx-section">
+    <div class="ctx-item" id="ctx-qr">Create QR Code for this Page</div>
+  </div>
+  <div class="ctx-divider"></div>
+  <!-- Save / copy link -->
+  <div class="ctx-section">
+    <div class="ctx-item" id="ctx-save-link">Save Link As…</div>
+    <div class="ctx-item" id="ctx-copy-link">Copy Link Address</div>
+  </div>
+  <div class="ctx-divider"></div>
+  <!-- Image section -->
+  <div class="ctx-section">
+    <div class="ctx-item" id="ctx-img-tab">Open Link in New Tab</div>
+    <div class="ctx-item" id="ctx-img-win">Open Link in New Window</div>
+    <div class="ctx-item" id="ctx-copy-img-url">Copy Image Address</div>
+    <div class="ctx-item" id="ctx-lens">Search this image with Google Lens</div>
+  </div>
+</div>
+
+<script>
+/* ── CUSTOM CONTEXT MENU + IMAGE PROTECTION ──────────────── */
+(function () {
+  const menu = document.getElementById('ctx-menu');
+  let linkUrl = '', imgSrc = '';
+
+  /* Resolve the product/collection URL from any element inside a card */
+  function resolveLink(el) {
+    const card = el.closest('.product-card');
+    const ace  = el.closest('.ace-item');
+    const sc   = el.closest('.sc-card');
+    const base = 'https://aarkfusion.com/';
+    if (card) {
+      const m = (card.getAttribute('onclick') || '').match(/openProduct\((\d+)\)/);
+      if (m) {
+        const p = (typeof products !== 'undefined' ? products : []).find(x => x.id === Number(m[1]));
+        return p ? base + '#product-' + p.sku : null;
+      }
+    }
+    if (ace || sc) {
+      const oc = (ace || sc).getAttribute('onclick') || '';
+      const f  = (oc.match(/showShopWithFilter\(['"]([^'"]+)['"]\)/) || [])[1];
+      const pg = (oc.match(/showPage\(['"]([^'"]+)['"]\)/) || [])[1];
+      return f ? base + '#shop-' + f : pg ? base + '#' + pg : base + '#collections';
+    }
+    return null;
+  }
+
+  function positionMenu(e) {
+    const W = 276, H = menu.scrollHeight || 360;
+    let x = e.clientX, y = e.clientY;
+    if (x + W > window.innerWidth  - 6) x = window.innerWidth  - W - 6;
+    if (y + H > window.innerHeight - 6) y = window.innerHeight - H - 6;
+    if (y < 6) y = 6;
+    menu.style.left = x + 'px';
+    menu.style.top  = y + 'px';
+  }
+  function showMenu(e) { positionMenu(e); menu.classList.add('show'); }
+  function hideMenu()  { menu.classList.remove('show'); }
+
+  /* Single capture-phase handler — catches everything before browser acts */
+  document.addEventListener('contextmenu', function (e) {
+    const onCard = !!e.target.closest('.product-card, .ace-item, .sc-card');
+    const onImg  = e.target.tagName === 'IMG';
+
+    /* Block native menu on images always, and on cards always */
+    if (onImg || onCard) e.preventDefault();
+
+    const url = resolveLink(e.target);
+    if (!url) { hideMenu(); return; }
+
+    linkUrl = url;
+    imgSrc  = (e.target.tagName === 'IMG')
+              ? e.target.src
+              : (e.target.closest('.product-card, .ace-item, .sc-card')
+                   ?.querySelector('img')?.src || '');
+    showMenu(e);
+  }, true); /* capture=true: fires before browser's native image menu */
+
+  /* Open helpers */
+  function openTab(url) {
+    /* No third arg = browser decides tab vs window (always tab in modern browsers) */
+    if (url) window.open(url, '_blank');
+  }
+  function openWin(url) {
+    if (url) window.open(url, '_blank',
+      'noopener,noreferrer,width=1280,height=860,left=120,top=80');
+  }
+  function copy(text) { navigator.clipboard?.writeText(text).catch(() => {}); }
+  function toast(msg) {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    Object.assign(t.style, {
+      position: 'fixed', bottom: '24px', left: '50%',
+      transform: 'translateX(-50%)',
+      background: 'rgba(0,0,0,0.78)', color: 'white',
+      padding: '8px 20px', borderRadius: '8px',
+      fontSize: '.8rem', zIndex: '99999',
+      backdropFilter: 'blur(8px)', pointerEvents: 'none',
+    });
+    document.body.appendChild(t);
+    setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 350); }, 1800);
+  }
+
+  /* Wire up menu items */
+  document.getElementById('ctx-tab')
+    .addEventListener('click', () => { openTab(linkUrl); hideMenu(); });
+
+  document.getElementById('ctx-win')
+    .addEventListener('click', () => { openWin(linkUrl); hideMenu(); });
+
+  document.getElementById('ctx-split')
+    .addEventListener('click', () => { openTab(linkUrl); hideMenu(); });
+
+  document.getElementById('ctx-incognito')
+    .addEventListener('click', () => { openTab(linkUrl); hideMenu(); });
+
+  document.getElementById('ctx-as')
+    .addEventListener('click', () => { openTab(linkUrl); hideMenu(); });
+
+  document.getElementById('ctx-qr')
+    .addEventListener('click', () => {
+      openTab('https://qr.io/?url=' + encodeURIComponent(linkUrl));
+      hideMenu();
+    });
+
+  document.getElementById('ctx-save-link')
+    .addEventListener('click', () => {
+      const a = Object.assign(document.createElement('a'), { href: linkUrl, download: '' });
+      a.click(); hideMenu();
+    });
+
+  document.getElementById('ctx-copy-link')
+    .addEventListener('click', () => { copy(linkUrl); toast('Link copied'); hideMenu(); });
+
+  document.getElementById('ctx-img-tab')
+    .addEventListener('click', () => { openTab(linkUrl); hideMenu(); });
+
+  document.getElementById('ctx-img-win')
+    .addEventListener('click', () => { openWin(linkUrl); hideMenu(); });
+
+  document.getElementById('ctx-copy-img-url')
+    .addEventListener('click', () => { copy(imgSrc); toast('Image address copied'); hideMenu(); });
+
+  document.getElementById('ctx-lens')
+    .addEventListener('click', () => {
+      openTab('https://lens.google.com/uploadbyurl?url=' + encodeURIComponent(imgSrc));
+      hideMenu();
+    });
+
+  /* Close handlers */
+  document.addEventListener('click',   () => hideMenu());
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideMenu(); });
+  document.addEventListener('scroll',  () => hideMenu(), true);
 })();
 </script>
 </body>
