@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AARK — Tradition, Styled for Today</title>
+<link rel="icon" type="image/png" href="emoji_website.png">
 <meta name="description" content="AARK catalog with straight cut kurtis, long frocks, short frocks, short tops, kids frocks, men's kurtas, and matching family looks. Rooted in tradition, styled for today.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1028,9 +1029,26 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
 .main-image {
   aspect-ratio: 3/4; overflow: hidden; border-radius: var(--radius-lg);
   background: var(--cream-dark); margin-bottom: 12px; cursor: zoom-in;
+  position: relative;
 }
 .main-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
 .main-image:hover img { transform: scale(1.04); }
+.gallery-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(255,255,255,0.75); border: 1px solid rgba(0,0,0,0.12);
+  color: #1a1a1a; width: 38px; height: 38px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; z-index: 5; font-size: 1rem;
+  transition: background 0.2s, opacity 0.2s;
+  backdrop-filter: blur(4px);
+  border-radius: 2px;
+  opacity: 0; pointer-events: none;
+}
+.main-image:hover .gallery-arrow { opacity: 1; pointer-events: auto; }
+.gallery-arrow:hover { background: rgba(255,255,255,0.95); }
+.gallery-arrow.gallery-prev { left: 10px; }
+.gallery-arrow.gallery-next { right: 10px; }
+.gallery-arrow.hidden { display: none; }
 .thumb-row { display: flex; gap: 10px; }
 .thumb {
   width: 80px; height: 100px; border-radius: var(--radius);
@@ -2865,6 +2883,7 @@ const CATALOG_FILES = [
   'F0005_1200.jpg',
   'F0006_1200.jpg',
   'F0009_1150.jpg',
+  'F0012_1200.jpg',
   'KF001_570.jpg',
   'KF002_570.png',
   'KF003_570.jpg',
@@ -2950,7 +2969,7 @@ function buildProductDescription(meta, sku) {
 
 const PRODUCT_IMAGES = {
   SC001: ['catalog-images/SC001_1.png','catalog-images/SC001_2.png','catalog-images/SC001_3.png'],
-  SC002: ['catalog-images/SC001_1.png','catalog-images/SC002_2.png','catalog-images/SC002_3.png'],
+  SC002: ['catalog-images/SC002_1.png','catalog-images/SC002_2.png','catalog-images/SC002_3.png'],
   SC003: ['catalog-images/SC003_1.png','catalog-images/SC003_2.png','catalog-images/SC003_3.png'],
   SC010: ['catalog-images/SC010_1.png','catalog-images/SC010_2.png'],
   SC011: ['catalog-images/SC011_1.png','catalog-images/SC011_2.png','catalog-images/SC011_3.png'],
@@ -2958,12 +2977,12 @@ const PRODUCT_IMAGES = {
   ST010: ['catalog-images/ST010_1.png','catalog-images/ST010_2.png','catalog-images/ST010_3.png'],
   ST011: ['catalog-images/ST011_1.png','catalog-images/ST011_2.png','catalog-images/ST011_3.png'],
   ST012: ['catalog-images/ST012_1.png','catalog-images/ST012_2.png','catalog-images/ST012_3.png'],
-  F0001: ['catalog-images/F0001_1.png','catalog-images/F0001_2.png','catalog-images/F0001_3.png'],
   F0002: ['catalog-images/F0002_1.png','catalog-images/F0002_2.png','catalog-images/F0002_3.png'],
   F0003: ['catalog-images/F0003_1.png','catalog-images/F0003_2.png','catalog-images/F0003_3.png'],
   F0004: ['catalog-images/F0004_1.png','catalog-images/F0004_2.png'],
   F0005: ['catalog-images/F0005_1.png','catalog-images/F0005_2.png','catalog-images/F0005_3.png'],
-  F0006: ['catalog-images/F0001_1.png','catalog-images/F0006_2.png','catalog-images/F0006_3.png'],
+  F0006: ['catalog-images/F0006_1.png','catalog-images/F0006_2.png','catalog-images/F0006_3.png'],
+  F0012: ['catalog-images/F0012_1.png','catalog-images/F0012_2.png','catalog-images/F0012_3.png'],
 };
 
 function buildProduct(file, index) {
@@ -3096,7 +3115,8 @@ function showPage(pageId, addToHistory = true) {
   if (pageId === 'new') initNewGrid();
   if (pageId === 'wishlist') initWishlistGrid();
   if (addToHistory) {
-    history.pushState({ type: 'page', pageId }, '', '#' + pageId);
+    const url = pageId === 'home' ? location.pathname : '#' + pageId;
+    history.pushState({ type: 'page', pageId }, '', url);
   }
 }
 
@@ -3361,6 +3381,7 @@ function openProduct(id, addToHistory = true) {
   const p = products.find(x => x.id === id);
   if (!p) return;
   currentProduct = p;
+  currentGalleryIndex = 0;
   const cartEnabled = canAddToCart(p);
   const sizesHTML = p.sizes.map(s => `<div class="size-opt" onclick="selectSize(this,'${s}')">${s}</div>`).join('');
   const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
@@ -3400,6 +3421,8 @@ function openProduct(id, addToHistory = true) {
     <div class="product-gallery">
       <div class="main-image">
         <img id="detailMainImage" src="${p.image}" alt="${p.name}">
+        <button class="gallery-arrow gallery-prev${(p.images||[p.image]).length < 2 ? ' hidden' : ''}" onclick="galleryStep(-1)" aria-label="Previous">&#8592;</button>
+        <button class="gallery-arrow gallery-next${(p.images||[p.image]).length < 2 ? ' hidden' : ''}" onclick="galleryStep(1)" aria-label="Next">&#8594;</button>
       </div>
       <div class="thumb-row">${thumbsHTML}</div>
     </div>
@@ -3458,17 +3481,40 @@ function openProduct(id, addToHistory = true) {
   }
 }
 
+let currentGalleryIndex = 0;
+
 function selectProductImage(index) {
   if (!currentProduct) return;
   const images = currentProduct.images || [currentProduct.image];
+  currentGalleryIndex = (index + images.length) % images.length;
   const mainImage = document.getElementById('detailMainImage');
-  if (mainImage && images[index]) {
-    mainImage.src = images[index];
+  if (mainImage && images[currentGalleryIndex]) {
+    mainImage.src = images[currentGalleryIndex];
   }
-  document.querySelectorAll('.thumb').forEach((thumb, thumbIndex) => {
-    thumb.classList.toggle('active', thumbIndex === index);
+  document.querySelectorAll('.thumb').forEach((thumb, i) => {
+    thumb.classList.toggle('active', i === currentGalleryIndex);
   });
 }
+
+function galleryStep(dir) {
+  if (!currentProduct) return;
+  const images = currentProduct.images || [currentProduct.image];
+  if (images.length < 2) return;
+  selectProductImage(currentGalleryIndex + dir);
+}
+
+// Gallery swipe
+(function() {
+  let tx = 0;
+  document.addEventListener('touchstart', e => {
+    if (e.target.closest('.main-image')) tx = e.touches[0].clientX;
+  }, { passive: true });
+  document.addEventListener('touchend', e => {
+    if (!e.target.closest('.main-image')) return;
+    const dx = e.changedTouches[0].clientX - tx;
+    if (Math.abs(dx) > 40) galleryStep(dx < 0 ? 1 : -1);
+  });
+})();
 
 function selectSize(el, size) {
   document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
