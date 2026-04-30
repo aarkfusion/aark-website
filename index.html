@@ -2039,32 +2039,32 @@ img {
       <div class="sc-viewport" id="scViewport">
         <div class="sc-track" id="scTrack">
           <!-- real cards -->
-          <div class="sc-card" onclick="showShopWithFilter('straight-cut-kurtis')">
+          <div class="sc-card" data-href="#shop-straight-cut-kurtis" onclick="showShopWithFilter('straight-cut-kurtis')">
             <div class="sc-img-wrap"><img src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy"></div>
             <div class="sc-label">The Riju Series</div>
           </div>
-          <div class="sc-card" onclick="showShopWithFilter('frocks')">
+          <div class="sc-card" data-href="#shop-frocks" onclick="showShopWithFilter('frocks')">
             <div class="sc-img-wrap"><img src="catalog-images/F0005_1.png" alt="The Ananta Series" loading="lazy"></div>
             <div class="sc-label">The Ananta Series</div>
           </div>
-          <div class="sc-card" onclick="showShopWithFilter('fusion-tops')">
+          <div class="sc-card" data-href="#shop-fusion-tops" onclick="showShopWithFilter('fusion-tops')">
             <div class="sc-img-wrap"><img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy"></div>
             <div class="sc-label">The Alpa Series</div>
           </div>
-          <div class="sc-card" onclick="showShopWithFilter('kids-frocks')">
+          <div class="sc-card" data-href="#shop-kids-frocks" onclick="showShopWithFilter('kids-frocks')">
             <div class="sc-img-wrap"><img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy"></div>
             <div class="sc-label">The Aira Series</div>
           </div>
           <!-- clones for seamless loop (first 3 repeated) -->
-          <div class="sc-card sc-clone" onclick="showShopWithFilter('straight-cut-kurtis')">
+          <div class="sc-card sc-clone" data-href="#shop-straight-cut-kurtis" onclick="showShopWithFilter('straight-cut-kurtis')">
             <div class="sc-img-wrap"><img src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy"></div>
             <div class="sc-label">The Riju Series</div>
           </div>
-          <div class="sc-card sc-clone" onclick="showShopWithFilter('frocks')">
+          <div class="sc-card sc-clone" data-href="#shop-frocks" onclick="showShopWithFilter('frocks')">
             <div class="sc-img-wrap"><img src="catalog-images/F0005_1.png" alt="The Ananta Series" loading="lazy"></div>
             <div class="sc-label">The Ananta Series</div>
           </div>
-          <div class="sc-card sc-clone" onclick="showShopWithFilter('fusion-tops')">
+          <div class="sc-card sc-clone" data-href="#shop-fusion-tops" onclick="showShopWithFilter('fusion-tops')">
             <div class="sc-img-wrap"><img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy"></div>
             <div class="sc-label">The Alpa Series</div>
           </div>
@@ -2293,7 +2293,7 @@ img {
     <div class="breadcrumb"><a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span><span>Collections</span></div>
   </div>
   <section class="ace-section">
-    <div class="ace-item ace-riju" onclick="showShopWithFilter('straight-cut-kurtis')">
+    <div class="ace-item ace-riju" data-href="#shop-straight-cut-kurtis" onclick="showShopWithFilter('straight-cut-kurtis')">
       <img src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Featured Series</div>
@@ -2302,7 +2302,7 @@ img {
         <span class="ef-cta">Discover the collection &nbsp;→</span>
       </div>
     </div>
-    <div class="ace-item ace-alpa" onclick="showShopWithFilter('fusion-tops')">
+    <div class="ace-item ace-alpa" data-href="#shop-fusion-tops" onclick="showShopWithFilter('fusion-tops')">
       <img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Women</div>
@@ -2310,7 +2310,7 @@ img {
         <div class="editorial-feature-sub">15 Styles · Fusion Tops</div>
       </div>
     </div>
-    <div class="ace-item ace-ananta" onclick="showShopWithFilter('frocks')">
+    <div class="ace-item ace-ananta" data-href="#shop-frocks" onclick="showShopWithFilter('frocks')">
       <img src="catalog-images/F0005_1.png" alt="The Ananta Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Women</div>
@@ -2318,7 +2318,7 @@ img {
         <div class="editorial-feature-sub">11 Styles · Frocks</div>
       </div>
     </div>
-    <div class="ace-item ace-aira" onclick="showShopWithFilter('kids-frocks')">
+    <div class="ace-item ace-aira" data-href="#shop-kids-frocks" onclick="showShopWithFilter('kids-frocks')">
       <img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Kids</div>
@@ -3138,7 +3138,7 @@ function buildProductCard(p) {
     ? `<a class="product-action-btn whatsapp" href="${buildWhatsAppHref(`Hi! I'm interested in ${p.name} (${p.sku}) priced at ${getProductPriceLabel(p)}.\n\nView it here: ${productUrl}`)}" target="_blank" title="WhatsApp">${WA_ICON}</a>`
     : `<a class="product-action-btn whatsapp" style="flex:1;" href="${buildWhatsAppHref(`Hi! I'm interested in ${p.name} (${p.sku}). Please share the price and ordering details.\n\nView it here: ${productUrl}`)}" target="_blank" title="WhatsApp">${WA_ICON} WhatsApp</a>`;
   return `
-  <div class="product-card" onclick="openProduct(${p.id})">
+  <div class="product-card" data-href="#product-${p.sku}" onclick="openProduct(${p.id})">
     <div class="product-img-wrap">
       <img class="product-img-main" src="${p.image}" alt="${p.name}" loading="lazy">
       <img class="product-img-hover" src="${p.hoverImage || p.image}" alt="${p.name}" loading="lazy">
@@ -4115,23 +4115,9 @@ initHomeGrids();
 
   /* Resolve the product/collection URL from any element inside a card */
   function resolveLink(el) {
-    const card = el.closest('.product-card');
-    const ace  = el.closest('.ace-item');
-    const sc   = el.closest('.sc-card');
     const base = 'https://aarkfusion.com/';
-    if (card) {
-      const m = (card.getAttribute('onclick') || '').match(/openProduct\((\d+)\)/);
-      if (m) {
-        const p = (typeof products !== 'undefined' ? products : []).find(x => x.id === Number(m[1]));
-        return p ? base + '#product-' + p.sku : null;
-      }
-    }
-    if (ace || sc) {
-      const oc = (ace || sc).getAttribute('onclick') || '';
-      const f  = (oc.match(/showShopWithFilter\(['"]([^'"]+)['"]\)/) || [])[1];
-      const pg = (oc.match(/showPage\(['"]([^'"]+)['"]\)/) || [])[1];
-      return f ? base + '#shop-' + f : pg ? base + '#' + pg : base + '#collections';
-    }
+    const target = el.closest('[data-href]');
+    if (target) return base + target.dataset.href;
     return null;
   }
 
