@@ -4178,8 +4178,13 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
     if (url) window.open(url, '_blank');
   }
   function openWin(url) {
-    if (url) window.open(url, '_blank',
-      'noopener,noreferrer,width=1280,height=860,left=120,top=80');
+    if (!url) return;
+    // Open as a sized popup window. Same-origin URL so noopener is not needed;
+    // including it causes Chrome to treat window.open() as a blocked popup on
+    // some configurations and makes the return value null (undetectable failure).
+    const win = window.open(url, '_blank', 'width=1280,height=860,left=120,top=80');
+    // Fallback: if the popup was blocked, open in a new tab instead.
+    if (!win || win.closed) window.open(url, '_blank');
   }
   function copy(text) { navigator.clipboard?.writeText(text).catch(() => {}); }
   function toast(msg) {
