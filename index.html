@@ -9,6 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sale/sale.css">
+<script src="sale/saleConfig.js"></script>
+<script src="sale/couponEngine.js"></script>
 <style>
 @property --header-h {
   syntax: '<length>';
@@ -2034,6 +2037,9 @@ img {
     </div>
   </section>
 
+  <!-- MOTHER'S DAY SALE BANNER — populated by sale/heroBanner.js -->
+  <div id="mdayBanner"></div>
+
   <!-- SERIES CAROUSEL (home) -->
   <section class="sc-section">
     <p class="sc-section-title">Our Collections</p>
@@ -3081,6 +3087,8 @@ const products = [...CATALOG_FILES.map(buildProduct)].map((product, index) => ({
 let cart = [];
 let wishlist = [];
 let inventory = {};
+let appliedCoupon = null;     // 'MOM26' or null
+let _cartUrgencyTimer = null; // interval ID for cart urgency countdown
 let currentProduct = null;
 let activeFilters = {};
 let currentSort = 'newest';
@@ -3549,14 +3557,19 @@ function closeCart() {
   document.getElementById('cartSidebar').classList.remove('open');
 }
 function renderCart() {
-  const body = document.getElementById('cartBody');
+  const body   = document.getElementById('cartBody');
   const footer = document.getElementById('cartFooter');
+
   if (cart.length === 0) {
     body.innerHTML = `<div class="empty-cart"><div class="empty-cart-icon">🛒</div><p>Your cart is empty</p><button class="btn btn-teal" onclick="closeCart();showPage('shop')">Start Shopping</button></div>`;
     footer.innerHTML = '';
+    appliedCoupon = null;
+    try { localStorage.removeItem('aark_applied_coupon'); } catch(e) {}
+    if (_cartUrgencyTimer) { clearInterval(_cartUrgencyTimer); _cartUrgencyTimer = null; }
     document.getElementById('cartBadge').textContent = 0;
     return;
   }
+
   body.innerHTML = cart.map((item, i) => `
     <div class="cart-item">
       <div class="cart-item-img"><img src="${item.image}" alt="${item.name}"></div>
@@ -3574,19 +3587,80 @@ function renderCart() {
         </div>
       </div>
     </div>`).join('');
+
   const subtotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * item.qty, 0);
-  const shipping = subtotal >= 999 ? 0 : 79;
-  footer.innerHTML = `
+
+  // ── Validate coupon (auto-clear if expired while cart is open) ─────────────
+  let couponResult = null;
+  if (appliedCoupon) {
+    couponResult = validateCoupon(appliedCoupon, subtotal);
+    if (!couponResult.valid) {
+      appliedCoupon = null;
+      try { localStorage.removeItem('aark_applied_coupon'); } catch(e) {}
+      couponResult = null;
+    }
+  }
+
+  const discountAmt = couponResult ? couponResult.discountAmount : 0;
+  const shipping    = getCartShipping(subtotal, !!couponResult);
+  const total       = subtotal - discountAmt + shipping;
+  const saleState   = getSaleState();
+
+  // ── Build HTML sections ────────────────────────────────────────────────────
+  const urgencyHTML = saleState === 'live' ? `
+    <div class="cart-urgency visible" id="cartUrgency">
+      ⏰ Sale ends in <strong id="cartUrgencyTimer">—</strong> — apply <strong>MOM26</strong> before it's gone!
+    </div>` : '';
+
+  const couponHTML = couponResult ? `
+    <div class="coupon-applied-badge">
+      <span class="badge-check">✓</span>
+      <span><strong>MOM26</strong> — 15% off + Free Shipping! 🌸</span>
+      <button class="badge-remove" onclick="removeCoupon()">Remove</button>
+    </div>` : `
     <div class="cart-coupon">
-      <input class="coupon-input" placeholder="Enter coupon code" id="couponInput">
+      <input class="coupon-input" placeholder="Enter coupon code" id="couponInput"
+             onkeydown="if(event.key==='Enter')applyCoupon()">
       <button class="btn btn-outline-teal btn-sm" onclick="applyCoupon()">Apply</button>
+    </div>`;
+
+  const discountRowHTML = couponResult ? `
+    <div class="cart-summary-row row-discount">
+      <span>Discount (MOM26 −15%)</span>
+      <span class="discount-amt">−₹${discountAmt}</span>
+    </div>` : '';
+
+  const shippingHTML = shipping === 0
+    ? `<span style="color:var(--teal)">Free</span>`
+    : `₹${shipping}`;
+
+  const waMsg = `Hi! I'd like to order ${cart.map(item => `${item.sku} (${item.selectedSize}, qty:${item.qty})`).join(', ')}.`;
+
+  footer.innerHTML = `
+    ${urgencyHTML}
+    ${couponHTML}
+    <div class="cart-summary-rows">
+      <div class="cart-summary-row row-subtotal"><span>Subtotal</span><span>₹${subtotal}</span></div>
+      ${discountRowHTML}
+      <div class="cart-summary-row row-shipping"><span>Shipping</span><span>${shippingHTML}</span></div>
+      <div class="cart-summary-row row-total"><span>Total</span><span>₹${total}</span></div>
     </div>
-    <div class="cart-subtotal"><span>Subtotal</span><strong>₹${subtotal}</strong></div>
-    <div class="cart-subtotal"><span>Shipping</span><strong>${shipping === 0 ? '<span style="color:var(--teal)">Free</span>' : '₹' + shipping}</strong></div>
-    <div class="cart-subtotal" style="border-top:1px solid var(--light-grey);padding-top:12px;"><span style="font-weight:600;color:var(--text)">Total</span><strong style="font-size:1.2rem;">₹${subtotal + shipping}</strong></div>
-    <button class="btn btn-teal btn-full" style="margin-top:4px;" onclick="checkout()">Proceed to Checkout →</button>
-    <a class="btn btn-whatsapp btn-full" style="margin-top:8px;" href="${buildWhatsAppHref(`Hi! I'd like to order ${cart.map(item => `${item.sku} (${item.selectedSize}, qty:${item.qty})`).join(', ')}.`)}" target="_blank">${WA_ICON} Order via WhatsApp</a>`;
+    <button class="btn btn-teal btn-full" style="margin-top:12px;" onclick="checkout()">Proceed to Checkout →</button>
+    <a class="btn btn-whatsapp btn-full" style="margin-top:8px;" href="${buildWhatsAppHref(waMsg)}" target="_blank">${WA_ICON} Order via WhatsApp</a>`;
+
   document.getElementById('cartBadge').textContent = cart.reduce((s, c) => s + c.qty, 0);
+
+  // ── Urgency countdown (clear old timer first) ──────────────────────────────
+  if (_cartUrgencyTimer) { clearInterval(_cartUrgencyTimer); _cartUrgencyTimer = null; }
+  if (saleState === 'live') {
+    _cartUrgencyTimer = startCountdown(
+      SALE_END,
+      function(t) { const el = document.getElementById('cartUrgencyTimer'); if (el) el.textContent = t.display; },
+      function()  { clearInterval(_cartUrgencyTimer); _cartUrgencyTimer = null;
+                    const nudge = document.getElementById('cartUrgency');
+                    if (nudge) nudge.classList.remove('visible'); }
+    );
+  }
 }
 
 function saveCart() {
@@ -3664,9 +3738,26 @@ function checkout() {
   window.location.href = 'checkout.html';
 }
 function applyCoupon() {
-  const code = document.getElementById('couponInput').value.toUpperCase();
-  if (code === 'AARK10') showToast('10% discount applied! ✨', 'success');
-  else showToast('Invalid coupon code', 'error');
+  const input = document.getElementById('couponInput');
+  if (!input) return;
+  const code = input.value.trim();
+  if (!code) { showToast('Enter a coupon code', 'info'); return; }
+  const subtotal = cart.reduce((sum, item) => sum + (Number(item.price) || 0) * item.qty, 0);
+  const result   = validateCoupon(code, subtotal);
+  if (result.valid) {
+    appliedCoupon = code.toUpperCase();
+    try { localStorage.setItem('aark_applied_coupon', appliedCoupon); } catch(e) {}
+    renderCart();
+    showToast(result.message, 'success');
+  } else {
+    showToast(result.message, 'error');
+  }
+}
+function removeCoupon() {
+  appliedCoupon = null;
+  try { localStorage.removeItem('aark_applied_coupon'); } catch(e) {}
+  renderCart();
+  showToast('Coupon removed', 'info');
 }
 
 // ══════════════════════════════════════════
@@ -4072,6 +4163,7 @@ heroTimer = setInterval(nextHeroSlide, heroSlideInterval);
 // INIT
 // ══════════════════════════════════════════
 try { loadCartFromStorage(); } catch(e) { console.error('[init] loadCartFromStorage:', e); }
+try { const _sc = localStorage.getItem('aark_applied_coupon'); if (_sc) appliedCoupon = _sc; } catch(e) {}
 try { renderCart(); }          catch(e) { console.error('[init] renderCart:', e); }
 try { setupContactForm(); }    catch(e) { console.error('[init] setupContactForm:', e); }
 try { initHomeGrids(); }       catch(e) { console.error('[init] initHomeGrids:', e); }
@@ -4268,5 +4360,9 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
   document.addEventListener('scroll',  () => hideMenu(), true);
 })();
 </script>
+
+<!-- MOTHER'S DAY SALE COMPONENTS (must load after DOM is ready) -->
+<script src="sale/stickyBar.js"></script>
+<script src="sale/heroBanner.js"></script>
 </body>
 </html>

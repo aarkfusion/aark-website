@@ -8,6 +8,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="sale/sale.css">
+<script src="sale/saleConfig.js"></script>
+<script src="sale/couponEngine.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <style>
@@ -738,9 +741,19 @@ button { cursor: pointer; font-family: inherit; border: none; }
           <h2>Order Summary</h2>
         </div>
         <div class="co-card-body">
+          <!-- Urgency nudge: visible only when sale is live (set by JS) -->
+          <div class="co-urgency" id="coUrgency">
+            ⏰ Sale ends in <strong id="coUrgencyTimer">—</strong> — apply <strong>MOM26</strong> before it's gone!
+          </div>
+          <!-- Coupon input or applied badge -->
+          <div id="checkoutCouponArea"></div>
           <div class="summary-items" id="summaryItems"></div>
           <div class="summary-divider"></div>
           <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">₹0</span></div>
+          <div class="summary-row discount" id="summaryDiscountRow" style="display:none;">
+            <span>Discount (MOM26 −15%)</span>
+            <span class="amount" id="summaryDiscountAmt">−₹0</span>
+          </div>
           <div class="summary-row"><span>Shipping</span><span id="summaryShipping">₹0</span></div>
           <div class="summary-row total"><span>Total</span><span class="amount" id="summaryTotal">₹0</span></div>
           <div class="order-id-badge">
@@ -809,6 +822,8 @@ let orderId = '';
 let qrGenerated = false;
 let customerEmail = '';
 let utrValue = '';
+let appliedCoupon = null;    // 'MOM26' or null
+let _coUrgencyTimer = null;  // interval ID for checkout urgency countdown
 const isBuyNow = new URLSearchParams(location.search).get('buynow') === '1';
 
 // ── INIT ──
@@ -820,7 +835,11 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
   orderId = generateOrderId();
+  // Restore coupon from cart page
+  try { const sc = localStorage.getItem('aark_applied_coupon'); if (sc) appliedCoupon = sc; } catch(e) {}
   renderSummary();
+  renderCheckoutCoupon();
+  initCoUrgency();
   attachFormValidation();
 });
 
@@ -852,17 +871,42 @@ function generateOrderId() {
 // ── SUMMARY ──
 function renderSummary() {
   const subtotal = cart.reduce((s, item) => s + (Number(item.price) || 0) * item.qty, 0);
-  const shipping = subtotal >= 999 ? 0 : 79;
-  grandTotal = subtotal + shipping;
 
-  document.getElementById('summarySubtotal').textContent = `₹${subtotal}`;
+  // Validate coupon (auto-clear if expired)
+  let couponResult = null;
+  if (appliedCoupon) {
+    couponResult = validateCoupon(appliedCoupon, subtotal);
+    if (!couponResult.valid) {
+      appliedCoupon = null;
+      try { localStorage.removeItem('aark_applied_coupon'); } catch(e) {}
+      couponResult = null;
+    }
+  }
+
+  const discountAmt = couponResult ? couponResult.discountAmount : 0;
+  const shipping    = getCartShipping(subtotal, !!couponResult);
+  grandTotal        = subtotal - discountAmt + shipping;
+
+  document.getElementById('summarySubtotal').textContent = `₹${subtotal.toLocaleString('en-IN')}`;
+
+  const discountRow = document.getElementById('summaryDiscountRow');
+  const discountAEl = document.getElementById('summaryDiscountAmt');
+  if (discountRow && discountAEl) {
+    if (couponResult) {
+      discountRow.style.display = '';
+      discountAEl.textContent   = `−₹${discountAmt.toLocaleString('en-IN')}`;
+    } else {
+      discountRow.style.display = 'none';
+    }
+  }
+
   document.getElementById('summaryShipping').innerHTML = shipping === 0
     ? '<span class="free-shipping">Free</span>'
     : `₹${shipping}`;
-  document.getElementById('summaryTotal').textContent = `₹${grandTotal}`;
-  document.getElementById('summaryOrderId').textContent = orderId;
-  document.getElementById('displayAmount').textContent = `₹${grandTotal}`;
-  document.getElementById('instructAmt').textContent = `₹${grandTotal}`;
+  document.getElementById('summaryTotal').textContent      = `₹${grandTotal.toLocaleString('en-IN')}`;
+  document.getElementById('summaryOrderId').textContent    = orderId;
+  document.getElementById('displayAmount').textContent     = `₹${grandTotal}`;
+  document.getElementById('instructAmt').textContent       = `₹${grandTotal}`;
 
   const container = document.getElementById('summaryItems');
   container.innerHTML = cart.map(item => `
@@ -877,6 +921,90 @@ function renderSummary() {
       </div>
     </div>
   `).join('');
+}
+
+// ── CHECKOUT COUPON ──
+function renderCheckoutCoupon() {
+  const area = document.getElementById('checkoutCouponArea');
+  if (!area) return;
+  const subtotal = cart.reduce((s, item) => s + (Number(item.price) || 0) * item.qty, 0);
+  const result   = appliedCoupon ? validateCoupon(appliedCoupon, subtotal) : null;
+
+  if (result && result.valid) {
+    area.innerHTML = `
+      <div class="checkout-coupon-badge">
+        <span class="ck-icon">🌸</span>
+        <div>
+          <div class="ck-label">MOM26 applied ✓</div>
+          <div class="ck-desc">15% off + Free Shipping</div>
+        </div>
+        <button class="ck-remove" onclick="removeCheckoutCoupon()">Remove</button>
+      </div>`;
+  } else {
+    const saleState = getSaleState();
+    const ph = saleState === 'teaser' ? 'Sale starts May 9 — Enter MOM26' : 'Enter coupon code';
+    const errMsg = result && !result.valid ? `<p class="coupon-error">${result.message}</p>` : '';
+    area.innerHTML = `
+      <div class="co-coupon-row">
+        <input class="co-coupon-input" id="checkoutCouponInput" placeholder="${ph}"
+               onkeydown="if(event.key==='Enter')applyCheckoutCoupon()">
+        <button class="co-coupon-btn" onclick="applyCheckoutCoupon()">Apply</button>
+      </div>${errMsg}`;
+  }
+}
+
+function applyCheckoutCoupon() {
+  const input = document.getElementById('checkoutCouponInput');
+  if (!input) return;
+  const code = input.value.trim();
+  if (!code) return;
+  const subtotal = cart.reduce((s, item) => s + (Number(item.price) || 0) * item.qty, 0);
+  const result   = validateCoupon(code, subtotal);
+  if (result.valid) {
+    appliedCoupon = code.toUpperCase();
+    try { localStorage.setItem('aark_applied_coupon', appliedCoupon); } catch(e) {}
+    renderCheckoutCoupon();
+    renderSummary();
+  } else {
+    // Show error inline without changing appliedCoupon state
+    const area = document.getElementById('checkoutCouponArea');
+    if (area) {
+      const saleState = getSaleState();
+      const ph = saleState === 'teaser' ? 'Sale starts May 9 — Enter MOM26' : 'Enter coupon code';
+      area.innerHTML = `
+        <div class="co-coupon-row">
+          <input class="co-coupon-input" id="checkoutCouponInput" placeholder="${ph}"
+                 value="${escHtml(code)}" onkeydown="if(event.key==='Enter')applyCheckoutCoupon()">
+          <button class="co-coupon-btn" onclick="applyCheckoutCoupon()">Apply</button>
+        </div>
+        <p class="coupon-error">${escHtml(result.message)}</p>`;
+    }
+  }
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function removeCheckoutCoupon() {
+  appliedCoupon = null;
+  try { localStorage.removeItem('aark_applied_coupon'); } catch(e) {}
+  renderCheckoutCoupon();
+  renderSummary();
+}
+
+// ── CHECKOUT URGENCY NUDGE ──
+function initCoUrgency() {
+  const saleState = getSaleState();
+  const nudge     = document.getElementById('coUrgency');
+  if (!nudge || saleState !== 'live') return;
+  nudge.classList.add('visible');
+  if (_coUrgencyTimer) clearInterval(_coUrgencyTimer);
+  _coUrgencyTimer = startCountdown(
+    SALE_END,
+    function(t) { var el = document.getElementById('coUrgencyTimer'); if (el) el.textContent = t.display; },
+    function()  { clearInterval(_coUrgencyTimer); nudge.classList.remove('visible'); }
+  );
 }
 
 // ── FORM VALIDATION ──
@@ -1122,5 +1250,7 @@ function copyOrderId() {
 }
 </script>
 
+<!-- MOTHER'S DAY SALE BAR -->
+<script src="sale/stickyBar.js"></script>
 </body>
 </html>
