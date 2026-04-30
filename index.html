@@ -4062,30 +4062,35 @@ heroTimer = setInterval(nextHeroSlide, heroSlideInterval);
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
-loadCartFromStorage();
-renderCart();
-setupContactForm();
-initHomeGrids();
+try { loadCartFromStorage(); } catch(e) { console.error('[init] loadCartFromStorage:', e); }
+try { renderCart(); }          catch(e) { console.error('[init] renderCart:', e); }
+try { setupContactForm(); }    catch(e) { console.error('[init] setupContactForm:', e); }
+try { initHomeGrids(); }       catch(e) { console.error('[init] initHomeGrids:', e); }
 
-// Handle direct URL with hash (e.g. shared WhatsApp product link)
-(function initFromHash() {
-  const hash = location.hash;
-  if (hash.startsWith('#product-')) {
-    const sku = hash.replace('#product-', '');
-    const prod = products.find(p => p.sku === sku);
-    if (prod) { openProduct(prod.id, false); return; }
+// Handle direct URL with hash — runs on DOMContentLoaded so it always fires
+// even if earlier init steps errored, and runs after scInit (registered before this)
+document.addEventListener('DOMContentLoaded', function initFromHash() {
+  try {
+    const hash = location.hash;
+    if (hash.startsWith('#product-')) {
+      const sku = hash.replace('#product-', '');
+      const prod = products.find(p => p.sku === sku);
+      if (prod) { openProduct(prod.id, false); return; }
+    }
+    if (hash.startsWith('#shop-')) {
+      const category = hash.replace('#shop-', '');
+      showShopWithFilter(category);
+      return;
+    }
+    if (hash && hash.length > 1) {
+      const pageId = hash.replace('#', '');
+      if (document.getElementById('page-' + pageId)) { showPage(pageId, false); return; }
+    }
+    history.replaceState({ type: 'page', pageId: 'home' }, '', location.href);
+  } catch(e) {
+    console.error('[initFromHash] error:', e);
   }
-  if (hash.startsWith('#shop-')) {
-    const category = hash.replace('#shop-', '');
-    showShopWithFilter(category);
-    return;
-  }
-  if (hash && hash.length > 1) {
-    const pageId = hash.replace('#', '');
-    if (document.getElementById('page-' + pageId)) { showPage(pageId, false); return; }
-  }
-  history.replaceState({ type: 'page', pageId: 'home' }, '', location.href);
-})();
+});
 </script>
 
 <!-- CUSTOM CONTEXT MENU -->
