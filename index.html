@@ -3080,6 +3080,7 @@ const products = [...CATALOG_FILES.map(buildProduct)].map((product, index) => ({
 
 let cart = [];
 let wishlist = [];
+let inventory = {};
 let currentProduct = null;
 let activeFilters = {};
 let currentSort = 'newest';
@@ -3375,7 +3376,12 @@ function openProduct(id, addToHistory = true) {
   currentProduct = p;
   currentGalleryIndex = 0;
   const cartEnabled = canAddToCart(p);
-  const sizesHTML = p.sizes.map(s => `<div class="size-opt" onclick="selectSize(this,'${s}')">${s}</div>`).join('');
+  const skuStock = inventory[p.sku];
+  const sizesHTML = p.sizes.map(s => {
+    const qty = skuStock ? (skuStock[s] || 0) : 0;
+    const outClass = qty === 0 ? ' out' : '';
+    return `<div class="size-opt${outClass}" onclick="selectSize(this,'${s}')">${s}</div>`;
+  }).join('');
   const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
   const thumbsHTML = (p.images || [p.image]).map((image, index) => `
     <div class="thumb ${index === 0 ? 'active' : ''}" onclick="selectProductImage(${index})">
@@ -3507,6 +3513,10 @@ function galleryStep(dir) {
 })();
 
 function selectSize(el, size) {
+  if (el.classList.contains('out')) {
+    showToast(`Size ${size} is sold out`, 'error');
+    return;
+  }
   document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
   const hint = document.getElementById('sizeHint');
@@ -4065,6 +4075,11 @@ try { loadCartFromStorage(); } catch(e) { console.error('[init] loadCartFromStor
 try { renderCart(); }          catch(e) { console.error('[init] renderCart:', e); }
 try { setupContactForm(); }    catch(e) { console.error('[init] setupContactForm:', e); }
 try { initHomeGrids(); }       catch(e) { console.error('[init] initHomeGrids:', e); }
+
+// Load inventory from inventory.json (size availability / stock)
+fetch('inventory.json').then(r => r.ok ? r.json() : {}).then(data => {
+  inventory = data || {};
+}).catch(() => {});
 
 // Handle direct URL with hash — runs on DOMContentLoaded so it always fires
 // even if earlier init steps errored, and runs after scInit (registered before this)
