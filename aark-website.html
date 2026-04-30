@@ -3087,6 +3087,7 @@ const products = [...CATALOG_FILES.map(buildProduct)].map((product, index) => ({
 let cart = [];
 let wishlist = [];
 let inventory = {};
+let inventoryLoaded = false;
 let appliedCoupon = null;     // 'MOM26' or null
 let _cartUrgencyTimer = null; // interval ID for cart urgency countdown
 let currentProduct = null;
@@ -3384,10 +3385,10 @@ function openProduct(id, addToHistory = true) {
   currentProduct = p;
   currentGalleryIndex = 0;
   const cartEnabled = canAddToCart(p);
-  const skuStock = inventory[p.sku];
+  const skuStock = inventoryLoaded ? inventory[p.sku] : undefined;
   const sizesHTML = p.sizes.map(s => {
-    const qty = skuStock ? (skuStock[s] || 0) : 0;
-    const outClass = qty === 0 ? ' out' : '';
+    // If inventory hasn't loaded yet, show all sizes as available
+    const outClass = inventoryLoaded && (skuStock ? (skuStock[s] || 0) : 0) === 0 ? ' out' : '';
     return `<div class="size-opt${outClass}" onclick="selectSize(this,'${s}')">${s}</div>`;
   }).join('');
   const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
@@ -3533,6 +3534,28 @@ function selectSize(el, size) {
   const bn  = document.getElementById('buyNowBtn');
   if (atc) atc.disabled = false;
   if (bn)  bn.disabled  = false;
+}
+function refreshSizeAvailability(p) {
+  const skuStock = inventory[p.sku];
+  document.querySelectorAll('.size-opt').forEach(el => {
+    const size = el.textContent;
+    const qty  = skuStock ? (skuStock[size] || 0) : 0;
+    if (qty === 0) {
+      el.classList.add('out');
+      // If this size was selected, deselect it and re-disable CTAs
+      if (el.classList.contains('active')) {
+        el.classList.remove('active');
+        const atc = document.getElementById('addToCartBtn');
+        const bn  = document.getElementById('buyNowBtn');
+        if (atc) atc.disabled = true;
+        if (bn)  bn.disabled  = true;
+        const hint = document.getElementById('sizeHint');
+        if (hint) hint.style.display = '';
+      }
+    } else {
+      el.classList.remove('out');
+    }
+  });
 }
 function changeQty(delta) {
   const inp = document.getElementById('detailQty');
@@ -4171,7 +4194,10 @@ try { initHomeGrids(); }       catch(e) { console.error('[init] initHomeGrids:',
 // Load inventory from inventory.json (size availability / stock)
 fetch('inventory.json').then(r => r.ok ? r.json() : {}).then(data => {
   inventory = data || {};
-}).catch(() => {});
+  inventoryLoaded = true;
+  // If product detail is open, update size availability in place (no full re-render)
+  if (currentProduct) refreshSizeAvailability(currentProduct);
+}).catch(() => { inventoryLoaded = true; });
 
 // Handle direct URL with hash — runs on DOMContentLoaded so it always fires
 // even if earlier init steps errored, and runs after scInit (registered before this)
