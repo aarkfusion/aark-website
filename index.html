@@ -4127,9 +4127,8 @@ initHomeGrids();
 
   /* Resolve the product/collection URL from any element inside a card */
   function resolveLink(el) {
-    const base = 'https://aarkfusion.com/';
     const target = el.closest('[data-href]');
-    if (target) return base + target.dataset.href;
+    if (target) return target.dataset.href; // relative hash, e.g. '#product-SC001'
     return null;
   }
 
