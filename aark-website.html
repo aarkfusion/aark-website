@@ -4125,11 +4125,15 @@ initHomeGrids();
   const menu = document.getElementById('ctx-menu');
   let linkUrl = '', imgSrc = '';
 
-  /* Resolve the product/collection URL from any element inside a card */
+  /* Resolve the product/collection URL from any element inside a card.
+     Always returns a full absolute URL so window.open() reliably passes
+     the hash to the new tab on any origin (localhost or production). */
   function resolveLink(el) {
     const target = el.closest('[data-href]');
-    if (target) return target.dataset.href; // relative hash, e.g. '#product-SC001'
-    return null;
+    if (!target) return null;
+    // Build full URL from current origin — works on localhost AND production
+    const base = window.location.href.split('#')[0];
+    return base + target.dataset.href;
   }
 
   function positionMenu(e) {
