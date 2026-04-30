@@ -371,7 +371,12 @@ button { cursor: pointer; font-family: inherit; border: none; }
   margin: 0 auto 16px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.loader-text { font-size: 0.9rem; color: var(--text-muted); }
+.loader-text { font-size: 0.9rem; color: var(--text-muted); text-align: center; }
+.loader-subtext {
+  font-size: 0.78rem; color: var(--text-muted); text-align: center;
+  margin-top: 6px; opacity: 0; transition: opacity 0.4s ease;
+}
+.loader-subtext.visible { opacity: 1; }
 
 /* ── ERROR BANNER ── */
 .order-error {
@@ -381,7 +386,17 @@ button { cursor: pointer; font-family: inherit; border: none; }
   margin-top: 16px;
 }
 .order-error.show { display: block; }
-.order-error p { color: var(--error); font-size: 0.88rem; margin-bottom: 10px; }
+.order-error p { color: var(--error); font-size: 0.88rem; margin-bottom: 12px; }
+.order-error-actions { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.order-error-wa {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: #25D366; color: #fff;
+  border: none; border-radius: 6px;
+  padding: 8px 14px; font-size: 0.83rem; font-weight: 600;
+  font-family: inherit; cursor: pointer; text-decoration: none;
+  transition: background 0.2s;
+}
+.order-error-wa:hover { background: #1ebe5d; }
 
 /* ── SUCCESS SCREEN ── */
 #successScreen {
@@ -708,13 +723,20 @@ button { cursor: pointer; font-family: inherit; border: none; }
             <!-- Loader -->
             <div class="order-loader" id="orderLoader">
               <div class="spinner"></div>
-              <div class="loader-text">Placing your order — please wait...</div>
+              <div class="loader-text" id="loaderText">Placing your order…</div>
+              <div class="loader-subtext" id="loaderSubtext">Server is waking up — this can take up to 30 seconds on first request.</div>
             </div>
 
             <!-- Error -->
             <div class="order-error" id="orderError">
               <p id="orderErrorMsg">Something went wrong. Please try again.</p>
-              <button class="btn-outline" onclick="retryOrder()">Retry</button>
+              <div class="order-error-actions">
+                <button class="btn-outline" onclick="retryOrder()">Retry</button>
+                <a class="order-error-wa" id="orderErrorWa" href="#" target="_blank" rel="noopener">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+                  Order via WhatsApp
+                </a>
+              </div>
             </div>
 
             <!-- Submit -->
@@ -814,6 +836,11 @@ const CART_KEY = 'aark_cart';
 const BUYNOW_KEY = 'aark_buynow';
 const UPI_ID = '9980982130@ybl';
 const BACKEND_URL = 'https://aark-backend-dkn9.onrender.com/place-order';
+
+// Fire a background ping so Render wakes up before the user hits Place Order
+(function warmUp() {
+  try { fetch('https://aark-backend-dkn9.onrender.com/', { method: 'GET', mode: 'no-cors' }).catch(() => {}); } catch(e) {}
+}());
 
 // ── STATE ──
 let cart = [];
@@ -1152,17 +1179,29 @@ function getFormattedItems() {
   ).join('\n');
 }
 
+const ORDER_TIMEOUT_MS = 25000; // 25 s — enough for Render cold start; browser default is ~30 s
+
 async function placeOrder() {
   if (utrValue.length !== 12) return;
 
-  const loader = document.getElementById('orderLoader');
-  const errDiv = document.getElementById('orderError');
-  const btn = document.getElementById('placeOrderBtn');
+  const loader    = document.getElementById('orderLoader');
+  const errDiv    = document.getElementById('orderError');
+  const btn       = document.getElementById('placeOrderBtn');
+  const loaderTxt = document.getElementById('loaderText');
+  const loaderSub = document.getElementById('loaderSubtext');
 
   loader.classList.add('show');
   errDiv.classList.remove('show');
   btn.disabled = true;
   document.getElementById('utrInput').disabled = true;
+  loaderTxt.textContent = 'Placing your order…';
+  loaderSub.classList.remove('visible');
+
+  // After 6 s with no response, tell the user what is happening
+  const slowTimer = setTimeout(() => {
+    loaderTxt.textContent = 'Still connecting…';
+    loaderSub.classList.add('visible');
+  }, 6000);
 
   const addr1 = document.getElementById('fieldAddr1').value.trim();
   const addr2 = document.getElementById('fieldAddr2').value.trim();
@@ -1172,37 +1211,55 @@ async function placeOrder() {
   const fullAddress = [addr1, addr2, city, state, pin].filter(Boolean).join(', ');
 
   const payload = {
-    order_id:          orderId,
-    customer_name:     document.getElementById('fieldName').value.trim(),
-    customer_email:    customerEmail,
-    customer_phone:    document.getElementById('fieldPhone').value.trim(),
-    customer_address:  fullAddress,
-    order_items:       getFormattedItems(),
-    order_total:       grandTotal.toString(),
-    utr_number:        utrValue,
-    date:              new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
+    order_id:         orderId,
+    customer_name:    document.getElementById('fieldName').value.trim(),
+    customer_email:   customerEmail,
+    customer_phone:   document.getElementById('fieldPhone').value.trim(),
+    customer_address: fullAddress,
+    order_items:      getFormattedItems(),
+    order_total:      grandTotal.toString(),
+    utr_number:       utrValue,
+    date:             new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),
   };
+
+  const ctrl = new AbortController();
+  const timeoutId = setTimeout(() => ctrl.abort(), ORDER_TIMEOUT_MS);
 
   try {
     const res = await fetch(BACKEND_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
+      signal: ctrl.signal,
     });
+    clearTimeout(timeoutId);
+    clearTimeout(slowTimer);
 
     const data = await res.json();
-
     if (res.ok && data.success) {
-      clearCart();
       showSuccess(payload);
     } else {
-      throw new Error(data.error || 'Unexpected server response');
+      throw new Error(data.error || 'Server returned an error');
     }
   } catch (err) {
+    clearTimeout(timeoutId);
+    clearTimeout(slowTimer);
     console.error('Order error:', err);
+
+    const isTimeout = err.name === 'AbortError';
+    const msg = isTimeout
+      ? 'The server took too long to respond (it may be waking up). Please retry — it should be faster now.'
+      : `Could not place order: ${err.message}.`;
+
     loader.classList.remove('show');
-    document.getElementById('orderErrorMsg').textContent =
-      `Could not place order: ${err.message}. Please try again or contact us on WhatsApp.`;
+    loaderSub.classList.remove('visible');
+    document.getElementById('orderErrorMsg').textContent = msg;
+
+    // Build WhatsApp fallback URL with order details
+    const waText = `Hi AARK! I tried to place an order but got an error.\n\nOrder ID: ${payload.order_id}\nUTR: ${payload.utr_number}\nTotal: ₹${grandTotal}\nItems: ${cart.map(i => `${i.sku} x${i.qty} (${i.selectedSize})`).join(', ')}\n\nPlease confirm my order.`;
+    const waEl = document.getElementById('orderErrorWa');
+    if (waEl) waEl.href = `https://wa.me/919000107301?text=${encodeURIComponent(waText)}`;
+
     errDiv.classList.add('show');
     btn.disabled = false;
     document.getElementById('utrInput').disabled = false;
@@ -1218,6 +1275,19 @@ function retryOrder() {
 
 // ── SUCCESS ──
 function showSuccess(payload) {
+  // Permanently deduct ordered quantities so the storefront reflects them
+  try {
+    const raw = localStorage.getItem('aark_confirmed_deductions');
+    const d = raw ? JSON.parse(raw) : {};
+    cart.forEach(item => {
+      if (!item.sku || !item.selectedSize) return;
+      if (!d[item.sku]) d[item.sku] = {};
+      d[item.sku][item.selectedSize] = (d[item.sku][item.selectedSize] || 0) + item.qty;
+    });
+    localStorage.setItem('aark_confirmed_deductions', JSON.stringify(d));
+  } catch(e) {}
+
+  clearCart();
   document.getElementById('checkoutMain').style.display = 'none';
 
   const screen = document.getElementById('successScreen');

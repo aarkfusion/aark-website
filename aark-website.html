@@ -2031,9 +2031,6 @@ img {
     <div class="hero-dots">
       <button class="hero-dot active" onclick="goToSlide(0)"></button>
       <button class="hero-dot" onclick="goToSlide(1)"></button>
-      <button class="hero-dot" onclick="goToSlide(2)"></button>
-      <button class="hero-dot" onclick="goToSlide(3)"></button>
-      <button class="hero-dot" onclick="goToSlide(4)"></button>
     </div>
   </section>
 
@@ -3091,6 +3088,23 @@ let inventoryLoaded = false;
 let appliedCoupon = null;     // 'MOM26' or null
 let _cartUrgencyTimer = null; // interval ID for cart urgency countdown
 let currentProduct = null;
+
+function getConfirmedDeductions(sku, size) {
+  try {
+    const raw = localStorage.getItem('aark_confirmed_deductions');
+    const d = raw ? JSON.parse(raw) : {};
+    return (d[sku] || {})[size] || 0;
+  } catch(e) { return 0; }
+}
+
+// Returns how many units are still purchasable (base stock minus cart and confirmed orders)
+function getAvailableStock(sku, size) {
+  if (!inventoryLoaded) return 99;
+  const base = (inventory[sku] || {})[size] || 0;
+  const inCart = cart.filter(c => c.sku === sku && c.selectedSize === size)
+                     .reduce((s, c) => s + c.qty, 0);
+  return Math.max(0, base - inCart - getConfirmedDeductions(sku, size));
+}
 let activeFilters = {};
 let currentSort = 'newest';
 let isSubmittingContactForm = false;
@@ -3536,13 +3550,11 @@ function selectSize(el, size) {
   if (bn)  bn.disabled  = false;
 }
 function refreshSizeAvailability(p) {
-  const skuStock = inventory[p.sku];
   document.querySelectorAll('.size-opt').forEach(el => {
-    const size = el.textContent;
-    const qty  = skuStock ? (skuStock[size] || 0) : 0;
-    if (qty === 0) {
+    const size = el.textContent.trim();
+    const avail = getAvailableStock(p.sku, size);
+    if (avail === 0) {
       el.classList.add('out');
-      // If this size was selected, deselect it and re-disable CTAs
       if (el.classList.contains('active')) {
         el.classList.remove('active');
         const atc = document.getElementById('addToCartBtn');
@@ -3560,7 +3572,11 @@ function refreshSizeAvailability(p) {
 function changeQty(delta) {
   const inp = document.getElementById('detailQty');
   const val = parseInt(inp.value) + delta;
-  inp.value = Math.max(1, val);
+  const selectedSize = document.querySelector('.size-opt.active')?.textContent;
+  const max = (inventoryLoaded && currentProduct && selectedSize)
+    ? getAvailableStock(currentProduct.sku, selectedSize)
+    : 99;
+  inp.value = Math.max(1, Math.min(val, max));
 }
 function toggleAccordion(header) {
   const body = header.nextElementSibling;
@@ -3703,8 +3719,13 @@ function loadCartFromStorage() {
   } catch(e) {}
 }
 function updateCartQty(index, delta) {
-  const newQty = cart[index].qty + delta;
+  const item = cart[index];
+  const newQty = item.qty + delta;
   if (newQty < 1) { removeFromCart(index); return; }
+  if (delta > 0 && inventoryLoaded) {
+    const avail = getAvailableStock(item.sku, item.selectedSize);
+    if (avail <= 0) { showToast('No more stock available for this size', 'error'); return; }
+  }
   cart[index].qty = newQty;
   renderCart(); saveCart();
 }
@@ -3732,11 +3753,19 @@ function addToCartFromDetail() {
     return;
   }
   const selectedSize = document.querySelector('.size-opt.active')?.textContent;
-  const qty = parseInt(document.getElementById('detailQty')?.value || 1);
+  if (!selectedSize) { showToast('Please select a size', 'info'); return; }
+  const reqQty = parseInt(document.getElementById('detailQty')?.value || 1);
+  const avail  = inventoryLoaded ? getAvailableStock(currentProduct.sku, selectedSize) : reqQty;
+  if (inventoryLoaded && avail <= 0) {
+    showToast(`Size ${selectedSize} is out of stock`, 'error');
+    return;
+  }
+  const addQty = inventoryLoaded ? Math.min(reqQty, avail) : reqQty;
   const existing = cart.find(c => c.id === currentProduct.id && c.selectedSize === selectedSize);
-  if (existing) { existing.qty += qty; } else { cart.push({ ...currentProduct, qty, selectedSize }); }
+  if (existing) { existing.qty += addQty; } else { cart.push({ ...currentProduct, qty: addQty, selectedSize }); }
   renderCart(); saveCart();
-  showToast(`${currentProduct.name} added to cart 🛒`, 'success');
+  if (addQty < reqQty) showToast(`Only ${addQty} in stock — added to cart`, 'info');
+  else showToast(`${currentProduct.name} added to cart 🛒`, 'success');
 }
 function buyNow() {
   if (!currentProduct) return;
@@ -3745,7 +3774,10 @@ function buyNow() {
     return;
   }
   const selectedSize = document.querySelector('.size-opt.active')?.textContent;
-  const qty = parseInt(document.getElementById('detailQty')?.value || 1);
+  if (!selectedSize) { showToast('Please select a size', 'info'); return; }
+  const reqQty = parseInt(document.getElementById('detailQty')?.value || 1);
+  const avail  = inventoryLoaded ? getAvailableStock(currentProduct.sku, selectedSize) : reqQty;
+  const qty    = inventoryLoaded ? Math.min(reqQty, avail) : reqQty;
   try {
     localStorage.setItem('aark_buynow', JSON.stringify([{
       id: currentProduct.id, name: currentProduct.name, sku: currentProduct.sku,
