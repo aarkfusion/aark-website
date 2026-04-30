@@ -2018,15 +2018,6 @@ img {
   <!-- HERO -->
   <section class="hero" id="heroSection">
     <div class="hero-slide active">
-      <img src="hero_images/1.png" alt="AARK Collection">
-    </div>
-    <div class="hero-slide">
-      <img src="hero_images/2.png" alt="AARK Collection">
-    </div>
-    <div class="hero-slide">
-      <img src="hero_images/3.png" alt="AARK Collection">
-    </div>
-    <div class="hero-slide">
       <img src="hero_images/4.png" alt="AARK Collection">
     </div>
     <div class="hero-slide">
@@ -2255,8 +2246,7 @@ img {
             <div class="filter-options">
               <div class="filter-chip" data-filter-type="priceRange" data-filter-value="under800" onclick="toggleFilter(this,'priceRange','under800')">Under ₹800</div>
               <div class="filter-chip" data-filter-type="priceRange" data-filter-value="800-900" onclick="toggleFilter(this,'priceRange','800-900')">₹800–₹900</div>
-              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="900-1200" onclick="toggleFilter(this,'priceRange','900-1200')">₹900–₹1200</div>
-              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="above1200" onclick="toggleFilter(this,'priceRange','above1200')">Above ₹1200</div>
+              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="1100-1200" onclick="toggleFilter(this,'priceRange','1100-1200')">₹1,100–₹1,200</div>
             </div>
           </div>
           <button class="btn btn-outline-teal btn-sm btn-full" onclick="clearFilters()" style="margin-top:8px;">Clear All Filters</button>
@@ -3065,10 +3055,9 @@ function sortProductList(list, mode = currentSort) {
 
 function matchesPriceRange(price, range) {
   if (typeof price !== 'number' || Number.isNaN(price)) return false;
-  if (range === 'under800') return price < 800;
-  if (range === '800-900') return price >= 800 && price <= 900;
-  if (range === '900-1200') return price > 900 && price <= 1200;
-  if (range === 'above1200') return price > 1200;
+  if (range === 'under800')   return price < 800;
+  if (range === '800-900')    return price >= 800 && price <= 900;
+  if (range === '1100-1200')  return price >= 1100 && price <= 1200;
   return true;
 }
 
@@ -3406,9 +3395,10 @@ function openProduct(id, addToHistory = true) {
   ` : '';
   const inWishlist = wishlist.some(w => w.id === p.id);
   const ctaRowHTML = cartEnabled ? `
+      <p id="sizeHint" style="font-size:0.78rem;color:var(--text-muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:10px;">Select a size to continue</p>
       <div class="cta-row">
-        <button class="btn btn-teal btn-lg" style="flex:1;" onclick="addToCartFromDetail()">🛒 Add to Cart</button>
-        <button class="btn btn-primary btn-lg" style="flex:1;" onclick="addToCartFromDetail();openCart()">Buy Now</button>
+        <button class="btn btn-teal btn-lg" id="addToCartBtn" style="flex:1;" onclick="addToCartFromDetail()" disabled>🛒 Add to Cart</button>
+        <button class="btn btn-primary btn-lg" id="buyNowBtn" style="flex:1;" onclick="buyNow()" disabled>Buy Now</button>
         <button id="detailWishlistBtn" class="product-action-btn wishlist${inWishlist ? ' active' : ''}" onclick="toggleWishlistFromDetail()" title="Add to Wishlist" style="width:48px;height:48px;flex-shrink:0;border-radius:var(--radius);">${getHeartIconMarkup()}</button>
       </div>
   ` : `
@@ -3520,6 +3510,12 @@ function galleryStep(dir) {
 function selectSize(el, size) {
   document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
   el.classList.add('active');
+  const hint = document.getElementById('sizeHint');
+  if (hint) hint.style.display = 'none';
+  const atc = document.getElementById('addToCartBtn');
+  const bn  = document.getElementById('buyNowBtn');
+  if (atc) atc.disabled = false;
+  if (bn)  bn.disabled  = false;
 }
 function changeQty(delta) {
   const inp = document.getElementById('detailQty');
@@ -3629,25 +3625,29 @@ function addToCartFromDetail() {
     showToast('Shared on WhatsApp for pricing', 'success');
     return;
   }
-  const activeSizeEl = document.querySelector('.size-opt.active');
-  if (!activeSizeEl) {
-    const sizeSection = document.querySelector('.size-options');
-    if (sizeSection) {
-      sizeSection.style.transition = 'outline 0s';
-      sizeSection.style.outline = '2px solid var(--teal)';
-      sizeSection.style.borderRadius = '6px';
-      setTimeout(() => { sizeSection.style.outline = ''; }, 1200);
-      sizeSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    }
-    showToast('Please pick a size', 'error');
-    return;
-  }
-  const selectedSize = activeSizeEl.textContent;
+  const selectedSize = document.querySelector('.size-opt.active')?.textContent;
   const qty = parseInt(document.getElementById('detailQty')?.value || 1);
   const existing = cart.find(c => c.id === currentProduct.id && c.selectedSize === selectedSize);
   if (existing) { existing.qty += qty; } else { cart.push({ ...currentProduct, qty, selectedSize }); }
   renderCart(); saveCart();
   showToast(`${currentProduct.name} added to cart 🛒`, 'success');
+}
+function buyNow() {
+  if (!currentProduct) return;
+  if (!canAddToCart(currentProduct)) {
+    window.open(buildWhatsAppHref(`Hi! I'm interested in ${currentProduct.name} (${currentProduct.sku}). Please share the price and ordering details.`), '_blank');
+    return;
+  }
+  const selectedSize = document.querySelector('.size-opt.active')?.textContent;
+  const qty = parseInt(document.getElementById('detailQty')?.value || 1);
+  try {
+    localStorage.setItem('aark_buynow', JSON.stringify([{
+      id: currentProduct.id, name: currentProduct.name, sku: currentProduct.sku,
+      price: currentProduct.price, qty, selectedSize,
+      fabric: currentProduct.fabric, image: currentProduct.image, series: currentProduct.series,
+    }]));
+  } catch(e) {}
+  window.location.href = 'checkout.html?buynow=1';
 }
 function checkout() {
   saveCart();

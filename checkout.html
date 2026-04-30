@@ -798,7 +798,8 @@ button { cursor: pointer; font-family: inherit; border: none; }
 <script>
 // ── CONSTANTS ──
 const CART_KEY = 'aark_cart';
-const UPI_ID = '16127579715@axl';
+const BUYNOW_KEY = 'aark_buynow';
+const UPI_ID = '9980982130@ybl';
 const BACKEND_URL = 'https://aark-backend-dkn9.onrender.com/place-order';
 
 // ── STATE ──
@@ -808,6 +809,7 @@ let orderId = '';
 let qrGenerated = false;
 let customerEmail = '';
 let utrValue = '';
+const isBuyNow = new URLSearchParams(location.search).get('buynow') === '1';
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
@@ -825,7 +827,8 @@ document.addEventListener('DOMContentLoaded', () => {
 // ── CART ──
 function loadCart() {
   try {
-    const raw = localStorage.getItem(CART_KEY);
+    const key = isBuyNow ? BUYNOW_KEY : CART_KEY;
+    const raw = localStorage.getItem(key);
     return raw ? JSON.parse(raw) : [];
   } catch (e) {
     return [];
@@ -833,7 +836,7 @@ function loadCart() {
 }
 
 function clearCart() {
-  localStorage.removeItem(CART_KEY);
+  localStorage.removeItem(isBuyNow ? BUYNOW_KEY : CART_KEY);
 }
 
 // ── ORDER ID ──
@@ -964,17 +967,42 @@ function generateQR() {
 }
 
 // ── UPI APP BUTTONS ──
+const UPI_IOS_SCHEMES = {
+  'com.google.android.apps.nbu.paisa.user': 'gpay://upi/pay',
+  'com.phonepe.app':  'phonepe://pay',
+  'net.one97.paytm':  'paytmmp://pay',
+  'in.org.npci.upiapp': 'upi://pay',
+};
+
 function openUpiApp(pkg, e) {
   e.preventDefault();
   const upiBase = `pa=${UPI_ID}&pn=AARK&am=${grandTotal}&cu=INR&tn=${orderId}`;
-  const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const ua = navigator.userAgent;
+  const isAndroid = /Android/i.test(ua);
+  const isIOS     = /iPhone|iPad|iPod/i.test(ua);
+  const isChrome  = /Chrome/i.test(ua) && !/Edg|OPR/i.test(ua);
+
   let url;
-  if (isMobile) {
+  if (isIOS) {
+    // Each app has its own URL scheme on iOS
+    url = `${UPI_IOS_SCHEMES[pkg] || 'upi://pay'}?${upiBase}`;
+  } else if (isAndroid && isChrome) {
+    // Android Chrome supports intent:// to target a specific app
     url = `intent://pay?${upiBase}#Intent;scheme=upi;package=${pkg};end`;
-  } else {
+  } else if (isAndroid) {
+    // Other Android browsers: generic UPI scheme (OS shows app chooser)
     url = `upi://pay?${upiBase}`;
+  } else {
+    alert('UPI payments work on mobile devices.\nPlease open this page on your phone to pay via Google Pay, PhonePe, Paytm, or BHIM.\n\nAlternatively, scan the QR code above with any UPI app.');
+    return;
   }
-  window.location.href = url;
+
+  // Use a hidden anchor click — more reliable than window.location.href for deep links
+  const a = document.createElement('a');
+  a.href = url;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 }
 
 // ── UTR INPUT ──
