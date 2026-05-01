@@ -482,10 +482,101 @@ check(len(final) == 1 and final[0]['qty'] == 3,
       'Checkout validation: untracked SKU (KF001) passes through unchanged')
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Suite 9 — Backend connectivity (live network check)
+# Suite 9 — Dynamic size filter (kids ↔ adult swap)
 # ─────────────────────────────────────────────────────────────────────────────
 
-suite('Backend Connectivity (live — may be slow on cold start)')  # Suite 9
+suite('Dynamic Size Filter — Kids ↔ Adult Swap')
+
+ADULT_SIZES_PY = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+KIDS_SIZES_PY  = ['2-3yr', '4-5yr', '6-7yr', '8-9yr', '10-11yr']
+
+def get_size_chips_for(category):
+    return KIDS_SIZES_PY if category == 'kids-frocks' else ADULT_SIZES_PY
+
+# Category → correct size set
+check(get_size_chips_for('kids-frocks') == KIDS_SIZES_PY,
+      'kids-frocks category → kids sizes shown (2-3yr … 10-11yr)')
+check(get_size_chips_for('straight-cut-kurtis') == ADULT_SIZES_PY,
+      'straight-cut-kurtis → adult sizes shown (XS … XXL)')
+check(get_size_chips_for('frocks') == ADULT_SIZES_PY,
+      'frocks → adult sizes shown')
+check(get_size_chips_for('fusion-tops') == ADULT_SIZES_PY,
+      'fusion-tops → adult sizes shown')
+check(get_size_chips_for(None) == ADULT_SIZES_PY,
+      'no category (clear filters) → adult sizes shown')
+
+# Kids sizes must not appear in adult set (no cross-contamination)
+for sz in KIDS_SIZES_PY:
+    check(sz not in ADULT_SIZES_PY, f'Kids size "{sz}" not in adult size set')
+for sz in ADULT_SIZES_PY:
+    check(sz not in KIDS_SIZES_PY, f'Adult size "{sz}" not in kids size set')
+
+# Filter logic: kids sizes only match kids products, not adult products
+kids_products = [
+    {'id':5,'sku':'KF001','cat':'kids-frocks','sizes':['2-3yr','4-5yr','6-7yr','8-9yr','10-11yr']},
+    {'id':6,'sku':'KF002','cat':'kids-frocks','sizes':['2-3yr','4-5yr','6-7yr','8-9yr','10-11yr']},
+]
+adult_products = [
+    {'id':1,'sku':'SC001','cat':'straight-cut-kurtis','sizes':['XS','S','M','L','XL','XXL']},
+    {'id':3,'sku':'F0002','cat':'frocks',             'sizes':['XS','S','M','L','XL','XXL']},
+]
+all_products = kids_products + adult_products
+
+for sz in KIDS_SIZES_PY:
+    r = filter_products(all_products, {}, False, {'size': sz})
+    skus = {p['sku'] for p in r}
+    check('KF001' in skus and 'KF002' in skus,
+          f'Kids size "{sz}": both kids products shown')
+    check('SC001' not in skus and 'F0002' not in skus,
+          f'Kids size "{sz}": adult products correctly excluded')
+
+for sz in ADULT_SIZES_PY:
+    r = filter_products(all_products, {}, False, {'size': sz})
+    skus = {p['sku'] for p in r}
+    check('SC001' in skus and 'F0002' in skus,
+          f'Adult size "{sz}": adult products shown')
+    check('KF001' not in skus and 'KF002' not in skus,
+          f'Adult size "{sz}": kids products correctly excluded')
+
+# Switching category clears the size filter (no stale cross-category size)
+def simulate_category_switch(from_cat, to_cat, active_size):
+    """Replicate toggleFilter category-change: clear size, re-render chips."""
+    active = {'category': from_cat, 'size': active_size}
+    active['category'] = to_cat
+    del active['size']   # cleared on category change
+    return active
+
+state = simulate_category_switch('straight-cut-kurtis', 'kids-frocks', 'M')
+check('size' not in state,
+      'Switching to kids-frocks clears stale adult size filter (M removed)')
+check(state['category'] == 'kids-frocks',
+      'Category correctly set to kids-frocks after switch')
+
+state = simulate_category_switch('kids-frocks', 'frocks', '4-5yr')
+check('size' not in state,
+      'Switching from kids-frocks to frocks clears stale kids size filter (4-5yr removed)')
+
+# HTML: both files have the dynamic rendering function and correct constants
+for fname, content in [('index.html', html_index), ('aark-website.html', html_aark)]:
+    if not content:
+        check(False, f'{fname} readable for size filter checks')
+        continue
+    check('sizeFilterOptions' in content,
+          f'{fname}: size filter container has id="sizeFilterOptions"')
+    check('renderSizeFilterChips' in content,
+          f'{fname}: renderSizeFilterChips() function defined')
+    check('KIDS_SIZES' in content,
+          f'{fname}: KIDS_SIZES constant defined')
+    check('2-3yr' in content,
+          f'{fname}: kids size values (2-3yr…) present in JS')
+    check('delete activeFilters.size' in content,
+          f'{fname}: category switch clears size filter')
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Suite 10 — Backend connectivity (live network check)
+# ─────────────────────────────────────────────────────────────────────────────
+
+suite('Backend Connectivity (live — may be slow on cold start)')  # Suite 10
 
 try:
     req = urllib.request.Request(

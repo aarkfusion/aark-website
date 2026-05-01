@@ -2308,7 +2308,7 @@ img {
           </div>
           <div class="filter-group">
             <div class="filter-title">Size</div>
-            <div class="filter-options">
+            <div class="filter-options" id="sizeFilterOptions">
               <div class="filter-chip" data-filter-type="size" data-filter-value="XS"  onclick="toggleFilter(this,'size','XS')">XS</div>
               <div class="filter-chip" data-filter-type="size" data-filter-value="S"   onclick="toggleFilter(this,'size','S')">S</div>
               <div class="filter-chip" data-filter-type="size" data-filter-value="M"   onclick="toggleFilter(this,'size','M')">M</div>
@@ -3206,8 +3206,21 @@ function updateMobileNav(pageId) {
   if (mbn) mbn.classList.add('active');
 }
 
+const ADULT_SIZES = ['XS','S','M','L','XL','XXL'];
+const KIDS_SIZES  = ['2-3yr','4-5yr','6-7yr','8-9yr','10-11yr'];
+
+function renderSizeFilterChips(category) {
+  const container = document.getElementById('sizeFilterOptions');
+  if (!container) return;
+  const sizes = category === 'kids-frocks' ? KIDS_SIZES : ADULT_SIZES;
+  container.innerHTML = sizes.map(sz =>
+    `<div class="filter-chip${activeFilters.size === sz ? ' selected' : ''}" data-filter-type="size" data-filter-value="${sz}" onclick="toggleFilter(this,'size','${sz}')">${sz}</div>`
+  ).join('');
+}
+
 function showShopWithFilter(filter) {
   activeFilters = { category: filter };
+  renderSizeFilterChips(filter);
   showPage('shop');
 }
 
@@ -3913,6 +3926,10 @@ function toggleFilter(chip, type, value) {
   } else {
     activeFilters[type] = value;
   }
+  if (type === 'category') {
+    delete activeFilters.size;       // clear size — kids/adult sizes don't overlap
+    renderSizeFilterChips(activeFilters.category);
+  }
   initShopGrid();
 }
 
@@ -3945,6 +3962,7 @@ function renderActiveFilters() {
 
 function clearFilters() {
   activeFilters = {};
+  renderSizeFilterChips(null);      // reset to adult sizes
   document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('selected'));
   initShopGrid();
 }
