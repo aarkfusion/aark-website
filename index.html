@@ -317,6 +317,8 @@ body.nav-solid .nav-logo {
   background: #008080;
   line-height: 0;
   position: relative;
+  overflow: hidden;
+  touch-action: pan-y; /* let browser handle vertical scroll; JS handles horizontal swipe */
 }
 .hero::before {
   content: '';
@@ -1714,7 +1716,18 @@ body.nav-solid .nav-logo {
   .footer-grid { grid-template-columns: 1fr; gap: 32px; }
   .testimonials-grid { grid-template-columns: 1fr; }
   .testimonials-grid .testimonial-card:last-child { display: block; }
-  .cart-sidebar { width: 100%; }
+
+  /* Cart — bottom sheet on mobile */
+  .cart-sidebar {
+    top: auto;
+    width: 100%;
+    height: 92vh;
+    border-radius: 20px 20px 0 0;
+    transform: translateY(100%);
+    box-shadow: 0 -8px 40px rgba(0,0,0,0.18);
+  }
+  .cart-sidebar.open { transform: translateY(0); }
+
   .instagram-grid { grid-template-columns: repeat(3, 1fr); }
   .values-grid { grid-template-columns: 1fr; }
   .collections-grid { grid-template-columns: 1fr; }
@@ -1750,12 +1763,55 @@ body.nav-solid .nav-logo {
   .search-panel { max-height: calc(100vh - 92px); border-radius: 20px; }
   .search-results { grid-template-columns: 1fr; }
   .search-helper { align-items: flex-start; flex-direction: column; }
+
+  /* Hero — mobile layout */
+  .hero-slide { transition: opacity 0.35s ease-in-out; }
+  .hero-content { padding: 0 20px 56px; max-width: 100%; }
+  .hero-arrow { width: 36px; height: 36px; }
+  .hero-arrow-prev { left: 10px; }
+  .hero-arrow-next { right: 10px; }
+  .hero-scroll { display: none; }
+
+  /* Product cards — always show action bar on touch devices */
+  .product-actions { transform: translateY(0); }
+
+  /* Product detail gallery arrows — always visible on touch */
+  .gallery-arrow { opacity: 1; pointer-events: auto; }
+
+  /* Product detail — mobile typography */
+  .detail-name { font-size: 1.7rem; }
+  .detail-price .current { font-size: 1.5rem; }
+  .detail-price .original { font-size: 1rem; }
+  .product-gallery { position: static; }
+
+  /* Size options — bigger touch targets */
+  .size-opt { width: 52px; height: 52px; font-size: 0.82rem; }
+
+  /* Sticky CTA bar in product detail on mobile */
+  .cta-row {
+    flex-direction: row;
+    position: sticky;
+    bottom: 68px;
+    background: white;
+    padding: 10px 0 6px;
+    z-index: 20;
+    margin-left: -2px; margin-right: -2px;
+    border-top: 1px solid var(--light-grey);
+  }
+
+  /* iOS input zoom prevention — all inputs must be >= 16px */
+  input, select, textarea { font-size: 16px !important; }
+
+  /* Coupon input row — stack on narrow screens */
+  .cart-coupon { flex-wrap: wrap; }
 }
 @media (max-width: 480px) {
   .nav-inner { padding: 0 16px; }
   .hero-split { flex-direction: column; padding: 140px 24px 48px; gap: 32px; }
   .hero-split-img { flex: none; height: 52vw; min-height: 260px; width: 100%; }
   .hero-actions { flex-direction: column; align-items: flex-start; }
+  .hero-content { padding: 0 16px 44px; }
+  .hero-arrow { width: 32px; height: 32px; }
   .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .category-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
   .ace-section { grid-template-columns: 1fr 1fr; }
@@ -1767,8 +1823,21 @@ body.nav-solid .nav-logo {
   .sc-section { padding: 36px 0 44px; }
   .sc-arrow { display: none; }
   .instagram-grid { grid-template-columns: repeat(2, 1fr); }
-  .product-info { padding: 12px 14px 14px; }
-  .product-name { font-size: 0.95rem; }
+  .product-info { padding: 10px 10px 12px; }
+  .product-name { font-size: 0.9rem; }
+  .price-current { font-size: 0.9rem; }
+
+  /* Product detail — compact on small phones */
+  .detail-name { font-size: 1.45rem; }
+  .detail-price .current { font-size: 1.3rem; }
+  .thumb { width: 60px; height: 76px; }
+  .thumb-row { gap: 6px; }
+
+  /* Cart bottom sheet — full height on small phones */
+  .cart-sidebar { height: 96vh; }
+
+  /* Product actions text sizing */
+  .product-action-btn { font-size: 0.68rem; padding: 8px 6px; }
 }
 
 /* ══════════════════════════════════════════
@@ -4113,15 +4182,21 @@ function heroResetTimer() {
 
 heroTimer = setInterval(nextHeroSlide, heroSlideInterval);
 
-// Hero swipe
+// Hero swipe — only fires when horizontal intent is clear (avoids triggering during vertical scroll)
 (function() {
   const hero = document.getElementById('heroSection');
   if (!hero) return;
-  let tx = 0;
-  hero.addEventListener('touchstart', e => { tx = e.touches[0].clientX; }, { passive: true });
+  let tx = 0, ty = 0;
+  hero.addEventListener('touchstart', e => {
+    tx = e.touches[0].clientX;
+    ty = e.touches[0].clientY;
+  }, { passive: true });
   hero.addEventListener('touchend', e => {
     const dx = e.changedTouches[0].clientX - tx;
-    if (Math.abs(dx) > 48) { dx < 0 ? heroNext() : heroPrev(); }
+    const dy = e.changedTouches[0].clientY - ty;
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 40) {
+      dx < 0 ? heroNext() : heroPrev();
+    }
   });
 })();
 
