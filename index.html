@@ -2314,11 +2314,14 @@ img {
             </div>
           </div>
           <div class="filter-group">
-            <div class="filter-title">Price Range</div>
+            <div class="filter-title">Size</div>
             <div class="filter-options">
-              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="under800" onclick="toggleFilter(this,'priceRange','under800')">Under ₹800</div>
-              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="800-900" onclick="toggleFilter(this,'priceRange','800-900')">₹800–₹900</div>
-              <div class="filter-chip" data-filter-type="priceRange" data-filter-value="1100-1200" onclick="toggleFilter(this,'priceRange','1100-1200')">₹1,100–₹1,200</div>
+              <div class="filter-chip" data-filter-type="size" data-filter-value="XS"  onclick="toggleFilter(this,'size','XS')">XS</div>
+              <div class="filter-chip" data-filter-type="size" data-filter-value="S"   onclick="toggleFilter(this,'size','S')">S</div>
+              <div class="filter-chip" data-filter-type="size" data-filter-value="M"   onclick="toggleFilter(this,'size','M')">M</div>
+              <div class="filter-chip" data-filter-type="size" data-filter-value="L"   onclick="toggleFilter(this,'size','L')">L</div>
+              <div class="filter-chip" data-filter-type="size" data-filter-value="XL"  onclick="toggleFilter(this,'size','XL')">XL</div>
+              <div class="filter-chip" data-filter-type="size" data-filter-value="XXL" onclick="toggleFilter(this,'size','XXL')">XXL</div>
             </div>
           </div>
           <button class="btn btn-outline-teal btn-sm btn-full" onclick="clearFilters()" style="margin-top:8px;">Clear All Filters</button>
@@ -3124,22 +3127,21 @@ function sortProductList(list, mode = currentSort) {
   });
 }
 
-function matchesPriceRange(price, range) {
-  if (typeof price !== 'number' || Number.isNaN(price)) return false;
-  if (range === 'under800')   return price < 800;
-  if (range === '800-900')    return price >= 800 && price <= 900;
-  if (range === '1100-1200')  return price >= 1100 && price <= 1200;
-  return true;
-}
-
 function getFilteredProducts() {
   let filtered = [...products];
 
   if (activeFilters.category) {
     filtered = filtered.filter(product => product.cat === activeFilters.category);
   }
-  if (activeFilters.priceRange) {
-    filtered = filtered.filter(product => matchesPriceRange(product.price, activeFilters.priceRange));
+
+  if (activeFilters.size) {
+    const sz = activeFilters.size;
+    filtered = filtered.filter(product => {
+      if (!product.sizes.includes(sz)) return false; // product doesn't carry this size at all
+      if (!inventoryLoaded) return true;              // inventory not ready — show all size-matches
+      if (!inventory.hasOwnProperty(product.sku)) return true; // SKU not tracked → assume available
+      return getAvailableStock(product.sku, sz) > 0;  // tracked SKU — only show if in stock
+    });
   }
 
   return sortProductList(filtered);
@@ -3470,8 +3472,7 @@ function openProduct(id, addToHistory = true) {
   const cartEnabled = canAddToCart(p);
   const skuStock = inventoryLoaded ? inventory[p.sku] : undefined;
   const sizesHTML = p.sizes.map(s => {
-    // If inventory hasn't loaded yet, show all sizes as available
-    const outClass = inventoryLoaded && (skuStock ? (skuStock[s] || 0) : 0) === 0 ? ' out' : '';
+    const outClass = inventoryLoaded && inventory.hasOwnProperty(p.sku) && getAvailableStock(p.sku, s) === 0 ? ' out' : '';
     return `<div class="size-opt${outClass}" onclick="selectSize(this,'${s}')">${s}</div>`;
   }).join('');
   const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
@@ -3797,10 +3798,12 @@ function updateCartQty(index, delta) {
   }
   cart[index].qty = newQty;
   renderCart(); saveCart();
+  if (currentProduct) refreshSizeAvailability(currentProduct);
 }
 function removeFromCart(index) {
   cart.splice(index, 1);
   renderCart(); saveCart();
+  if (currentProduct) refreshSizeAvailability(currentProduct);
   showToast('Removed from cart', 'success');
 }
 function addToCart(id) {
@@ -3833,6 +3836,7 @@ function addToCartFromDetail() {
   const existing = cart.find(c => c.id === currentProduct.id && c.selectedSize === selectedSize);
   if (existing) { existing.qty += addQty; } else { cart.push({ ...currentProduct, qty: addQty, selectedSize }); }
   renderCart(); saveCart();
+  refreshSizeAvailability(currentProduct);
   if (addQty < reqQty) showToast(`Only ${addQty} in stock — added to cart`, 'info');
   else showToast(`${currentProduct.name} added to cart 🛒`, 'success');
 }
@@ -3934,9 +3938,8 @@ function renderActiveFilters() {
     filters.push({ type: 'category', label });
   }
 
-  if (activeFilters.priceRange) {
-    const label = document.querySelector(`.filter-chip[data-filter-type="priceRange"][data-filter-value="${activeFilters.priceRange}"]`)?.textContent || activeFilters.priceRange;
-    filters.push({ type: 'priceRange', label });
+  if (activeFilters.size) {
+    filters.push({ type: 'size', label: `Size: ${activeFilters.size}` });
   }
 
   activeFilterEl.innerHTML = filters.map(filter => `
@@ -4304,6 +4307,7 @@ fetch('inventory.json').then(r => r.ok ? r.json() : {}).then(data => {
   inventoryLoaded = true;
   // If product detail is open, update size availability in place (no full re-render)
   if (currentProduct) refreshSizeAvailability(currentProduct);
+  if (activeFilters.size) initShopGrid(); // refine size filter now that stock is known
 }).catch(() => { inventoryLoaded = true; });
 
 // Handle direct URL with hash — runs on DOMContentLoaded so it always fires
