@@ -137,6 +137,8 @@ try:
         ('data-filter-type="size"',        'Size filter chips in sidebar HTML'),
         ('activeFilters.size',             'Size filter logic in getFilteredProducts'),
         ('touch-action: pan-y',            'Hero swipe CSS (no white-space during swipe)'),
+        ('badge-soldout',                  'Sold-out badge CSS + HTML present'),
+        ('isSoldOut',                      'isSoldOut logic in buildProductCard'),
     ]
 
     for snippet, label in CRITICAL:
@@ -174,14 +176,21 @@ if html_index:
 
     tracked   = [s for s in catalog_skus if s in inventory]
     untracked = [s for s in catalog_skus if s not in inventory]
-    check(len(tracked) > 0,   f'Tracked SKUs: {len(tracked)}  ({", ".join(tracked[:5])}…)')
-    check(len(untracked) >= 0, f'Untracked SKUs (assumed available): {len(untracked)}  '
-                                f'({", ".join(untracked) if untracked else "none"})')
+    check(len(tracked) == 34, f'All 34 catalog SKUs now tracked in inventory  (found {len(tracked)})')
+    check(len(untracked) == 0, f'No untracked SKUs remaining  ({len(untracked)} untracked)')
 
-    # Every untracked SKU must NOT appear in inventory (proof that hasOwnProperty handles them)
-    for sku in untracked:
-        check(sku not in inventory,
-              f'Untracked {sku} not in inventory.json (will be shown as available via fix)')
+    # Verify the 10 previously-untracked SKUs are now in inventory with zero stock
+    formerly_untracked = ['F0003','F0004','F0005','F0006','F0009','F0012','F0013','KF001','KF002','KF003']
+    for sku in formerly_untracked:
+        in_inv  = sku in inventory
+        all_zero = in_inv and all(v == 0 for v in inventory[sku].values())
+        check(in_inv and all_zero, f'{sku} in inventory.json with all-zero stock (sold out)')
+
+    # Verify the 7 previously-tracked all-zero SKUs still show as sold out
+    always_zero = ['SC004','SC009','SC013','ST010','ST013','ST014','ST015']
+    for sku in always_zero:
+        all_zero = sku in inventory and all(v == 0 for v in inventory[sku].values())
+        check(all_zero, f'{sku} confirmed all-zero in inventory (sold out)')
 
 
 # ─────────────────────────────────────────────────────────────────────────────
@@ -204,7 +213,8 @@ mock_inv = {
     'SC002': {'S':0, 'M':0,'L':1,'XL':2},
     'F0002': {'XS':1,'S':2,'M':3,'L':1,'XL':2,'XXL':0},
     'ST011': {'XS':0,'S':1,'M':2,'L':0},
-    # KF001, F0003 — intentionally absent (untracked)
+    'F0003': {'XS':0,'S':0,'M':0,'L':0,'XL':0},   # now tracked, all-zero (sold out)
+    'KF001': {'2-3yr':0,'4-5yr':0,'6-7yr':0,'8-9yr':0,'10-11yr':0},  # tracked, all-zero
 }
 
 # Before inventory loads — size check only, no stock check
@@ -215,10 +225,10 @@ check('SC001' in skus and 'F0002' in skus and 'ST011' in skus and 'F0003' in sku
 check('KF001' not in skus and 'SC002' not in skus,
       'Before inventory loads: products without XS in sizes[] correctly excluded')
 
-# After inventory loads — untracked SKUs must stay visible
+# After inventory loads — F0003 now tracked with zero stock, must be hidden
 r = filter_products(mock_products, mock_inv, True, {'size':'XS'})
 skus = {p['sku'] for p in r}
-check('F0003' in skus, 'Untracked F0003 visible after inventory loads (hasOwnProperty fix)')
+check('F0003' not in skus, 'F0003 now tracked/zero-stock: hidden by size filter (not assumed available)')
 check('SC001' in skus,  'SC001 shown (XS stock=2)')
 check('F0002' in skus,  'F0002 shown (XS stock=1)')
 check('ST011' not in skus,'ST011 hidden (XS stock=0)')
@@ -237,8 +247,8 @@ for sz in ['XS','S','M','L','XL','XXL']:
 # Combined category + size
 r = filter_products(mock_products, mock_inv, True, {'category':'frocks','size':'XS'})
 skus = {p['sku'] for p in r}
-check('F0002' in skus and 'F0003' in skus,
-      'Frocks + XS: F0002 (tracked, stock=1) + F0003 (untracked, assumed available)')
+check('F0002' in skus and 'F0003' not in skus,
+      'Frocks + XS: F0002 shown (stock=1), F0003 hidden (tracked zero-stock sold out)')
 check('SC001' not in skus, 'SC001 excluded (wrong category)')
 
 r = filter_products(mock_products, mock_inv, True, {'category':'straight-cut-kurtis','size':'M'})
@@ -475,11 +485,11 @@ final, removed, reduced = validate_checkout_cart(mock_inv, cart_in, confirmed=co
 check(len(final) == 0 and 'SC001/L' in removed,
       'Checkout validation: confirmed deduction makes item OOS → removed from checkout cart')
 
-# Untracked SKU always passes through (no inventory to validate against)
+# KF001 is now tracked with zero stock — checkout must reject it
 cart_in = [{'sku':'KF001','size':'2-3yr','qty':3}]
 final, removed, reduced = validate_checkout_cart(mock_inv, cart_in)
-check(len(final) == 1 and final[0]['qty'] == 3,
-      'Checkout validation: untracked SKU (KF001) passes through unchanged')
+check(len(final) == 0 and 'KF001/2-3yr' in removed,
+      'Checkout validation: KF001 (now tracked, zero stock) removed from checkout cart')
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Suite 9 — Dynamic size filter (kids ↔ adult swap)

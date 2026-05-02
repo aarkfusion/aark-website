@@ -516,6 +516,32 @@ button { cursor: pointer; font-family: inherit; border: none; }
   .co-page-title h1 { font-size: 1.9rem; }
   .upi-apps-grid { grid-template-columns: 1fr; }
 }
+#co-logo-menu {
+  position: fixed; z-index: 9999;
+  background: rgba(36,36,36,0.82);
+  backdrop-filter: blur(28px) saturate(200%);
+  -webkit-backdrop-filter: blur(28px) saturate(200%);
+  border-radius: 12px;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 2px 6px rgba(0,0,0,0.3),
+              inset 0 0.5px 0 rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.08);
+  padding: 5px 0; min-width: 240px;
+  opacity: 0; transform: scale(0.94) translateY(-4px);
+  transform-origin: top left;
+  transition: opacity 0.13s ease, transform 0.13s ease;
+  pointer-events: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+}
+#co-logo-menu.show { opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; }
+.co-ctx-item {
+  display: flex; align-items: center;
+  padding: 7px 14px; margin: 0 4px;
+  font-size: 0.86rem; font-weight: 400;
+  color: rgba(255,255,255,0.93);
+  cursor: default; border-radius: 6px;
+  transition: background 0.08s; user-select: none; white-space: nowrap;
+}
+.co-ctx-item:hover { background: rgba(30,100,215,0.88); color: white; }
 </style>
 </head>
 <body>
@@ -1400,6 +1426,56 @@ function copyOrderId() {
   toast.classList.add('show');
   setTimeout(() => toast.classList.remove('show'), 2000);
 }
+</script>
+
+<!-- AARK LOGO CONTEXT MENU -->
+<div id="co-logo-menu" role="menu" aria-label="Logo options">
+  <div class="co-ctx-item" id="co-ctx-logo-tab">Open Homepage in New Tab</div>
+  <div class="co-ctx-item" id="co-ctx-logo-win">Open Homepage in New Window</div>
+</div>
+
+<script>
+(function () {
+  const menu = document.getElementById('co-logo-menu');
+  const HOME_URL = window.location.href.split('#')[0].replace(/[^/]*$/, '') + 'index.html';
+
+  function positionMenu(e) {
+    const W = 248, H = 76;
+    let x = e.clientX, y = e.clientY;
+    if (x + W > window.innerWidth  - 6) x = window.innerWidth  - W - 6;
+    if (y + H > window.innerHeight - 6) y = window.innerHeight - H - 6;
+    if (y < 6) y = 6;
+    menu.style.left = x + 'px';
+    menu.style.top  = y + 'px';
+  }
+  function showMenu(e) { positionMenu(e); menu.classList.add('show'); }
+  function hideMenu()  { menu.classList.remove('show'); }
+
+  function openTab(url) { if (url) window.open(url, '_blank'); }
+  function openWin(url) {
+    if (!url) return;
+    const win = window.open(url, '_blank', 'width=1280,height=860,left=120,top=80');
+    if (!win || win.closed) window.open(url, '_blank');
+  }
+
+  document.addEventListener('contextmenu', function (e) {
+    if (e.target.closest('.co-header')) {
+      e.preventDefault();
+      showMenu(e);
+    } else {
+      hideMenu();
+    }
+  }, true);
+
+  document.getElementById('co-ctx-logo-tab')
+    .addEventListener('click', () => { openTab(HOME_URL); hideMenu(); });
+  document.getElementById('co-ctx-logo-win')
+    .addEventListener('click', () => { openWin(HOME_URL); hideMenu(); });
+
+  document.addEventListener('click',   () => hideMenu());
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideMenu(); });
+  document.addEventListener('scroll',  () => hideMenu(), true);
+})();
 </script>
 
 <!-- MOTHER'S DAY SALE BAR -->

@@ -577,6 +577,8 @@ body.nav-solid .nav-logo {
 .badge-new { background: var(--teal); color: white; }
 .badge-sale { background: #E8533A; color: white; }
 .badge-best { background: var(--gold); color: white; }
+.badge-soldout { background: rgba(0,0,0,0.62); color: rgba(255,255,255,0.92); }
+.product-card.soldout .product-img-main { opacity: 0.6; }
 .badge-hand { background: var(--cream-dark); color: var(--teal); border: 1px solid var(--teal); }
 .product-actions {
   position: absolute; bottom: 0; left: 0; right: 0;
@@ -1024,39 +1026,21 @@ body.nav-solid .nav-logo {
   display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
   align-items: flex-start;
 }
-.product-gallery { position: sticky; top: 100px; }
-.main-image {
+.product-gallery {}
+.gallery-slide {
   aspect-ratio: 3/4; overflow: hidden; border-radius: var(--radius-lg);
-  background: var(--cream-dark); margin-bottom: 12px; cursor: zoom-in;
-  position: relative;
+  background: var(--cream-dark); margin-bottom: 16px;
+  opacity: 0; transform: translateY(52px);
+  transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
 }
-.main-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-.main-image:hover img { transform: scale(1.04); }
-.gallery-arrow {
-  position: absolute; top: 50%; transform: translateY(-50%);
-  background: rgba(0,0,0,0.55); border: none; border-radius: 50%;
-  color: white; width: 38px; height: 38px;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; z-index: 5;
-  transition: background 0.2s, opacity 0.2s, transform 0.2s;
-  backdrop-filter: blur(4px);
-  opacity: 0; pointer-events: none;
+.gallery-slide.visible { opacity: 1; transform: none; }
+.gallery-slide img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.gallery-slide:hover img { transform: scale(1.03); }
+.gallery-slide:last-child { margin-bottom: 0; }
+.product-detail-info {
+  position: sticky;
+  top: calc(var(--header-h) + 24px);
 }
-.main-image:hover .gallery-arrow { opacity: 1; pointer-events: auto; }
-.gallery-arrow:hover { background: rgba(0,0,0,0.82); transform: translateY(-50%) scale(1.08); }
-.gallery-arrow.gallery-prev { left: 10px; }
-.gallery-arrow.gallery-next { right: 10px; }
-.gallery-arrow.hidden { display: none; }
-.thumb-row { display: flex; gap: 10px; }
-.thumb {
-  width: 80px; height: 100px; border-radius: var(--radius);
-  overflow: hidden; cursor: pointer; border: 2px solid transparent;
-  transition: border-color 0.25s; flex-shrink: 0;
-  background: var(--cream-dark);
-}
-.thumb.active { border-color: var(--teal); }
-.thumb img { width: 100%; height: 100%; object-fit: cover; }
-.product-detail-info {}
 .detail-breadcrumb {
   display: flex; gap: 8px; align-items: center;
   font-size: 0.75rem; color: var(--text-muted); margin-bottom: 16px;
@@ -1694,6 +1678,7 @@ body.nav-solid .nav-logo {
   .editorial-img { min-height: 300px; }
   .product-detail { grid-template-columns: 1fr; gap: 40px; }
   .product-gallery { position: static; }
+  .product-detail-info { position: static; top: auto; }
   .contact-grid { grid-template-columns: 1fr; }
   .faq-grid { grid-template-columns: 1fr; }
   .story-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1971,7 +1956,10 @@ img {
 .ctx-item.disabled { opacity: 0.35; pointer-events: none; }
 .ctx-item .ctx-arrow { font-size: 0.75rem; opacity: 0.55; margin-left: 8px; }
 .ctx-divider { height: 1px; background: rgba(255,255,255,0.12); margin: 4px 0; }
-.ctx-section { padding: 3px 0; }</style>
+.ctx-section { padding: 3px 0; }
+#ctx-logo-section { display: none; }
+#ctx-menu.ctx-mode-logo .ctx-card-area { display: none; }
+#ctx-menu.ctx-mode-logo #ctx-logo-section { display: block; }</style>
 </head>
 <body>
 
@@ -3230,8 +3218,11 @@ function showShopWithFilter(filter) {
 function buildProductCard(p) {
   const inWishlist = wishlist.some(w => w.id === p.id);
   const cartEnabled = canAddToCart(p);
+  const isSoldOut = inventoryLoaded && inventory.hasOwnProperty(p.sku) &&
+    p.sizes.every(s => getAvailableStock(p.sku, s) === 0);
   const badgeHTML = p.badge ? `<div class="badge badge-${p.badge}">New</div>` : '';
-  const cartButtonHTML = cartEnabled
+  const soldOutHTML = isSoldOut ? `<div class="badge badge-soldout">Sold Out</div>` : '';
+  const cartButtonHTML = cartEnabled && !isSoldOut
     ? `<button class="product-action-btn add-cart" onclick="addToCart(${p.id})" title="Add to Cart">Add to Cart</button>`
     : '';
   const productUrl = `https://aarkfusion.com/#product-${p.sku}`;
@@ -3239,11 +3230,11 @@ function buildProductCard(p) {
     ? `<a class="product-action-btn whatsapp" href="${buildWhatsAppHref(`Hi! I'm interested in ${p.name} (${p.sku}) priced at ${getProductPriceLabel(p)}.\n\nView it here: ${productUrl}`)}" target="_blank" title="WhatsApp">${WA_ICON}</a>`
     : `<a class="product-action-btn whatsapp" style="flex:1;" href="${buildWhatsAppHref(`Hi! I'm interested in ${p.name} (${p.sku}). Please share the price and ordering details.\n\nView it here: ${productUrl}`)}" target="_blank" title="WhatsApp">${WA_ICON} WhatsApp</a>`;
   return `
-  <div class="product-card" data-href="#product-${p.sku}" onclick="openProduct(${p.id})">
+  <div class="product-card${isSoldOut ? ' soldout' : ''}" data-href="#product-${p.sku}" onclick="openProduct(${p.id})">
     <div class="product-img-wrap">
       <img class="product-img-main" src="${p.image}" alt="${p.name}" loading="lazy">
       <img class="product-img-hover" src="${p.hoverImage || p.image}" alt="${p.name}" loading="lazy">
-      <div class="product-badges">${badgeHTML}</div>
+      <div class="product-badges">${badgeHTML}${soldOutHTML}</div>
       <div class="product-actions" onclick="event.stopPropagation()">
         <button class="product-action-btn wishlist ${inWishlist?'active':''}" onclick="toggleWishlist(${p.id},this)" title="Wishlist">${getHeartIconMarkup()}</button>
         ${cartButtonHTML}
@@ -3483,11 +3474,9 @@ function openProduct(id, addToHistory = true) {
     return `<div class="size-opt${outClass}" onclick="selectSize(this,'${s}')">${s}</div>`;
   }).join('');
   const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
-  const thumbsHTML = (p.images || [p.image]).map((image, index) => `
-    <div class="thumb ${index === 0 ? 'active' : ''}" onclick="selectProductImage(${index})">
-      <img src="${image}" alt="${p.name} view ${index + 1}">
-    </div>
-  `).join('');
+  const galleryHTML = (p.images || [p.image]).map((src, i) =>
+    `<div class="gallery-slide"><img src="${src}" alt="${p.name}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
+  ).join('\n      ');
   const qtySectionHTML = cartEnabled ? `
       <div class="qty-row">
         <span class="qty-label">Quantity</span>
@@ -3518,12 +3507,7 @@ function openProduct(id, addToHistory = true) {
     : `Hi! I'm interested in ${p.name} (${p.sku}). Please share the price and ordering details.\n\nView it here: ${productUrl}`;
   document.getElementById('productDetailContent').innerHTML = `
     <div class="product-gallery">
-      <div class="main-image">
-        <img id="detailMainImage" src="${p.image}" alt="${p.name}">
-        <button class="gallery-arrow gallery-prev${(p.images||[p.image]).length < 2 ? ' hidden' : ''}" onclick="galleryStep(-1)" aria-label="Previous"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-        <button class="gallery-arrow gallery-next${(p.images||[p.image]).length < 2 ? ' hidden' : ''}" onclick="galleryStep(1)" aria-label="Next"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
-      </div>
-      <div class="thumb-row">${thumbsHTML}</div>
+      ${galleryHTML}
     </div>
     <div class="product-detail-info">
       <div class="detail-breadcrumb">
@@ -3572,6 +3556,7 @@ function openProduct(id, addToHistory = true) {
   const related = products.filter(x => x.id !== id && x.cat === p.cat).slice(0, 4);
   document.getElementById('relatedProductsGrid').innerHTML = related.map(buildProductCard).join('');
   showPage('product', false);
+  initGalleryScroll();
   if (addToHistory) {
     history.pushState({ type: 'product', id }, '', '#product-' + p.sku);
   }
@@ -3599,18 +3584,14 @@ function galleryStep(dir) {
   selectProductImage(currentGalleryIndex + dir);
 }
 
-// Gallery swipe
-(function() {
-  let tx = 0;
-  document.addEventListener('touchstart', e => {
-    if (e.target.closest('.main-image')) tx = e.touches[0].clientX;
-  }, { passive: true });
-  document.addEventListener('touchend', e => {
-    if (!e.target.closest('.main-image')) return;
-    const dx = e.changedTouches[0].clientX - tx;
-    if (Math.abs(dx) > 40) galleryStep(dx < 0 ? 1 : -1);
-  });
-})();
+function initGalleryScroll() {
+  const slides = document.querySelectorAll('.gallery-slide');
+  if (!slides.length) return;
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.12 });
+  slides.forEach(s => io.observe(s));
+}
 
 function selectSize(el, size) {
   if (el.classList.contains('out')) {
@@ -4319,7 +4300,8 @@ fetch('inventory.json').then(r => r.ok ? r.json() : {}).then(data => {
   inventoryLoaded = true;
   // If product detail is open, update size availability in place (no full re-render)
   if (currentProduct) refreshSizeAvailability(currentProduct);
-  if (activeFilters.size) initShopGrid(); // refine size filter now that stock is known
+  initHomeGrids(); // refresh home page sold-out badges
+  initShopGrid();  // refresh shop grid sold-out badges and size filter
 }).catch(() => { inventoryLoaded = true; });
 
 // Handle direct URL with hash — runs on DOMContentLoaded so it always fires
@@ -4350,32 +4332,42 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
 
 <!-- CUSTOM CONTEXT MENU -->
 <div id="ctx-menu" role="menu" aria-label="Options">
-  <!-- Link section -->
-  <div class="ctx-section">
-    <div class="ctx-item" id="ctx-tab">Open Link in New Tab</div>
-    <div class="ctx-item" id="ctx-win">Open Link in New Window</div>
-    <div class="ctx-item" id="ctx-split">Open Link in Split View</div>
-    <div class="ctx-item" id="ctx-incognito">Open Link in Incognito Window</div>
-    <div class="ctx-item" id="ctx-as">Open Link as<span class="ctx-arrow">›</span></div>
+  <!-- Logo section (right-click on AARK nav logo) -->
+  <div id="ctx-logo-section">
+    <div class="ctx-section">
+      <div class="ctx-item" id="ctx-logo-tab">Open Homepage in New Tab</div>
+      <div class="ctx-item" id="ctx-logo-win">Open Homepage in New Window</div>
+    </div>
   </div>
-  <div class="ctx-divider"></div>
-  <!-- QR -->
-  <div class="ctx-section">
-    <div class="ctx-item" id="ctx-qr">Create QR Code for this Page</div>
-  </div>
-  <div class="ctx-divider"></div>
-  <!-- Save / copy link -->
-  <div class="ctx-section">
-    <div class="ctx-item" id="ctx-save-link">Save Link As…</div>
-    <div class="ctx-item" id="ctx-copy-link">Copy Link Address</div>
-  </div>
-  <div class="ctx-divider"></div>
-  <!-- Image section -->
-  <div class="ctx-section">
-    <div class="ctx-item" id="ctx-img-tab">Open Link in New Tab</div>
-    <div class="ctx-item" id="ctx-img-win">Open Link in New Window</div>
-    <div class="ctx-item" id="ctx-copy-img-url">Copy Image Address</div>
-    <div class="ctx-item" id="ctx-lens">Search this image with Google Lens</div>
+  <!-- Card / product sections -->
+  <div class="ctx-card-area">
+    <!-- Link section -->
+    <div class="ctx-section">
+      <div class="ctx-item" id="ctx-tab">Open Link in New Tab</div>
+      <div class="ctx-item" id="ctx-win">Open Link in New Window</div>
+      <div class="ctx-item" id="ctx-split">Open Link in Split View</div>
+      <div class="ctx-item" id="ctx-incognito">Open Link in Incognito Window</div>
+      <div class="ctx-item" id="ctx-as">Open Link as<span class="ctx-arrow">›</span></div>
+    </div>
+    <div class="ctx-divider"></div>
+    <!-- QR -->
+    <div class="ctx-section">
+      <div class="ctx-item" id="ctx-qr">Create QR Code for this Page</div>
+    </div>
+    <div class="ctx-divider"></div>
+    <!-- Save / copy link -->
+    <div class="ctx-section">
+      <div class="ctx-item" id="ctx-save-link">Save Link As…</div>
+      <div class="ctx-item" id="ctx-copy-link">Copy Link Address</div>
+    </div>
+    <div class="ctx-divider"></div>
+    <!-- Image section -->
+    <div class="ctx-section">
+      <div class="ctx-item" id="ctx-img-tab">Open Link in New Tab</div>
+      <div class="ctx-item" id="ctx-img-win">Open Link in New Window</div>
+      <div class="ctx-item" id="ctx-copy-img-url">Copy Image Address</div>
+      <div class="ctx-item" id="ctx-lens">Search this image with Google Lens</div>
+    </div>
   </div>
 </div>
 
@@ -4409,9 +4401,20 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
   function hideMenu()  { menu.classList.remove('show'); }
 
   /* Single capture-phase handler — catches everything before browser acts */
+  const HOME_URL = window.location.href.split('#')[0].replace(/[^/]*$/, '') + 'index.html';
+
   document.addEventListener('contextmenu', function (e) {
+    const onLogo = !!e.target.closest('.header');
     const onCard = !!e.target.closest('.product-card, .ace-item, .sc-card');
     const onImg  = e.target.tagName === 'IMG';
+
+    if (onLogo) {
+      e.preventDefault();
+      menu.classList.add('ctx-mode-logo');
+      menu.classList.remove('ctx-mode-card');
+      showMenu(e);
+      return;
+    }
 
     /* Block native menu on images always, and on cards always */
     if (onImg || onCard) e.preventDefault();
@@ -4419,6 +4422,8 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
     const url = resolveLink(e.target);
     if (!url) { hideMenu(); return; }
 
+    menu.classList.remove('ctx-mode-logo');
+    menu.classList.add('ctx-mode-card');
     linkUrl = url;
     imgSrc  = (e.target.tagName === 'IMG')
               ? e.target.src
@@ -4458,6 +4463,11 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
   }
 
   /* Wire up menu items */
+  document.getElementById('ctx-logo-tab')
+    .addEventListener('click', () => { openTab(HOME_URL); hideMenu(); });
+  document.getElementById('ctx-logo-win')
+    .addEventListener('click', () => { openWin(HOME_URL); hideMenu(); });
+
   document.getElementById('ctx-tab')
     .addEventListener('click', () => { openTab(linkUrl); hideMenu(); });
 
