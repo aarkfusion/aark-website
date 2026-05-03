@@ -825,6 +825,28 @@ body.nav-solid .nav-logo {
   padding-bottom: 2px; transition: border-color 0.3s;
 }
 .ef-cta:hover { border-color: white; }
+.riju-swatches {
+  display: flex; gap: 7px; margin-top: 16px; flex-wrap: wrap;
+}
+.riju-swatch {
+  width: 46px; height: 46px; border-radius: 5px; overflow: hidden; flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.35); cursor: pointer;
+  transition: border-color 0.2s, transform 0.18s, box-shadow 0.2s;
+}
+.riju-swatch img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.riju-swatch:hover { border-color: rgba(255,255,255,0.85); transform: scale(1.1); }
+.riju-swatch.active { border-color: white; box-shadow: 0 0 0 1.5px white; }
+
+/* Card-level pattern swatches */
+.card-swatches { display: flex; gap: 4px; flex-wrap: wrap; padding: 2px 0; }
+.card-swatch {
+  width: 28px; height: 28px; border-radius: 4px; overflow: hidden;
+  border: 2px solid transparent; cursor: pointer;
+  transition: border-color 0.15s, transform 0.15s; flex-shrink: 0;
+}
+.card-swatch img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.card-swatch:hover { border-color: var(--teal); transform: scale(1.12); }
+.card-swatch.cs-active { border-color: var(--teal); }
 
 /* ══════════════════════════════════════════
    TESTIMONIALS
@@ -2380,8 +2402,16 @@ img {
       <div class="ace-overlay">
         <div class="ef-label">Featured Series</div>
         <h2 class="editorial-feature-title">The Riju Series</h2>
-        <div class="editorial-feature-sub">Straight Cut Kurtis &nbsp;·&nbsp; 12 Styles</div>
+        <div class="editorial-feature-sub" id="rijuPatternLabel">Nritya &nbsp;·&nbsp; 6 Patterns</div>
         <span class="ef-cta">Discover the collection &nbsp;→</span>
+        <div class="riju-swatches" onclick="event.stopPropagation()">
+          <div class="riju-swatch active" data-img="catalog-images/SC001_1.png" data-name="Nritya"><img src="catalog-images/SC001_1.png" alt="Nritya" loading="lazy"></div>
+          <div class="riju-swatch" data-img="catalog-images/SC002_1.png" data-name="Warli Sage"><img src="catalog-images/SC002_1.png" alt="Warli Sage" loading="lazy"></div>
+          <div class="riju-swatch" data-img="catalog-images/SC003_1.png" data-name="Padma"><img src="catalog-images/SC003_1.png" alt="Padma" loading="lazy"></div>
+          <div class="riju-swatch" data-img="catalog-images/SC010_1.png" data-name="Gaja Utsav"><img src="catalog-images/SC010_1.png" alt="Gaja Utsav" loading="lazy"></div>
+          <div class="riju-swatch" data-img="catalog-images/SC011_1.png" data-name="Amber Gaja"><img src="catalog-images/SC011_1.png" alt="Amber Gaja" loading="lazy"></div>
+          <div class="riju-swatch" data-img="catalog-images/SC012_1.png" data-name="Katha"><img src="catalog-images/SC012_1.png" alt="Katha" loading="lazy"></div>
+        </div>
       </div>
     </div>
     <div class="ace-item ace-alpa" data-href="#shop-fusion-tops" onclick="showShopWithFilter('fusion-tops')">
@@ -3129,28 +3159,36 @@ function sortProductList(list, mode = currentSort) {
   const sorted = [...list];
 
   if (mode === 'price-asc') {
-    return sorted.sort((a, b) => {
+    sorted.sort((a, b) => {
       const priceA = typeof a.price === 'number' ? a.price : Number.POSITIVE_INFINITY;
       const priceB = typeof b.price === 'number' ? b.price : Number.POSITIVE_INFINITY;
       return (priceA - priceB) || a.name.localeCompare(b.name);
     });
-  }
-  if (mode === 'price-desc') {
-    return sorted.sort((a, b) => {
+  } else if (mode === 'price-desc') {
+    sorted.sort((a, b) => {
       const priceA = typeof a.price === 'number' ? a.price : Number.NEGATIVE_INFINITY;
       const priceB = typeof b.price === 'number' ? b.price : Number.NEGATIVE_INFINITY;
       return (priceB - priceA) || a.name.localeCompare(b.name);
     });
-  }
-  if (mode === 'series') {
-    return sorted.sort((a, b) => {
+  } else if (mode === 'series') {
+    sorted.sort((a, b) => {
       return (PREFIX_ORDER[a.prefix] - PREFIX_ORDER[b.prefix]) || (a.sequence - b.sequence);
+    });
+  } else {
+    sorted.sort((a, b) => {
+      return (b.sortIndex - a.sortIndex) || (PREFIX_ORDER[a.prefix] - PREFIX_ORDER[b.prefix]);
     });
   }
 
-  return sorted.sort((a, b) => {
-    return (b.sortIndex - a.sortIndex) || (PREFIX_ORDER[a.prefix] - PREFIX_ORDER[b.prefix]);
-  });
+  if (inventoryLoaded) {
+    sorted.sort((a, b) => {
+      const soA = inventory.hasOwnProperty(a.sku) && a.sizes.every(s => getAvailableStock(a.sku, s) === 0) ? 1 : 0;
+      const soB = inventory.hasOwnProperty(b.sku) && b.sizes.every(s => getAvailableStock(b.sku, s) === 0) ? 1 : 0;
+      return soA - soB;
+    });
+  }
+
+  return sorted;
 }
 
 function getFilteredProducts() {
@@ -3268,6 +3306,18 @@ function buildProductCard(p) {
   const badgeHTML = p.badge ? `<div class="badge badge-${p.badge}">New</div>` : '';
   const soldOutHTML = isSoldOut ? `<div class="badge badge-soldout">Sold Out</div>` : '';
   const variantBadgeHTML = p.isGroupRep ? `<div class="badge badge-variant">${VARIANT_GROUPS[p.variantGroupKey].patterns.length} patterns</div>` : '';
+  const cardSwatchesHTML = p.isGroupRep
+    ? `<div class="card-swatches" onclick="event.stopPropagation()">
+        ${VARIANT_GROUPS[p.variantGroupKey].patterns.map((pt, idx) =>
+          `<div class="card-swatch${idx === 0 ? ' cs-active' : ''}" data-img="${pt.imgs[0]}" data-sku="${pt.sku}" title="${pt.name}"
+            onmouseenter="cardSwatchEnter(this)"
+            onmouseleave="cardSwatchLeave(this)"
+            onclick="cardSwatchClick(this,'${pt.sku}',event)">
+            <img src="${pt.imgs[0]}" alt="${pt.name}" loading="lazy">
+          </div>`
+        ).join('')}
+      </div>`
+    : `<span class="rating-count">${p.sku}</span>`;
   const cartButtonHTML = cartEnabled && !isSoldOut
     ? `<button class="product-action-btn add-cart" onclick="addToCart(${p.id})" title="Add to Cart">Add to Cart</button>`
     : '';
@@ -3280,7 +3330,7 @@ function buildProductCard(p) {
     <div class="product-img-wrap">
       <img class="product-img-main" src="${p.image}" alt="${p.name}" loading="lazy">
       <img class="product-img-hover" src="${p.hoverImage || p.image}" alt="${p.name}" loading="lazy">
-      <div class="product-badges">${badgeHTML}${soldOutHTML}${variantBadgeHTML}</div>
+      <div class="product-badges">${badgeHTML}${soldOutHTML}</div>
       <div class="product-actions" onclick="event.stopPropagation()">
         <button class="product-action-btn wishlist ${inWishlist?'active':''}" onclick="toggleWishlist(${p.id},this)" title="Wishlist">${getHeartIconMarkup()}</button>
         ${cartButtonHTML}
@@ -3294,7 +3344,7 @@ function buildProductCard(p) {
         <span class="price-current">${getProductPriceLabel(p)}</span>
       </div>
       <div class="product-rating">
-        <span class="rating-count">${p.sku}</span>
+        ${cardSwatchesHTML}
       </div>
     </div>
   </div>`;
@@ -3614,13 +3664,16 @@ function openProduct(id, addToHistory = true) {
 
 let currentGalleryIndex = 0;
 
-function openVariantProduct(groupKey, addToHistory = true) {
+function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   const grp = VARIANT_GROUPS[groupKey];
   if (!grp) return;
   const repProduct = products.find(x => x.sku === grp.repSku);
   if (!repProduct) return;
 
-  currentProduct = repProduct;
+  const initPattern = (initialSku && grp.patterns.find(pt => pt.sku === initialSku)) || grp.patterns[0];
+  const initProduct = products.find(x => x.sku === initPattern.sku) || repProduct;
+
+  currentProduct = initProduct;
   currentGalleryIndex = 0;
   const p = repProduct;
   const cartEnabled = canAddToCart(p);
@@ -3628,22 +3681,23 @@ function openVariantProduct(groupKey, addToHistory = true) {
   const productUrl = `https://aarkfusion.com/#product-${grp.repSku}`;
   const whatsappMessage = `Hi! I want to order a ${p.series} Kurti (Riju). Please share ordering details.\n\nView here: ${productUrl}`;
 
-  const galleryHTML = grp.patterns[0].imgs.map((src, i) =>
+  const galleryHTML = initPattern.imgs.map((src, i) =>
     `<div class="gallery-slide"><img src="${src}" alt="${p.series}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
   ).join('\n      ');
 
-  const swatchesHTML = grp.patterns.map((pt, idx) => {
+  const swatchesHTML = grp.patterns.map((pt) => {
     const prod = products.find(x => x.sku === pt.sku);
     const isSoldOut = inventoryLoaded && inventory.hasOwnProperty(pt.sku) && prod &&
       prod.sizes.every(s => getAvailableStock(pt.sku, s) === 0);
-    return `<div class="pick-item${idx === 0 ? ' active' : ''}" onclick="switchVariant('${pt.sku}', this)">
+    const isInit = pt.sku === initPattern.sku;
+    return `<div class="pick-item${isInit ? ' active' : ''}" onclick="switchVariant('${pt.sku}', this)">
       <div class="pick-thumb${isSoldOut ? ' pick-soldout' : ''}"><img src="${pt.imgs[0]}" alt="${pt.name}" loading="lazy"></div>
       <div class="pick-name">${pt.name}</div>
     </div>`;
   }).join('');
 
-  const sizesHTML = p.sizes.map(s => {
-    const outClass = inventoryLoaded && inventory.hasOwnProperty(p.sku) && getAvailableStock(p.sku, s) === 0 ? ' out' : '';
+  const sizesHTML = initProduct.sizes.map(s => {
+    const outClass = inventoryLoaded && inventory.hasOwnProperty(initProduct.sku) && getAvailableStock(initProduct.sku, s) === 0 ? ' out' : '';
     return `<div class="size-opt${outClass}" onclick="selectSize(this,'${s}')">${s}</div>`;
   }).join('');
 
@@ -3688,7 +3742,7 @@ function openVariantProduct(groupKey, addToHistory = true) {
       <div class="pick-section">
         <div class="pick-label-row">
           <span class="pick-label-text">Pattern</span>
-          <span class="pick-active-name" id="activePatternName">${grp.patterns[0].name}</span>
+          <span class="pick-active-name" id="activePatternName">${initPattern.name}</span>
         </div>
         <div class="pick-row" id="variantSwatches">
           ${swatchesHTML}
@@ -3771,6 +3825,33 @@ function switchVariant(sku, el) {
   if (bn)  bn.disabled  = true;
   if (hint) hint.style.display = '';
   if (prod) refreshSizeAvailability(prod);
+}
+
+function cardSwatchEnter(swatch) {
+  const card = swatch.closest('.product-card');
+  if (!card) return;
+  const main  = card.querySelector('.product-img-main');
+  const hover = card.querySelector('.product-img-hover');
+  if (main)  main.src  = swatch.dataset.img;
+  if (hover) hover.src = swatch.dataset.img;
+}
+function cardSwatchLeave(swatch) {
+  const card = swatch.closest('.product-card');
+  if (!card) return;
+  const active = card.querySelector('.card-swatch.cs-active') || card.querySelector('.card-swatch');
+  if (!active) return;
+  const main  = card.querySelector('.product-img-main');
+  const hover = card.querySelector('.product-img-hover');
+  if (main)  main.src  = active.dataset.img;
+  if (hover) hover.src = active.dataset.img;
+}
+function cardSwatchClick(swatch, sku, event) {
+  event.stopPropagation();
+  const card = swatch.closest('.product-card');
+  if (card) card.querySelectorAll('.card-swatch').forEach(s => s.classList.remove('cs-active'));
+  swatch.classList.add('cs-active');
+  const groupKey = SKU_TO_VARIANT_GROUP[sku];
+  if (groupKey) openVariantProduct(groupKey, true, sku);
 }
 
 function selectProductImage(index) {
@@ -4732,31 +4813,33 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
   document.addEventListener('scroll',  () => hideMenu(), true);
 })();
 
-/* Riju collection card — cycle through all 6 pattern images on hover */
+/* Riju collection card — swatch strip pattern preview */
 (function () {
-  const RIJU_IMGS = [
-    'catalog-images/SC001_1.png',
-    'catalog-images/SC002_1.png',
-    'catalog-images/SC003_1.png',
-    'catalog-images/SC010_1.png',
-    'catalog-images/SC011_1.png',
-    'catalog-images/SC012_1.png',
-  ];
-  const card = document.getElementById('rijuCollectionCard');
-  const img  = document.getElementById('rijuCollectionImg');
-  if (!card || !img) return;
-  let timer = null, idx = 0;
-  card.addEventListener('mouseenter', () => {
-    idx = 0;
-    timer = setInterval(() => {
-      idx = (idx + 1) % RIJU_IMGS.length;
-      img.src = RIJU_IMGS[idx];
-    }, 480);
-  });
-  card.addEventListener('mouseleave', () => {
-    clearInterval(timer);
-    timer = null;
-    img.src = RIJU_IMGS[0];
+  const mainImg   = document.getElementById('rijuCollectionImg');
+  const labelEl   = document.getElementById('rijuPatternLabel');
+  const swatches  = document.querySelectorAll('.riju-swatch');
+  if (!mainImg || !swatches.length) return;
+
+  function setActive(swatch) {
+    swatches.forEach(s => s.classList.remove('active'));
+    swatch.classList.add('active');
+    mainImg.src = swatch.dataset.img;
+    if (labelEl) labelEl.textContent = swatch.dataset.name + ' · 6 Patterns';
+  }
+
+  swatches.forEach(swatch => {
+    swatch.addEventListener('mouseenter', () => {
+      mainImg.src = swatch.dataset.img;
+      if (labelEl) labelEl.textContent = swatch.dataset.name + ' · 6 Patterns';
+    });
+    swatch.addEventListener('mouseleave', () => {
+      const active = document.querySelector('.riju-swatch.active');
+      if (active) {
+        mainImg.src = active.dataset.img;
+        if (labelEl) labelEl.textContent = active.dataset.name + ' · 6 Patterns';
+      }
+    });
+    swatch.addEventListener('click', () => setActive(swatch));
   });
 }());
 </script>
