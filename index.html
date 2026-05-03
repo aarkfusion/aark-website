@@ -43,7 +43,7 @@
   --transition: all 0.35s cubic-bezier(0.4,0,0.2,1);
 }
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; font-size: 16px; }
+html { scroll-behavior: smooth; font-size: 16px; overflow-x: hidden; }
 body {
   font-family: var(--sans);
   background: var(--cream);
@@ -578,6 +578,7 @@ body.nav-solid .nav-logo {
 .badge-sale { background: #E8533A; color: white; }
 .badge-best { background: var(--gold); color: white; }
 .badge-soldout { background: rgba(0,0,0,0.62); color: rgba(255,255,255,0.92); }
+.badge-variant { background: rgba(0,128,128,0.82); color: white; }
 .product-card.soldout .product-img-main { opacity: 0.6; }
 .badge-hand { background: var(--cream-dark); color: var(--teal); border: 1px solid var(--teal); }
 .product-actions {
@@ -1026,7 +1027,15 @@ body.nav-solid .nav-logo {
   display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
   align-items: flex-start;
 }
-.product-gallery {}
+.product-gallery {
+  position: sticky;
+  top: calc(var(--header-h) + 24px);
+  max-height: calc(100vh - var(--header-h) - 48px);
+  overflow-y: auto;
+  scroll-behavior: smooth;
+}
+.product-gallery::-webkit-scrollbar { width: 4px; }
+.product-gallery::-webkit-scrollbar-thumb { background: #d0d0d0; border-radius: 2px; }
 .gallery-slide {
   aspect-ratio: 3/4; overflow: hidden; border-radius: var(--radius-lg);
   background: var(--cream-dark); margin-bottom: 16px;
@@ -1038,8 +1047,7 @@ body.nav-solid .nav-logo {
 .gallery-slide:hover img { transform: scale(1.03); }
 .gallery-slide:last-child { margin-bottom: 0; }
 .product-detail-info {
-  position: sticky;
-  top: calc(var(--header-h) + 24px);
+  /* normal grid flow — gallery column is the sticky scroller */
 }
 .detail-breadcrumb {
   display: flex; gap: 8px; align-items: center;
@@ -1057,6 +1065,19 @@ body.nav-solid .nav-logo {
 .detail-price .original { font-size: 1.2rem; color: var(--warm-grey); text-decoration: line-through; }
 .detail-price .save { background: #fef3f0; color: #e8533a; padding: 3px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
 .detail-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 24px; border-bottom: 1px solid var(--light-grey); padding-bottom: 24px; }
+.pick-section { margin-bottom: 24px; }
+.pick-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.pick-label-text { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); }
+.pick-active-name { font-size: 0.82rem; color: var(--teal); font-weight: 500; }
+.pick-row { display: flex; gap: 8px; flex-wrap: wrap; }
+.pick-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+.pick-thumb { width: 54px; height: 54px; border-radius: 6px; overflow: hidden; border: 2px solid var(--light-grey); transition: border-color 0.2s, box-shadow 0.2s; }
+.pick-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pick-item.active .pick-thumb { border-color: var(--teal); box-shadow: 0 0 0 1.5px var(--teal); }
+.pick-item:hover .pick-thumb { border-color: var(--teal); }
+.pick-name { font-size: 0.6rem; letter-spacing: 0.04em; text-align: center; color: var(--text-muted); max-width: 58px; line-height: 1.3; }
+.pick-item.active .pick-name { color: var(--teal); font-weight: 600; }
+.pick-thumb.pick-soldout { opacity: 0.4; }
 .size-section { margin-bottom: 24px; }
 .size-label {
   display: flex; justify-content: space-between; align-items: center;
@@ -1677,8 +1698,8 @@ body.nav-solid .nav-logo {
   .editorial-banner { grid-template-columns: 1fr; }
   .editorial-img { min-height: 300px; }
   .product-detail { grid-template-columns: 1fr; gap: 40px; }
-  .product-gallery { position: static; }
-  .product-detail-info { position: static; top: auto; }
+  .product-gallery { position: static; max-height: none; overflow-y: visible; }
+  .product-detail-info { /* already normal flow */ }
   .contact-grid { grid-template-columns: 1fr; }
   .faq-grid { grid-template-columns: 1fr; }
   .story-grid { grid-template-columns: 1fr; gap: 40px; }
@@ -1756,6 +1777,9 @@ body.nav-solid .nav-logo {
   .hero-arrow-prev { left: 10px; }
   .hero-arrow-next { right: 10px; }
   .hero-scroll { display: none; }
+  /* Landscape hero images need a fixed height + crop on mobile */
+  .hero, .hero-slide { height: 480px; }
+  .hero-slide img { height: 480px; object-fit: cover; object-position: center 15%; }
 
   /* Product cards — always show action bar on touch devices */
   .product-actions { transform: translateY(0); }
@@ -1767,7 +1791,7 @@ body.nav-solid .nav-logo {
   .detail-name { font-size: 1.7rem; }
   .detail-price .current { font-size: 1.5rem; }
   .detail-price .original { font-size: 1rem; }
-  .product-gallery { position: static; }
+  .product-gallery { position: static; max-height: none; overflow-y: visible; }
 
   /* Size options — bigger touch targets */
   .size-opt { width: 52px; height: 52px; font-size: 0.82rem; }
@@ -2358,8 +2382,8 @@ img {
     <div class="breadcrumb"><a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span><span>Collections</span></div>
   </div>
   <section class="ace-section">
-    <div class="ace-item ace-riju" data-href="#shop-straight-cut-kurtis" onclick="showShopWithFilter('straight-cut-kurtis')">
-      <img src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy">
+    <div class="ace-item ace-riju" id="rijuCollectionCard" data-href="#shop-straight-cut-kurtis" onclick="showShopWithFilter('straight-cut-kurtis')">
+      <img id="rijuCollectionImg" src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Featured Series</div>
         <h2 class="editorial-feature-title">The Riju Series</h2>
@@ -3041,6 +3065,24 @@ const PRODUCT_IMAGES = {
   ST015: ['catalog-images/ST015_1.png','catalog-images/ST015_2.png','catalog-images/ST015_3.png'],
 };
 
+const VARIANT_GROUPS = {
+  'riju-kurti': {
+    repSku: 'SC001',
+    patterns: [
+      { sku: 'SC001', name: 'Nritya',     imgs: ['catalog-images/SC001_1.png','catalog-images/SC001_2.png','catalog-images/SC001_3.png'] },
+      { sku: 'SC002', name: 'Warli Sage', imgs: ['catalog-images/SC002_1.png','catalog-images/SC002_2.png','catalog-images/SC002_3.png'] },
+      { sku: 'SC003', name: 'Padma',      imgs: ['catalog-images/SC003_1.png','catalog-images/SC003_2.png','catalog-images/SC003_3.png'] },
+      { sku: 'SC010', name: 'Gaja Utsav', imgs: ['catalog-images/SC010_1.png','catalog-images/SC010_2.png'] },
+      { sku: 'SC011', name: 'Amber Gaja', imgs: ['catalog-images/SC011_1.png','catalog-images/SC011_2.png','catalog-images/SC011_3.png'] },
+      { sku: 'SC012', name: 'Katha',      imgs: ['catalog-images/SC012_1.png','catalog-images/SC012_2.png'] },
+    ]
+  }
+};
+const SKU_TO_VARIANT_GROUP = {};
+for (const [key, grp] of Object.entries(VARIANT_GROUPS)) {
+  grp.patterns.forEach(pt => { SKU_TO_VARIANT_GROUP[pt.sku] = key; });
+}
+
 function buildProduct(file, index) {
   const [sku, priceWithExt] = file.split('_');
   const prefix = sku.slice(0, 2);
@@ -3071,6 +3113,9 @@ function buildProduct(file, index) {
     fitNote: meta.fitNote,
     allowCart: true,
     sortIndex: index + 1,
+    variantGroupKey: SKU_TO_VARIANT_GROUP[sku] || null,
+    isGroupRep: SKU_TO_VARIANT_GROUP[sku] ? VARIANT_GROUPS[SKU_TO_VARIANT_GROUP[sku]].repSku === sku : false,
+    isGroupHidden: SKU_TO_VARIANT_GROUP[sku] ? VARIANT_GROUPS[SKU_TO_VARIANT_GROUP[sku]].repSku !== sku : false,
   };
 }
 
@@ -3116,7 +3161,7 @@ function sortProductList(list, mode = currentSort) {
 }
 
 function getFilteredProducts() {
-  let filtered = [...products];
+  let filtered = products.filter(p => !p.isGroupHidden);
 
   if (activeFilters.category) {
     filtered = filtered.filter(product => product.cat === activeFilters.category);
@@ -3229,6 +3274,7 @@ function buildProductCard(p) {
     p.sizes.every(s => getAvailableStock(p.sku, s) === 0);
   const badgeHTML = p.badge ? `<div class="badge badge-${p.badge}">New</div>` : '';
   const soldOutHTML = isSoldOut ? `<div class="badge badge-soldout">Sold Out</div>` : '';
+  const variantBadgeHTML = p.isGroupRep ? `<div class="badge badge-variant">${VARIANT_GROUPS[p.variantGroupKey].patterns.length} patterns</div>` : '';
   const cartButtonHTML = cartEnabled && !isSoldOut
     ? `<button class="product-action-btn add-cart" onclick="addToCart(${p.id})" title="Add to Cart">Add to Cart</button>`
     : '';
@@ -3241,7 +3287,7 @@ function buildProductCard(p) {
     <div class="product-img-wrap">
       <img class="product-img-main" src="${p.image}" alt="${p.name}" loading="lazy">
       <img class="product-img-hover" src="${p.hoverImage || p.image}" alt="${p.name}" loading="lazy">
-      <div class="product-badges">${badgeHTML}${soldOutHTML}</div>
+      <div class="product-badges">${badgeHTML}${soldOutHTML}${variantBadgeHTML}</div>
       <div class="product-actions" onclick="event.stopPropagation()">
         <button class="product-action-btn wishlist ${inWishlist?'active':''}" onclick="toggleWishlist(${p.id},this)" title="Wishlist">${getHeartIconMarkup()}</button>
         ${cartButtonHTML}
@@ -3431,7 +3477,7 @@ function isTypingTarget(target) {
 // GRID INITIALIZERS
 // ══════════════════════════════════════════
 function initHomeGrids() {
-  const homeProducts = sortProductList(products, 'series').slice(0, 8);
+  const homeProducts = sortProductList(products.filter(p => !p.isGroupHidden), 'series').slice(0, 8);
   document.getElementById('homeProductGrid').innerHTML = homeProducts.map(buildProductCard).join('');
 }
 
@@ -3451,7 +3497,7 @@ function initShopGrid() {
 }
 
 function initNewGrid() {
-  const newProducts = sortProductList(products.filter(p => p.badge === 'new'));
+  const newProducts = sortProductList(products.filter(p => p.badge === 'new' && !p.isGroupHidden));
   document.getElementById('newPageGrid').innerHTML = newProducts.map(buildProductCard).join('');
 }
 
@@ -3471,6 +3517,10 @@ function initWishlistGrid() {
 function openProduct(id, addToHistory = true) {
   const p = products.find(x => x.id === id);
   if (!p) return;
+  if (p.isGroupRep && p.variantGroupKey) {
+    openVariantProduct(p.variantGroupKey, addToHistory);
+    return;
+  }
   currentProduct = p;
   currentGalleryIndex = 0;
   const cartEnabled = canAddToCart(p);
@@ -3570,6 +3620,165 @@ function openProduct(id, addToHistory = true) {
 
 let currentGalleryIndex = 0;
 
+function openVariantProduct(groupKey, addToHistory = true) {
+  const grp = VARIANT_GROUPS[groupKey];
+  if (!grp) return;
+  const repProduct = products.find(x => x.sku === grp.repSku);
+  if (!repProduct) return;
+
+  currentProduct = repProduct;
+  currentGalleryIndex = 0;
+  const p = repProduct;
+  const cartEnabled = canAddToCart(p);
+  const inWishlist = wishlist.some(w => w.id === p.id);
+  const productUrl = `https://aarkfusion.com/#product-${grp.repSku}`;
+  const whatsappMessage = `Hi! I want to order a ${p.series} Kurti (Riju). Please share ordering details.\n\nView here: ${productUrl}`;
+
+  const galleryHTML = grp.patterns[0].imgs.map((src, i) =>
+    `<div class="gallery-slide"><img src="${src}" alt="${p.series}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
+  ).join('\n      ');
+
+  const swatchesHTML = grp.patterns.map((pt, idx) => {
+    const prod = products.find(x => x.sku === pt.sku);
+    const isSoldOut = inventoryLoaded && inventory.hasOwnProperty(pt.sku) && prod &&
+      prod.sizes.every(s => getAvailableStock(pt.sku, s) === 0);
+    return `<div class="pick-item${idx === 0 ? ' active' : ''}" onclick="switchVariant('${pt.sku}', this)">
+      <div class="pick-thumb${isSoldOut ? ' pick-soldout' : ''}"><img src="${pt.imgs[0]}" alt="${pt.name}" loading="lazy"></div>
+      <div class="pick-name">${pt.name}</div>
+    </div>`;
+  }).join('');
+
+  const sizesHTML = p.sizes.map(s => {
+    const outClass = inventoryLoaded && inventory.hasOwnProperty(p.sku) && getAvailableStock(p.sku, s) === 0 ? ' out' : '';
+    return `<div class="size-opt${outClass}" onclick="selectSize(this,'${s}')">${s}</div>`;
+  }).join('');
+
+  const qtySectionHTML = cartEnabled ? `
+      <div class="qty-row">
+        <span class="qty-label">Quantity</span>
+        <div class="qty-control">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <input class="qty-num" type="number" value="1" min="1" id="detailQty">
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+  ` : '';
+
+  const ctaRowHTML = cartEnabled ? `
+      <p id="sizeHint" style="font-size:0.78rem;color:var(--text-muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:10px;">Select a size to continue</p>
+      <div class="cta-row">
+        <button class="btn btn-teal btn-lg" id="addToCartBtn" style="flex:1;" onclick="addToCartFromDetail()" disabled>🛒 Add to Cart</button>
+        <button class="btn btn-primary btn-lg" id="buyNowBtn" style="flex:1;" onclick="buyNow()" disabled>Buy Now</button>
+        <button id="detailWishlistBtn" class="product-action-btn wishlist${inWishlist ? ' active' : ''}" onclick="toggleWishlistFromDetail()" title="Add to Wishlist" style="width:48px;height:48px;flex-shrink:0;border-radius:var(--radius);">${getHeartIconMarkup()}</button>
+      </div>
+  ` : '';
+
+  const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
+
+  document.getElementById('productDetailContent').innerHTML = `
+    <div class="product-gallery" id="variantGallery">
+      ${galleryHTML}
+    </div>
+    <div class="product-detail-info">
+      <div class="detail-breadcrumb">
+        <a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span>
+        <a href="#shop" onclick="event.preventDefault(); showPage('shop')">Shop</a><span>/</span>
+        <span style="color:var(--text)">${p.series}</span>
+      </div>
+      <div class="detail-cat">${p.categoryLabel}</div>
+      <h1 class="detail-name">${p.series}</h1>
+      <div class="detail-price">
+        <span class="current">${getProductPriceLabel(p)}</span>
+      </div>
+      <p class="detail-desc">${p.desc}</p>
+      <div class="pick-section">
+        <div class="pick-label-row">
+          <span class="pick-label-text">Pattern</span>
+          <span class="pick-active-name" id="activePatternName">${grp.patterns[0].name}</span>
+        </div>
+        <div class="pick-row" id="variantSwatches">
+          ${swatchesHTML}
+        </div>
+      </div>
+      <div class="size-section">
+        <div class="size-label">
+          <span>Select Size</span>
+          <span class="size-chart-link" onclick="openSizeModal()">Size Chart</span>
+        </div>
+        <div class="size-options">${sizesHTML}</div>
+      </div>
+      ${qtySectionHTML}
+      ${ctaRowHTML}
+      <a class="btn btn-whatsapp btn-full" style="margin-bottom:16px;" href="${buildWhatsAppHref(whatsappMessage)}" target="_blank">${WA_ICON} Order on WhatsApp</a>
+      <div class="detail-tags">${tagsHTML}</div>
+      <div class="accordion">
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Fabric & Care</span><span>▾</span></div>
+          <div class="accordion-body">Fabric: ${p.fabric}<br>Machine wash cold or hand wash. Use mild detergent. Dry in shade. Avoid wringing. Iron on low heat from reverse side.</div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Fit & Style Notes</span><span>▾</span></div>
+          <div class="accordion-body">${p.fitNote} Refer to the size chart before ordering.</div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Delivery & Shipping</span><span>▾</span></div>
+          <div class="accordion-body">Ships within 2–3 business days. Delivery in 5–7 days across India. Express shipping available at checkout. Free shipping on orders above ₹2999.</div>
+        </div>
+        <div class="accordion-item">
+          <div class="accordion-header" onclick="toggleAccordion(this)"><span>Return & Exchange Policy</span><span>▾</span></div>
+          <div class="accordion-body">Size exchange accepted within 7 days. Item must be unworn with original tags. Defective items replaced immediately. Custom stitched items are non-returnable unless defective.</div>
+        </div>
+      </div>
+    </div>`;
+
+  const groupSkus = new Set(grp.patterns.map(pt => pt.sku));
+  const related = products.filter(x => !groupSkus.has(x.sku) && x.cat === p.cat && !x.isGroupHidden).slice(0, 4);
+  document.getElementById('relatedProductsGrid').innerHTML = related.map(buildProductCard).join('');
+  showPage('product', false);
+  initGalleryScroll();
+  if (addToHistory) {
+    history.pushState({ type: 'product', id: repProduct.id }, '', '#product-' + grp.repSku);
+  }
+}
+
+function switchVariant(sku, el) {
+  const groupKey = SKU_TO_VARIANT_GROUP[sku];
+  if (!groupKey) return;
+  const grp = VARIANT_GROUPS[groupKey];
+  const pattern = grp.patterns.find(pt => pt.sku === sku);
+  if (!pattern) return;
+
+  const prod = products.find(x => x.sku === sku);
+  if (prod) {
+    currentProduct = prod;
+    currentGalleryIndex = 0;
+  }
+
+  document.querySelectorAll('#variantSwatches .pick-item').forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+
+  const nameEl = document.getElementById('activePatternName');
+  if (nameEl) nameEl.textContent = pattern.name;
+
+  const gallery = document.getElementById('variantGallery');
+  if (gallery) {
+    gallery.innerHTML = pattern.imgs.map((src, i) =>
+      `<div class="gallery-slide"><img src="${src}" alt="${pattern.name}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
+    ).join('');
+    gallery.scrollTop = 0;
+    initGalleryScroll();
+  }
+
+  document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
+  const atc = document.getElementById('addToCartBtn');
+  const bn  = document.getElementById('buyNowBtn');
+  const hint = document.getElementById('sizeHint');
+  if (atc) atc.disabled = true;
+  if (bn)  bn.disabled  = true;
+  if (hint) hint.style.display = '';
+  if (prod) refreshSizeAvailability(prod);
+}
+
 function selectProductImage(index) {
   if (!currentProduct) return;
   const images = currentProduct.images || [currentProduct.image];
@@ -3591,12 +3800,16 @@ function galleryStep(dir) {
 }
 
 function initGalleryScroll() {
-  const slides = document.querySelectorAll('.gallery-slide');
+  const gallery = document.querySelector('#productDetailContent .product-gallery');
+  const slides = gallery ? gallery.querySelectorAll('.gallery-slide') : document.querySelectorAll('.gallery-slide');
   if (!slides.length) return;
   const io = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.12 });
+  }, { threshold: 0.12, root: gallery || null });
   slides.forEach(s => io.observe(s));
+  if (gallery) {
+    gallery.addEventListener('scroll', () => updateNavScroll(gallery.scrollTop), { passive: true });
+  }
 }
 
 function selectSize(el, size) {
@@ -4019,8 +4232,7 @@ function closeSideMenu() {
 // ══════════════════════════════════════════
 // SCROLL HEADER
 // ══════════════════════════════════════════
-window.addEventListener('scroll', () => {
-  const y = window.scrollY;
+function updateNavScroll(y) {
   const header = document.getElementById('header');
   const onHome = document.getElementById('page-home').classList.contains('active');
   if (y > 80) {
@@ -4032,7 +4244,8 @@ window.addEventListener('scroll', () => {
     document.body.classList.remove('nav-scrolled');
     if (onHome) document.body.classList.remove('nav-solid');
   }
-});
+}
+window.addEventListener('scroll', () => updateNavScroll(window.scrollY));
 
 // ══════════════════════════════════════════
 // NEWSLETTER
@@ -4524,6 +4737,34 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
   document.addEventListener('keydown', e => { if (e.key === 'Escape') hideMenu(); });
   document.addEventListener('scroll',  () => hideMenu(), true);
 })();
+
+/* Riju collection card — cycle through all 6 pattern images on hover */
+(function () {
+  const RIJU_IMGS = [
+    'catalog-images/SC001_1.png',
+    'catalog-images/SC002_1.png',
+    'catalog-images/SC003_1.png',
+    'catalog-images/SC010_1.png',
+    'catalog-images/SC011_1.png',
+    'catalog-images/SC012_1.png',
+  ];
+  const card = document.getElementById('rijuCollectionCard');
+  const img  = document.getElementById('rijuCollectionImg');
+  if (!card || !img) return;
+  let timer = null, idx = 0;
+  card.addEventListener('mouseenter', () => {
+    idx = 0;
+    timer = setInterval(() => {
+      idx = (idx + 1) % RIJU_IMGS.length;
+      img.src = RIJU_IMGS[idx];
+    }, 480);
+  });
+  card.addEventListener('mouseleave', () => {
+    clearInterval(timer);
+    timer = null;
+    img.src = RIJU_IMGS[0];
+  });
+}());
 </script>
 
 <!-- MOTHER'S DAY SALE COMPONENTS (must load after DOM is ready) -->
