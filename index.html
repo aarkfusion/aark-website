@@ -1047,18 +1047,64 @@ body.nav-solid .nav-logo {
   display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
   align-items: flex-start;
 }
-.product-gallery {
+.gallery-wrapper {
   position: sticky;
   top: calc(var(--header-h) + 24px);
   max-height: calc(100vh - var(--header-h) - 48px);
+  display: flex;
+  overflow: hidden;
+}
+.thumb-strip {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 10px 14px 0;
+  overflow-y: auto;
+  flex-shrink: 0;
+  width: 72px;
+  scrollbar-width: none;
+  border-right: 1px solid var(--light-grey);
+  margin-right: 12px;
+}
+.thumb-strip::-webkit-scrollbar { display: none; }
+.gallery-thumb {
+  width: 52px; height: 68px;
+  border-radius: 4px; overflow: hidden;
+  border: 1.5px solid transparent;
+  cursor: pointer; flex-shrink: 0;
+  transition: border-color 0.18s, opacity 0.18s;
+  opacity: 0.5;
+}
+.gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gallery-thumb:hover { opacity: 0.8; }
+.gallery-thumb.active { border-color: var(--teal); opacity: 1; }
+.gallery-center { position: relative; flex: 1; overflow: hidden; }
+.gallery-scroll {
+  display: flex;
+  flex-direction: column;
+  padding: 0 28px 16px 0;
+  height: 100%;
   overflow-y: auto;
   scroll-behavior: smooth;
+  scrollbar-width: none;
 }
-.product-gallery::-webkit-scrollbar { width: 4px; }
-.product-gallery::-webkit-scrollbar-thumb { background: #d0d0d0; border-radius: 2px; }
+.gallery-scroll::-webkit-scrollbar { display: none; }
+.dot-rail {
+  position: absolute; right: 8px; top: 50%;
+  transform: translateY(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: 7px;
+  pointer-events: none;
+}
+.dot-rail .dot {
+  width: 5px; height: 5px; border-radius: 50%;
+  background: rgba(0,0,0,0.18);
+  transition: background 0.25s, height 0.25s, border-radius 0.25s;
+  flex-shrink: 0;
+}
+.dot-rail .dot.active { background: var(--teal); height: 16px; border-radius: 3px; }
 .gallery-slide {
   aspect-ratio: 3/4; overflow: hidden; border-radius: var(--radius-lg);
-  background: var(--cream-dark); margin-bottom: 16px;
+  background: var(--cream-dark); margin-bottom: 16px; flex-shrink: 0;
   opacity: 0; transform: translateY(52px);
   transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
 }
@@ -1718,7 +1764,11 @@ body.nav-solid .nav-logo {
   .editorial-banner { grid-template-columns: 1fr; }
   .editorial-img { min-height: 300px; }
   .product-detail { grid-template-columns: 1fr; gap: 40px; }
-  .product-gallery { position: static; max-height: none; overflow-y: visible; }
+  .gallery-wrapper { position: static; max-height: none; display: block; }
+  .thumb-strip { display: none; }
+  .dot-rail { display: none; }
+  .gallery-center { overflow: visible; }
+  .gallery-scroll { height: auto; overflow-y: visible; padding-right: 0; }
   .product-detail-info { /* already normal flow */ }
   .contact-grid { grid-template-columns: 1fr; }
   .faq-grid { grid-template-columns: 1fr; }
@@ -1811,7 +1861,11 @@ body.nav-solid .nav-logo {
   .detail-name { font-size: 1.7rem; }
   .detail-price .current { font-size: 1.5rem; }
   .detail-price .original { font-size: 1rem; }
-  .product-gallery { position: static; max-height: none; overflow-y: visible; }
+  .gallery-wrapper { position: static; max-height: none; display: block; }
+  .thumb-strip { display: none; }
+  .dot-rail { display: none; }
+  .gallery-center { overflow: visible; }
+  .gallery-scroll { height: auto; overflow-y: visible; padding-right: 0; }
 
   /* Size options — bigger touch targets */
   .size-opt { width: 52px; height: 52px; font-size: 0.82rem; }
@@ -3657,9 +3711,16 @@ function openProduct(id, addToHistory = true) {
     return `<div class="size-opt${outClass}" onclick="selectSize(this,'${s}')">${s}</div>`;
   }).join('');
   const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
-  const galleryHTML = (p.images || [p.image]).map((src, i) =>
-    `<div class="gallery-slide"><img src="${src}" alt="${p.name}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
+  const _imgs = p.images || [p.image];
+  const galleryHTML = _imgs.map((src, i) =>
+    `<div class="gallery-slide" data-idx="${i}"><img src="${src}" alt="${p.name}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
   ).join('\n      ');
+  const thumbsHTML = _imgs.length > 1 ? _imgs.map((src, i) =>
+    `<div class="gallery-thumb${i === 0 ? ' active' : ''}" data-idx="${i}"><img src="${src}" alt="${p.name}" loading="lazy"></div>`
+  ).join('\n      ') : '';
+  const dotsHTML = _imgs.length > 1 ? _imgs.map((_, i) =>
+    `<div class="dot${i === 0 ? ' active' : ''}"></div>`
+  ).join('\n      ') : '';
   const qtySectionHTML = cartEnabled ? `
       <div class="qty-row">
         <span class="qty-label">Quantity</span>
@@ -3689,8 +3750,14 @@ function openProduct(id, addToHistory = true) {
     ? `Hi! I want to order ${p.name} (${p.sku}) priced at ${getProductPriceLabel(p)}.\n\nView it here: ${productUrl}`
     : `Hi! I'm interested in ${p.name} (${p.sku}). Please share the price and ordering details.\n\nView it here: ${productUrl}`;
   document.getElementById('productDetailContent').innerHTML = `
-    <div class="product-gallery">
-      ${galleryHTML}
+    <div class="gallery-wrapper">
+      ${_imgs.length > 1 ? `<div class="thumb-strip">${thumbsHTML}</div>` : ''}
+      <div class="gallery-center">
+        <div class="gallery-scroll">
+          ${galleryHTML}
+        </div>
+        ${_imgs.length > 1 ? `<div class="dot-rail">${dotsHTML}</div>` : ''}
+      </div>
     </div>
     <div class="product-detail-info">
       <div class="detail-breadcrumb">
@@ -3739,7 +3806,7 @@ function openProduct(id, addToHistory = true) {
   const related = products.filter(x => x.id !== id && x.cat === p.cat).slice(0, 4);
   document.getElementById('relatedProductsGrid').innerHTML = related.map(buildProductCard).join('');
   showPage('product', false);
-  initGalleryScroll();
+  initGallery();
   if (addToHistory) {
     history.pushState({ type: 'product', id }, '', '#product-' + p.sku);
   }
@@ -3796,8 +3863,14 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   const whatsappMessage = `Hi! I want to order ${p.series}. Please share ordering details.\n\nView here: ${productUrl}`;
 
   const galleryHTML = initPattern.imgs.map((src, i) =>
-    `<div class="gallery-slide"><img src="${src}" alt="${p.series}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
+    `<div class="gallery-slide" data-idx="${i}"><img src="${src}" alt="${p.series}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
   ).join('\n      ');
+  const vThumbsHTML = initPattern.imgs.length > 1 ? initPattern.imgs.map((src, i) =>
+    `<div class="gallery-thumb${i === 0 ? ' active' : ''}" data-idx="${i}"><img src="${src}" alt="${initPattern.name}" loading="lazy"></div>`
+  ).join('\n      ') : '';
+  const vDotsHTML = initPattern.imgs.length > 1 ? initPattern.imgs.map((_, i) =>
+    `<div class="dot${i === 0 ? ' active' : ''}"></div>`
+  ).join('\n      ') : '';
 
   const swatchesHTML = grp.patterns.map((pt) => {
     const prod = products.find(x => x.sku === pt.sku);
@@ -3838,8 +3911,14 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
 
   document.getElementById('productDetailContent').innerHTML = `
-    <div class="product-gallery" id="variantGallery">
-      ${galleryHTML}
+    <div class="gallery-wrapper" id="variantGallery">
+      ${initPattern.imgs.length > 1 ? `<div class="thumb-strip">${vThumbsHTML}</div>` : ''}
+      <div class="gallery-center">
+        <div class="gallery-scroll">
+          ${galleryHTML}
+        </div>
+        ${initPattern.imgs.length > 1 ? `<div class="dot-rail">${vDotsHTML}</div>` : ''}
+      </div>
     </div>
     <div class="product-detail-info">
       <div class="detail-breadcrumb">
@@ -3897,7 +3976,7 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   const related = products.filter(x => !groupSkus.has(x.sku) && x.cat === p.cat && !x.isGroupHidden).slice(0, 4);
   document.getElementById('relatedProductsGrid').innerHTML = related.map(buildProductCard).join('');
   showPage('product', false);
-  initGalleryScroll();
+  initGallery();
   if (addToHistory) {
     history.pushState({ type: 'product', id: repProduct.id }, '', '#product-' + grp.repSku);
   }
@@ -3922,13 +4001,31 @@ function switchVariant(sku, el) {
   const nameEl = document.getElementById('activePatternName');
   if (nameEl) nameEl.textContent = pattern.name;
 
-  const gallery = document.getElementById('variantGallery');
-  if (gallery) {
-    gallery.innerHTML = pattern.imgs.map((src, i) =>
-      `<div class="gallery-slide"><img src="${src}" alt="${pattern.name}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
-    ).join('');
-    gallery.scrollTop = 0;
-    initGalleryScroll();
+  const wrapper = document.getElementById('variantGallery');
+  if (wrapper) {
+    const thumbStrip = wrapper.querySelector('.thumb-strip');
+    const scrollEl = wrapper.querySelector('.gallery-scroll');
+    const dotRail = wrapper.querySelector('.dot-rail');
+    const showStrip = pattern.imgs.length > 1;
+    if (scrollEl) {
+      scrollEl.innerHTML = pattern.imgs.map((src, i) =>
+        `<div class="gallery-slide" data-idx="${i}"><img src="${src}" alt="${pattern.name}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
+      ).join('');
+      scrollEl.scrollTop = 0;
+    }
+    if (thumbStrip) {
+      thumbStrip.style.display = showStrip ? '' : 'none';
+      thumbStrip.innerHTML = pattern.imgs.map((src, i) =>
+        `<div class="gallery-thumb${i === 0 ? ' active' : ''}" data-idx="${i}"><img src="${src}" alt="${pattern.name}" loading="lazy"></div>`
+      ).join('');
+    }
+    if (dotRail) {
+      dotRail.style.display = showStrip ? '' : 'none';
+      dotRail.innerHTML = pattern.imgs.map((_, i) =>
+        `<div class="dot${i === 0 ? ' active' : ''}"></div>`
+      ).join('');
+    }
+    initGallery();
   }
 
   document.querySelectorAll('.size-opt').forEach(s => s.classList.remove('active'));
@@ -3961,16 +4058,39 @@ function galleryStep(dir) {
   selectProductImage(currentGalleryIndex + dir);
 }
 
-function initGalleryScroll() {
-  const gallery = document.querySelector('#productDetailContent .product-gallery');
-  const slides = gallery ? gallery.querySelectorAll('.gallery-slide') : document.querySelectorAll('.gallery-slide');
+function initGallery() {
+  const wrapper = document.querySelector('#productDetailContent .gallery-wrapper');
+  if (!wrapper) return;
+  const scrollEl = wrapper.querySelector('.gallery-scroll');
+  if (!scrollEl) return;
+  const slides = scrollEl.querySelectorAll('.gallery-slide');
   if (!slides.length) return;
-  const io = new IntersectionObserver((entries) => {
+
+  const fadeIo = new IntersectionObserver((entries) => {
     entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
-  }, { threshold: 0.12, root: gallery || null });
-  slides.forEach(s => io.observe(s));
-  if (gallery) {
-    gallery.addEventListener('scroll', () => updateNavScroll(gallery.scrollTop), { passive: true });
+  }, { threshold: 0.12, root: scrollEl });
+  slides.forEach(s => fadeIo.observe(s));
+
+  const thumbs = wrapper.querySelectorAll('.gallery-thumb');
+  const dots = wrapper.querySelectorAll('.dot-rail .dot');
+  if (thumbs.length > 1) {
+    function setGalleryActive(idx) {
+      thumbs.forEach((t, i) => t.classList.toggle('active', i === idx));
+      dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+    }
+    const syncIo = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) setGalleryActive(Number(entry.target.dataset.idx));
+      });
+    }, { root: scrollEl, threshold: 0.5 });
+    slides.forEach(s => syncIo.observe(s));
+    thumbs.forEach(thumb => {
+      thumb.addEventListener('click', () => {
+        const idx = Number(thumb.dataset.idx);
+        slides[idx]?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        setGalleryActive(idx);
+      });
+    });
   }
 }
 
