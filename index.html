@@ -3735,7 +3735,7 @@ function openProduct(id, addToHistory = true) {
   const ctaRowHTML = cartEnabled ? `
       <p id="sizeHint" style="font-size:0.78rem;color:var(--text-muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:10px;">Select a size to continue</p>
       <div class="cta-row">
-        <button class="btn btn-teal btn-lg" id="addToCartBtn" style="flex:1;" onclick="addToCartFromDetail()" disabled>🛒 Add to Cart</button>
+        <button class="btn btn-teal btn-lg" id="addToCartBtn" style="flex:1;" onclick="addToCartFromDetail()" disabled>Add to Cart</button>
         <button class="btn btn-primary btn-lg" id="buyNowBtn" style="flex:1;" onclick="buyNow()" disabled>Buy Now</button>
         <button id="detailWishlistBtn" class="product-action-btn wishlist${inWishlist ? ' active' : ''}" onclick="toggleWishlistFromDetail()" title="Add to Wishlist" style="width:48px;height:48px;flex-shrink:0;border-radius:var(--radius);">${getHeartIconMarkup()}</button>
       </div>
@@ -3902,7 +3902,7 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   const ctaRowHTML = cartEnabled ? `
       <p id="sizeHint" style="font-size:0.78rem;color:var(--text-muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:10px;">Select a size to continue</p>
       <div class="cta-row">
-        <button class="btn btn-teal btn-lg" id="addToCartBtn" style="flex:1;" onclick="addToCartFromDetail()" disabled>🛒 Add to Cart</button>
+        <button class="btn btn-teal btn-lg" id="addToCartBtn" style="flex:1;" onclick="addToCartFromDetail()" disabled>Add to Cart</button>
         <button class="btn btn-primary btn-lg" id="buyNowBtn" style="flex:1;" onclick="buyNow()" disabled>Buy Now</button>
         <button id="detailWishlistBtn" class="product-action-btn wishlist${inWishlist ? ' active' : ''}" onclick="toggleWishlistFromDetail()" title="Add to Wishlist" style="width:48px;height:48px;flex-shrink:0;border-radius:var(--radius);">${getHeartIconMarkup()}</button>
       </div>
