@@ -2430,7 +2430,7 @@ img {
         <div class="editorial-feature-sub">11 Styles · Frocks</div>
       </div>
     </div>
-    <div class="ace-item ace-aira" data-href="#shop-kids-frocks" onclick="showShopWithFilter('kids-frocks')">
+    <div class="ace-item ace-aira" data-href="#product-KF001" onclick="openVariantProduct('aira-frock')">
       <img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy">
       <div class="ace-overlay">
         <div class="ef-label">Kids</div>
@@ -3099,7 +3099,50 @@ const VARIANT_GROUPS = {
       { sku: 'SC011', name: 'Amber Gaja', imgs: ['catalog-images/SC011_1.png','catalog-images/SC011_2.png','catalog-images/SC011_3.png'] },
       { sku: 'SC012', name: 'Katha',      imgs: ['catalog-images/SC012_1.png','catalog-images/SC012_2.png'] },
     ]
-  }
+  },
+  'riju-kurti-2': {
+    repSku: 'SC004',
+    patterns: [
+      { sku: 'SC004', name: 'Sabha',      imgs: ['catalog-images/SC004_870.jpg'] },
+      { sku: 'SC005', name: 'Kaash',      imgs: ['catalog-images/SC005_870.jpg'] },
+      { sku: 'SC006', name: 'Parna',      imgs: ['catalog-images/SC006_870.jpg'] },
+      { sku: 'SC008', name: 'Kesari Bel', imgs: ['catalog-images/SC008_870.jpg'] },
+      { sku: 'SC009', name: 'Lal Keri',   imgs: ['catalog-images/SC009_870.jpg'] },
+    ]
+  },
+  'aira-frock': {
+    repSku: 'KF001',
+    patterns: [
+      { sku: 'KF001', name: 'Devi',         imgs: ['catalog-images/KF001_750.jpg'] },
+      { sku: 'KF002', name: 'Bodhi',        imgs: ['catalog-images/KF002_750.png'] },
+      { sku: 'KF003', name: 'Maroon Bodhi', imgs: ['catalog-images/KF003_750.jpg'] },
+    ]
+  },
+  'alpa-peplum': {
+    repSku: 'ST001',
+    patterns: [
+      { sku: 'ST001', name: 'Haldi Pushpa', imgs: ['catalog-images/ST001_800.jpg'] },
+      { sku: 'ST002', name: 'Neela Pushpa', imgs: ['catalog-images/ST002_800.jpg'] },
+      { sku: 'ST003', name: 'Lok Katha',    imgs: ['catalog-images/ST003_800.jpg'] },
+      { sku: 'ST007', name: 'Keri Raga',    imgs: ['catalog-images/ST007_800.jpg'] },
+    ]
+  },
+  'alpa-crop-3q': {
+    repSku: 'ST010',
+    patterns: [
+      { sku: 'ST010', name: 'Mriga',       imgs: ['catalog-images/ST010_1.png','catalog-images/ST010_2.png','catalog-images/ST010_3.png'] },
+      { sku: 'ST011', name: 'Nila Pushpa', imgs: ['catalog-images/ST011_1.png','catalog-images/ST011_2.png','catalog-images/ST011_3.png'] },
+      { sku: 'ST012', name: 'Devi Katha',  imgs: ['catalog-images/ST012_1.png','catalog-images/ST012_2.png','catalog-images/ST012_3.png'] },
+    ]
+  },
+  'alpa-crop-sl': {
+    repSku: 'ST013',
+    patterns: [
+      { sku: 'ST013', name: 'Lal Devi',      imgs: ['catalog-images/ST013_1.png','catalog-images/ST013_2.png','catalog-images/ST013_3.png'] },
+      { sku: 'ST014', name: 'Crimson Bodhi', imgs: ['catalog-images/ST014_1.png','catalog-images/ST014_2.png','catalog-images/ST014_3.png'] },
+      { sku: 'ST015', name: 'Nila Malika',   imgs: ['catalog-images/ST015_1.png','catalog-images/ST015_2.png','catalog-images/ST015_3.png'] },
+    ]
+  },
 };
 const SKU_TO_VARIANT_GROUP = {};
 for (const [key, grp] of Object.entries(VARIANT_GROUPS)) {
@@ -3181,11 +3224,16 @@ function sortProductList(list, mode = currentSort) {
   }
 
   if (inventoryLoaded) {
-    sorted.sort((a, b) => {
-      const soA = inventory.hasOwnProperty(a.sku) && a.sizes.every(s => getAvailableStock(a.sku, s) === 0) ? 1 : 0;
-      const soB = inventory.hasOwnProperty(b.sku) && b.sizes.every(s => getAvailableStock(b.sku, s) === 0) ? 1 : 0;
-      return soA - soB;
-    });
+    const groupSoldOut = (p) => {
+      if (p.isGroupRep && p.variantGroupKey) {
+        return !VARIANT_GROUPS[p.variantGroupKey].patterns.some(pt => {
+          const prod = products.find(x => x.sku === pt.sku);
+          return !(prod && inventory.hasOwnProperty(pt.sku) && prod.sizes.every(s => getAvailableStock(pt.sku, s) === 0));
+        });
+      }
+      return inventory.hasOwnProperty(p.sku) && p.sizes.every(s => getAvailableStock(p.sku, s) === 0);
+    };
+    sorted.sort((a, b) => (groupSoldOut(a) ? 1 : 0) - (groupSoldOut(b) ? 1 : 0));
   }
 
   return sorted;
@@ -3301,23 +3349,54 @@ function showShopWithFilter(filter) {
 function buildProductCard(p) {
   const inWishlist = wishlist.some(w => w.id === p.id);
   const cartEnabled = canAddToCart(p);
-  const isSoldOut = inventoryLoaded && inventory.hasOwnProperty(p.sku) &&
-    p.sizes.every(s => getAvailableStock(p.sku, s) === 0);
+
+  // For group reps: display the first in-stock pattern; sold-out only if ALL patterns are out
+  let displayPattern = null;
+  let isSoldOut;
+  if (p.isGroupRep && p.variantGroupKey) {
+    const grp = VARIANT_GROUPS[p.variantGroupKey];
+    if (inventoryLoaded) {
+      displayPattern = grp.patterns.find(pt => {
+        const prod = products.find(x => x.sku === pt.sku);
+        return !(prod && inventory.hasOwnProperty(pt.sku) && prod.sizes.every(s => getAvailableStock(pt.sku, s) === 0));
+      }) || grp.patterns[0];
+      isSoldOut = !grp.patterns.some(pt => {
+        const prod = products.find(x => x.sku === pt.sku);
+        return !(prod && inventory.hasOwnProperty(pt.sku) && prod.sizes.every(s => getAvailableStock(pt.sku, s) === 0));
+      });
+    } else {
+      displayPattern = grp.patterns[0];
+      isSoldOut = false;
+    }
+  } else {
+    isSoldOut = inventoryLoaded && inventory.hasOwnProperty(p.sku) &&
+      p.sizes.every(s => getAvailableStock(p.sku, s) === 0);
+  }
+
+  const cardImg      = displayPattern ? displayPattern.imgs[0] : p.image;
+  const cardHoverImg = displayPattern ? (displayPattern.imgs[1] || displayPattern.imgs[0]) : (p.hoverImage || p.image);
+
   const badgeHTML = p.badge ? `<div class="badge badge-${p.badge}">New</div>` : '';
-  const soldOutHTML = isSoldOut ? `<div class="badge badge-soldout">Sold Out</div>` : '';
-  const variantBadgeHTML = p.isGroupRep ? `<div class="badge badge-variant">${VARIANT_GROUPS[p.variantGroupKey].patterns.length} patterns</div>` : '';
+  const soldOutHTML = p.isGroupRep
+    ? `<div class="badge badge-soldout card-so-badge"${isSoldOut ? '' : ' style="display:none"'}>Sold Out</div>`
+    : (isSoldOut ? `<div class="badge badge-soldout">Sold Out</div>` : '');
+
   const cardSwatchesHTML = p.isGroupRep
     ? `<div class="card-swatches" onclick="event.stopPropagation()">
-        ${VARIANT_GROUPS[p.variantGroupKey].patterns.map((pt, idx) =>
-          `<div class="card-swatch${idx === 0 ? ' cs-active' : ''}" data-img="${pt.imgs[0]}" data-sku="${pt.sku}" title="${pt.name}"
+        ${VARIANT_GROUPS[p.variantGroupKey].patterns.map((pt) => {
+          const isActive = displayPattern && pt.sku === displayPattern.sku;
+          const ptProd = products.find(x => x.sku === pt.sku);
+          const ptSoldOut = inventoryLoaded && ptProd && inventory.hasOwnProperty(pt.sku) && ptProd.sizes.every(s => getAvailableStock(pt.sku, s) === 0);
+          return `<div class="card-swatch${isActive ? ' cs-active' : ''}" data-img="${pt.imgs[0]}" data-sku="${pt.sku}" data-sold-out="${ptSoldOut ? 'true' : 'false'}" title="${pt.name}"
             onmouseenter="cardSwatchEnter(this)"
             onmouseleave="cardSwatchLeave(this)"
             onclick="cardSwatchClick(this,'${pt.sku}',event)">
             <img src="${pt.imgs[0]}" alt="${pt.name}" loading="lazy">
-          </div>`
-        ).join('')}
+          </div>`;
+        }).join('')}
       </div>`
     : `<span class="rating-count">${p.sku}</span>`;
+
   const cartButtonHTML = cartEnabled && !isSoldOut
     ? `<button class="product-action-btn add-cart" onclick="addToCart(${p.id})" title="Add to Cart">Add to Cart</button>`
     : '';
@@ -3328,8 +3407,8 @@ function buildProductCard(p) {
   return `
   <div class="product-card${isSoldOut ? ' soldout' : ''}" data-href="#product-${p.sku}" onclick="openProduct(${p.id})">
     <div class="product-img-wrap">
-      <img class="product-img-main" src="${p.image}" alt="${p.name}" loading="lazy">
-      <img class="product-img-hover" src="${p.hoverImage || p.image}" alt="${p.name}" loading="lazy">
+      <img class="product-img-main" src="${cardImg}" alt="${p.name}" loading="lazy">
+      <img class="product-img-hover" src="${cardHoverImg}" alt="${p.name}" loading="lazy">
       <div class="product-badges">${badgeHTML}${soldOutHTML}</div>
       <div class="product-actions" onclick="event.stopPropagation()">
         <button class="product-action-btn wishlist ${inWishlist?'active':''}" onclick="toggleWishlist(${p.id},this)" title="Wishlist">${getHeartIconMarkup()}</button>
@@ -3679,7 +3758,7 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   const cartEnabled = canAddToCart(p);
   const inWishlist = wishlist.some(w => w.id === p.id);
   const productUrl = `https://aarkfusion.com/#product-${grp.repSku}`;
-  const whatsappMessage = `Hi! I want to order a ${p.series} Kurti (Riju). Please share ordering details.\n\nView here: ${productUrl}`;
+  const whatsappMessage = `Hi! I want to order ${p.series}. Please share ordering details.\n\nView here: ${productUrl}`;
 
   const galleryHTML = initPattern.imgs.map((src, i) =>
     `<div class="gallery-slide"><img src="${src}" alt="${p.series}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
@@ -3834,6 +3913,8 @@ function cardSwatchEnter(swatch) {
   const hover = card.querySelector('.product-img-hover');
   if (main)  main.src  = swatch.dataset.img;
   if (hover) hover.src = swatch.dataset.img;
+  const badge = card.querySelector('.card-so-badge');
+  if (badge) badge.style.display = swatch.dataset.soldOut === 'true' ? '' : 'none';
 }
 function cardSwatchLeave(swatch) {
   const card = swatch.closest('.product-card');
@@ -3844,6 +3925,8 @@ function cardSwatchLeave(swatch) {
   const hover = card.querySelector('.product-img-hover');
   if (main)  main.src  = active.dataset.img;
   if (hover) hover.src = active.dataset.img;
+  const badge = card.querySelector('.card-so-badge');
+  if (badge) badge.style.display = active.dataset.soldOut === 'true' ? '' : 'none';
 }
 function cardSwatchClick(swatch, sku, event) {
   event.stopPropagation();
