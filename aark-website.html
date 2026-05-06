@@ -852,6 +852,38 @@ body.nav-solid .nav-logo {
 .riju-swatch:hover { border-color: rgba(255,255,255,0.85); transform: scale(1.1); }
 .riju-swatch.active { border-color: white; box-shadow: 0 0 0 1.5px white; }
 
+/* ── Collections page: simple card grid ── */
+.coll-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  padding: 0 40px 60px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.coll-card { cursor: pointer; }
+.coll-img-wrap {
+  aspect-ratio: 2 / 3;
+  overflow: hidden;
+  background: #1a1a1a;
+}
+.coll-img-wrap img {
+  width: 100%; height: 100%;
+  object-fit: cover; object-position: center 10%;
+  display: block; transition: transform 0.6s ease;
+}
+.coll-card:hover .coll-img-wrap img { transform: scale(1.04); }
+.coll-label { text-align: center; margin-top: 14px; padding-bottom: 8px; }
+.coll-name {
+  font-family: var(--serif); font-weight: 300;
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  letter-spacing: 0.15em; text-transform: uppercase; color: #1a1a1a;
+}
+.coll-sub {
+  font-size: 0.7rem; letter-spacing: 0.1em;
+  text-transform: uppercase; color: #888; margin-top: 5px;
+}
+
 /* Card-level pattern swatches */
 .card-thumbs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .card-thumb {
@@ -1819,6 +1851,7 @@ body.nav-solid .nav-logo {
   .collections-grid { grid-template-columns: 1fr 1fr; }
   .collection-hero-card:first-child { grid-column: span 1; aspect-ratio: 4/5; }
   .instagram-grid { grid-template-columns: repeat(4, 1fr); }
+  .coll-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; padding: 0 24px 48px; }
   .shop-sidebar { width: 220px; }
 }
 @media (max-width: 768px) {
@@ -1850,6 +1883,7 @@ body.nav-solid .nav-logo {
   .values-grid { grid-template-columns: 1fr; }
   .collections-grid { grid-template-columns: 1fr; }
   .collection-hero-card:first-child { grid-column: span 1; }
+  .coll-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 0 16px 48px; }
   .shop-layout { flex-direction: column; }
   .shop-sidebar { width: 100%; position: static; }
   .newsletter-form { flex-direction: column; border-radius: 12px; }
@@ -2135,6 +2169,7 @@ img {
 <div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
 <div class="side-menu" id="sideMenu">
   <button class="side-menu-close" onclick="closeSideMenu()" aria-label="Close menu">✕</button>
+  <button class="side-menu-item" onclick="closeSideMenu();showPage('collections')">Collections</button>
   <button class="side-menu-item" onclick="closeSideMenu();clearFilters();showPage('shop')">Shop All</button>
   <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('straight-cut-kurtis')">The Riju Series</button>
   <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('fusion-tops')">The Alpa Series</button>
@@ -2490,57 +2525,43 @@ img {
     <p>Curated stories told through fabric, print, and craftsmanship.</p>
     <div class="breadcrumb"><a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span><span>Collections</span></div>
   </div>
-  <section class="ace-section">
-    <div class="ace-item ace-riju" id="rijuCollectionCard" data-href="#shop-straight-cut-kurtis" onclick="showShopWithFilter('straight-cut-kurtis')">
-      <img id="rijuCollectionImg" src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy">
-      <div class="ace-overlay">
-        <div class="ef-label">Featured Series</div>
-        <h2 class="editorial-feature-title">The Riju Series</h2>
-        <div class="editorial-feature-sub" id="rijuPatternLabel">Nritya &nbsp;·&nbsp; 6 Patterns</div>
-        <span class="ef-cta">Discover the collection &nbsp;→</span>
-        <div class="riju-swatches" onclick="event.stopPropagation()">
-          <div class="riju-swatch active" data-img="catalog-images/SC001_1.png" data-name="Nritya"><img src="catalog-images/SC001_1.png" alt="Nritya" loading="lazy"></div>
-          <div class="riju-swatch" data-img="catalog-images/SC002_1.png" data-name="Warli Sage"><img src="catalog-images/SC002_1.png" alt="Warli Sage" loading="lazy"></div>
-          <div class="riju-swatch" data-img="catalog-images/SC003_1.png" data-name="Padma"><img src="catalog-images/SC003_1.png" alt="Padma" loading="lazy"></div>
-          <div class="riju-swatch" data-img="catalog-images/SC010_1.png" data-name="Gaja Utsav"><img src="catalog-images/SC010_1.png" alt="Gaja Utsav" loading="lazy"></div>
-          <div class="riju-swatch" data-img="catalog-images/SC011_1.png" data-name="Amber Gaja"><img src="catalog-images/SC011_1.png" alt="Amber Gaja" loading="lazy"></div>
-          <div class="riju-swatch" data-img="catalog-images/SC012_1.png" data-name="Katha"><img src="catalog-images/SC012_1.png" alt="Katha" loading="lazy"></div>
-        </div>
+  <div class="coll-grid">
+    <div class="coll-card" onclick="showShopWithFilter('straight-cut-kurtis')">
+      <div class="coll-img-wrap"><img src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy"></div>
+      <div class="coll-label">
+        <div class="coll-name">The Riju Series</div>
+        <div class="coll-sub">Women · Straight Cut Kurtis</div>
       </div>
     </div>
-    <div class="ace-item ace-alpa" data-href="#shop-fusion-tops" onclick="showShopWithFilter('fusion-tops')">
-      <img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy">
-      <div class="ace-overlay">
-        <div class="ef-label">Women</div>
-        <h2 class="editorial-feature-title">The Alpa Series</h2>
-        <div class="editorial-feature-sub">15 Styles · Fusion Tops</div>
+    <div class="coll-card" onclick="showShopWithFilter('fusion-tops')">
+      <div class="coll-img-wrap"><img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy"></div>
+      <div class="coll-label">
+        <div class="coll-name">The Alpa Series</div>
+        <div class="coll-sub">Women · Fusion Tops</div>
       </div>
     </div>
-    <div class="ace-item ace-ananta" data-href="#shop-frocks" onclick="showShopWithFilter('frocks')">
-      <img src="catalog-images/F0005_1.png" alt="The Ananta Series" loading="lazy">
-      <div class="ace-overlay">
-        <div class="ef-label">Women</div>
-        <h2 class="editorial-feature-title">The Ananta Series</h2>
-        <div class="editorial-feature-sub">11 Styles · Frocks</div>
+    <div class="coll-card" onclick="showShopWithFilter('frocks')">
+      <div class="coll-img-wrap"><img src="catalog-images/F0005_1.png" alt="The Ananta Series" loading="lazy"></div>
+      <div class="coll-label">
+        <div class="coll-name">The Ananta Series</div>
+        <div class="coll-sub">Women · Frocks</div>
       </div>
     </div>
-    <div class="ace-item ace-aira" data-href="#product-KF001" onclick="openVariantProduct('aira-frock')">
-      <img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy">
-      <div class="ace-overlay">
-        <div class="ef-label">Kids</div>
-        <h2 class="editorial-feature-title">The Aira Series</h2>
-        <div class="editorial-feature-sub">3 Styles · Kids Frocks</div>
+    <div class="coll-card" onclick="showShopWithFilter('kids-frocks')">
+      <div class="coll-img-wrap"><img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy"></div>
+      <div class="coll-label">
+        <div class="coll-name">The Aira Series</div>
+        <div class="coll-sub">Kids · Frocks</div>
       </div>
     </div>
-    <div class="ace-item ace-momkids" onclick="showPage('collections')">
-      <img src="catalog-images/mom_kids.jpg" alt="The Mom & Kids Collection" loading="lazy">
-      <div class="ace-overlay">
-        <div class="ef-label">Family</div>
-        <h2 class="editorial-feature-title">The Mom & Kids Collection</h2>
-        <div class="editorial-feature-sub">Signature Family Styling</div>
+    <div class="coll-card" onclick="showPage('collections')">
+      <div class="coll-img-wrap"><img src="catalog-images/mom_kids.jpg" alt="The Mom &amp; Kids Collection" loading="lazy"></div>
+      <div class="coll-label">
+        <div class="coll-name">The Mom &amp; Kids Collection</div>
+        <div class="coll-sub">Family · Signature Styling</div>
       </div>
     </div>
-  </section>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
