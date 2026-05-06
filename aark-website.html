@@ -1772,11 +1772,29 @@ body.nav-solid .nav-logo {
    RESPONSIVE
 ══════════════════════════════════════════ */
 @media (max-width: 1024px) {
-  .nav-links, .nav-left, .nav-right .nav-link { display: none; }
-  .nav-inner { grid-template-columns: auto 1fr; height: 64px !important; }
-  .nav-logo { grid-column: 1; font-size: 1.8rem !important; letter-spacing: 0.16em !important; }
-  body.nav-solid .nav-logo { grid-column: unset; }
-  .nav-right { grid-column: 2; }
+  .nav-links, .nav-right .nav-link { display: none; }
+  .nav-left { display: block; }
+  .nav-inner {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 16px;
+    height: 64px !important;
+  }
+  .nav-logo {
+    grid-column: 2;
+    font-size: 1.8rem !important;
+    letter-spacing: 0.12em !important;
+    position: static !important;
+    transform: none !important;
+    left: auto !important;
+  }
+  body.nav-solid .nav-logo {
+    position: static !important;
+    transform: none !important;
+    left: auto !important;
+  }
+  .nav-right { grid-column: 3; justify-content: flex-end; gap: 8px; margin-left: 0; }
   .hamburger { display: flex; }
   .category-grid { grid-template-columns: repeat(2, 1fr); }
   .product-grid { grid-template-columns: repeat(2, 1fr); }
@@ -4074,6 +4092,19 @@ function cardSwatchClick(swatch, sku, event) {
   const card = swatch.closest('.product-card');
   if (card) card.querySelectorAll('.card-thumb').forEach(s => s.classList.remove('active'));
   swatch.classList.add('active');
+
+  // On touch-only devices: switch the card image without navigating.
+  // The main card image tap still navigates via the outer onclick.
+  if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+    const main  = card && card.querySelector('.product-img-main');
+    const hover = card && card.querySelector('.product-img-hover');
+    if (main)  main.src  = swatch.dataset.img;
+    if (hover) hover.src = swatch.dataset.img;
+    const badge = card && card.querySelector('.card-so-badge');
+    if (badge) badge.style.display = swatch.dataset.soldOut === 'true' ? '' : 'none';
+    return;
+  }
+
   const groupKey = SKU_TO_VARIANT_GROUP[sku];
   if (groupKey) openVariantProduct(groupKey, true, sku);
 }
