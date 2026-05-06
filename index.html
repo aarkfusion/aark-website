@@ -126,17 +126,14 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
   height: var(--header-h);
   position: relative; z-index: 1;
 }
-.nav-left { display: none; }
+.nav-left { display: flex; align-items: center; gap: 12px; }
 .nav-right { display: flex; align-items: center; gap: 16px; margin-left: auto; }
 .nav-logo {
   font-family: 'EB Garamond', Georgia, serif;
   font-size: 6rem; font-weight: 400; letter-spacing: 6pt;
-  cursor: pointer;
-  line-height: 1;
-  transition: font-size 0.45s cubic-bezier(0.4,0,0.2,1), color 0.5s ease;
-}
-body.nav-solid .nav-logo {
+  cursor: pointer; line-height: 1;
   position: absolute; left: 50%; transform: translateX(-50%);
+  transition: font-size 0.45s cubic-bezier(0.4,0,0.2,1), color 0.5s ease;
 }
 .header.scrolled .nav-logo { font-size: 2rem; }
 .nav-logo span { color: inherit; }
@@ -222,51 +219,94 @@ body.nav-solid .nav-logo {
 }
 
 /* ══════════════════════════════════════════
-   SIDE MENU PANEL (Gucci style)
+   SIDE MENU PANEL
 ══════════════════════════════════════════ */
 .side-menu-overlay {
-  position: fixed; inset: 0; z-index: 1100;
-  background: rgba(0,0,0,0.38);
-  backdrop-filter: blur(3px);
+  position: fixed; inset: 0; z-index: 10000;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(4px);
   opacity: 0; visibility: hidden;
   transition: opacity 0.38s ease, visibility 0.38s;
 }
 .side-menu-overlay.open { opacity: 1; visibility: visible; }
 .side-menu {
-  position: fixed; top: 0; right: 0; bottom: 0;
-  width: 420px; max-width: 92vw;
-  background: white; z-index: 1101;
-  transform: translateX(100%);
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 380px; max-width: 92vw;
+  background: #0f0f0f; z-index: 10001;
+  transform: translateX(-100%);
   transition: transform 0.42s cubic-bezier(0.4,0,0.2,1);
-  overflow-y: auto; padding: 72px 52px 48px;
+  overflow-y: auto; padding: 80px 44px 48px;
   display: flex; flex-direction: column;
 }
 .side-menu.open { transform: translateX(0); }
 .side-menu-close {
-  position: absolute; top: 20px; right: 20px;
-  width: 44px; height: 44px; border-radius: 50%;
-  background: #111; color: white; border: none;
+  position: absolute; top: 22px; right: 22px;
+  width: 40px; height: 40px;
+  background: none; color: rgba(255,255,255,0.55); border: none;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 1.1rem; flex-shrink: 0;
-  transition: background 0.2s;
+  cursor: pointer; font-size: 1.1rem; z-index: 20;
+  transition: color 0.2s;
 }
-.side-menu-close:hover { background: #333; }
-.side-menu-item {
-  display: block; font-family: var(--sans); font-size: 0.95rem;
-  font-weight: 400; color: var(--text); padding: 9px 0;
-  cursor: pointer; border: none; background: none;
+.side-menu-close:hover { color: #fff; }
+/* ── Submenu panel (appears to the right of main menu) ── */
+.side-submenu {
+  position: fixed; top: 0; left: 0; bottom: 0;
+  width: 300px; max-width: calc(100vw - 380px);
+  background: #161616;
+  z-index: 10002;
+  transform: translateX(-100%);
+  transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
+  overflow-y: auto; padding: 80px 36px 48px;
+}
+/* ── Primary nav ── */
+.sm-nav-primary { display: flex; flex-direction: column; }
+.sm-nav-item {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--serif); font-size: 1.55rem; font-weight: 300;
+  color: rgba(255,255,255,0.85); padding: 15px 0;
+  border: none; border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer; background: none; text-align: left; width: 100%;
+  letter-spacing: 0.04em; transition: color 0.2s;
+}
+.sm-nav-primary .sm-nav-item:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
+.sm-nav-item:hover { color: #fff; }
+.sm-nav-item.sm-new { color: var(--gold-light, #c9a96e); }
+.sm-nav-item.sm-new:hover { color: #e5c890; }
+.sm-arrow { font-size: 1rem; color: rgba(255,255,255,0.3); transition: transform 0.2s, color 0.2s; }
+.sm-nav-item:hover .sm-arrow { color: rgba(255,255,255,0.65); transform: translateX(3px); }
+.sm-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 28px 0; }
+.sm-secondary-nav { display: flex; flex-direction: column; gap: 2px; }
+.sm-secondary-item {
+  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.35); padding: 7px 0;
+  cursor: pointer; background: none; border: none;
   text-align: left; width: 100%; transition: color 0.2s;
-  line-height: 1.2; letter-spacing: 0.05em;
 }
-.side-menu-item:hover { color: var(--teal); }
-.side-menu-divider { height: 1px; background: var(--light-grey); margin: 28px 0; }
-.side-menu-secondary {
-  display: block; font-size: 0.85rem; letter-spacing: 0.1em;
-  text-transform: uppercase; color: var(--warm-grey); padding: 8px 0;
-  cursor: pointer; border: none; background: none; text-align: left;
-  width: 100%; transition: color 0.2s;
+.sm-secondary-item:hover { color: rgba(255,255,255,0.72); }
+/* ── Sub-panel ── */
+.sm-sub-section { display: none; flex-direction: column; }
+.sm-sub-section.active { display: flex; }
+.sm-back-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255,255,255,0.38); background: none; border: none;
+  cursor: pointer; padding: 0 0 24px; transition: color 0.2s;
 }
-.side-menu-secondary:hover { color: var(--text); }
+.sm-back-btn:hover { color: rgba(255,255,255,0.8); }
+.sm-sub-heading {
+  font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
+  color: rgba(255,255,255,0.3); margin-bottom: 16px;
+}
+.sm-sub-item {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
+  letter-spacing: 0.05em; color: rgba(255,255,255,0.75); padding: 17px 0;
+  border: none; border-bottom: 1px solid rgba(255,255,255,0.08);
+  cursor: pointer; background: none; text-align: left; width: 100%;
+  transition: color 0.2s;
+}
+.sm-sub-item:first-of-type { border-top: 1px solid rgba(255,255,255,0.08); }
+.sm-sub-item:hover { color: #fff; }
 .menu-trigger {
   display: flex; align-items: center; gap: 8px;
   font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em;
@@ -1432,7 +1472,7 @@ body.nav-solid .nav-logo {
 ══════════════════════════════════════════ */
 .inner-hero {
   padding: calc(var(--header-h) + 20px) 24px 64px;
-  background: linear-gradient(135deg, var(--teal) 0%, #006666 100%);
+  background: var(--cream);
   text-align: center; margin-bottom: 0;
 }
 .page-top-section {
@@ -1440,15 +1480,15 @@ body.nav-solid .nav-logo {
 }
 .inner-hero h1 {
   font-family: var(--serif); font-size: clamp(2rem, 5vw, 4rem);
-  color: white; font-weight: 400; margin-bottom: 12px;
+  color: var(--text); font-weight: 400; margin-bottom: 12px;
 }
-.inner-hero h1 em { font-style: italic; color: var(--gold-light); }
-.inner-hero p { color: rgba(255,255,255,0.7); max-width: 480px; margin: 0 auto; font-size: 0.95rem; }
+.inner-hero h1 em { font-style: italic; color: var(--teal); }
+.inner-hero p { color: var(--text-muted); max-width: 480px; margin: 0 auto; font-size: 0.95rem; }
 .breadcrumb {
   display: flex; align-items: center; gap: 8px; justify-content: center;
-  margin-top: 16px; font-size: 0.75rem; color: rgba(255,255,255,0.55);
+  margin-top: 16px; font-size: 0.75rem; color: var(--warm-grey);
 }
-.breadcrumb span { color: var(--gold-light); }
+.breadcrumb span { color: var(--teal); }
 
 /* ══════════════════════════════════════════
    FLOATING ELEMENTS
@@ -1804,7 +1844,7 @@ body.nav-solid .nav-logo {
 ══════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .nav-links, .nav-right .nav-link { display: none; }
-  .nav-left { display: block; }
+  .nav-left { display: flex; align-items: center; gap: 8px; }
   .nav-inner {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -2148,12 +2188,17 @@ img {
 <!-- HEADER -->
 <header class="header" id="header" style="top: 0;">
   <div class="nav-inner">
-    <div class="nav-left"></div>
-    <div class="nav-logo" onclick="showPage('home')">AARK</div>
-    <div class="nav-right">
+    <div class="nav-left">
+      <button class="menu-trigger" onclick="openSideMenu()" title="Menu">
+        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="0" y1="1" x2="20" y2="1"/><line x1="0" y1="7" x2="20" y2="7"/><line x1="0" y1="13" x2="20" y2="13"/></svg>
+        MENU
+      </button>
       <div class="nav-icon-btn" onclick="toggleSearch()" title="Search">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="22" y2="22"/></svg>
       </div>
+    </div>
+    <div class="nav-logo" onclick="showPage('home')">AARK</div>
+    <div class="nav-right">
       <div class="nav-icon-btn wishlist-nav" onclick="showPage('wishlist')" title="Wishlist">
         <span class="heart-icon" aria-hidden="true">
           <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true"><path d="M12 21.35 10.55 20.03C5.4 15.36 2 12.28 2 8.5A5.5 5.5 0 0 1 7.5 3C9.24 3 10.91 3.81 12 5.09 13.09 3.81 14.76 3 16.5 3A5.5 5.5 0 0 1 22 8.5c0 3.78-3.4 6.86-8.55 11.54Z"/></svg>
@@ -2163,10 +2208,6 @@ img {
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
         <div class="cart-badge" id="cartBadge">0</div>
       </div>
-      <button class="menu-trigger" onclick="openSideMenu()" title="Menu">
-        <svg width="20" height="14" viewBox="0 0 20 14" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><line x1="0" y1="1" x2="20" y2="1"/><line x1="0" y1="7" x2="20" y2="7"/><line x1="0" y1="13" x2="20" y2="13"/></svg>
-        MENU
-      </button>
     </div>
   </div>
 </header>
@@ -2175,19 +2216,37 @@ img {
 <div class="side-menu-overlay" id="sideMenuOverlay" onclick="closeSideMenu()"></div>
 <div class="side-menu" id="sideMenu">
   <button class="side-menu-close" onclick="closeSideMenu()" aria-label="Close menu">✕</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showPage('collections')">Collections</button>
-  <button class="side-menu-item" onclick="closeSideMenu();clearFilters();showPage('shop')">Shop All</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('straight-cut-kurtis')">The Riju Series</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('fusion-tops')">The Alpa Series</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('frocks')">The Ananta Series</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">The Aira Series</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showPage('collections')">The Mom &amp; Kids Collection</button>
-  <button class="side-menu-item" onclick="closeSideMenu();showPage('new')">New Arrivals</button>
-  <div class="side-menu-divider"></div>
-  <button class="side-menu-secondary" onclick="closeSideMenu();showPage('about')">About AARK</button>
-  <button class="side-menu-secondary" onclick="closeSideMenu();showPage('sizechart')">Size Chart</button>
-  <button class="side-menu-secondary" onclick="closeSideMenu();showPage('faq')">FAQ</button>
-  <button class="side-menu-secondary" onclick="closeSideMenu();showPage('contact')">Contact</button>
+  <nav class="sm-nav-primary">
+    <button class="sm-nav-item sm-new" onclick="closeSideMenu();showPage('new')">New Arrivals</button>
+    <button class="sm-nav-item" onclick="closeSideMenu();clearFilters();showPage('shop')">Man</button>
+    <button class="sm-nav-item" onclick="openSubmenu('woman')">Woman <span class="sm-arrow">›</span></button>
+    <button class="sm-nav-item" onclick="openSubmenu('kids')">Kids <span class="sm-arrow">›</span></button>
+    <button class="sm-nav-item" onclick="closeSideMenu();showPage('collections')">Collections</button>
+  </nav>
+  <div class="sm-divider"></div>
+  <nav class="sm-secondary-nav">
+    <button class="sm-secondary-item" onclick="closeSideMenu();showPage('about')">About AARK</button>
+    <button class="sm-secondary-item" onclick="closeSideMenu();showPage('sizechart')">Size Chart</button>
+    <button class="sm-secondary-item" onclick="closeSideMenu();showPage('faq')">FAQ</button>
+    <button class="sm-secondary-item" onclick="closeSideMenu();showPage('contact')">Contact</button>
+  </nav>
+</div>
+<div class="side-submenu" id="sideSubmenu">
+  <div class="sm-sub-section" id="smSub-woman">
+    <button class="sm-back-btn" onclick="closeSubmenu()">‹ Back</button>
+    <p class="sm-sub-heading">Woman</p>
+    <button class="sm-sub-item" onclick="closeSideMenu();clearFilters();showPage('shop')">View All</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('straight-cut-kurtis')">The Riju Series</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('fusion-tops')">The Alpa Series</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('frocks')">The Ananta Series</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('women')">Collections</button>
+  </div>
+  <div class="sm-sub-section" id="smSub-kids">
+    <button class="sm-back-btn" onclick="closeSubmenu()">‹ Back</button>
+    <p class="sm-sub-heading">Kids</p>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">View All</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">Kids' Frocks</button>
+  </div>
 </div>
 
 <!-- MOBILE NAV -->
@@ -2532,35 +2591,35 @@ img {
     <div class="breadcrumb"><a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span><span>Collections</span></div>
   </div>
   <div class="coll-grid">
-    <div class="coll-card" onclick="showShopWithFilter('straight-cut-kurtis')">
+    <div class="coll-card" data-group="women" onclick="showShopWithFilter('straight-cut-kurtis')">
       <div class="coll-img-wrap"><img src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Riju Series</div>
         <div class="coll-sub">Women · Straight Cut Kurtis</div>
       </div>
     </div>
-    <div class="coll-card" onclick="showShopWithFilter('fusion-tops')">
+    <div class="coll-card" data-group="women" onclick="showShopWithFilter('fusion-tops')">
       <div class="coll-img-wrap"><img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Alpa Series</div>
         <div class="coll-sub">Women · Fusion Tops</div>
       </div>
     </div>
-    <div class="coll-card" onclick="showShopWithFilter('frocks')">
+    <div class="coll-card" data-group="women" onclick="showShopWithFilter('frocks')">
       <div class="coll-img-wrap"><img src="catalog-images/F0005_1.png" alt="The Ananta Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Ananta Series</div>
         <div class="coll-sub">Women · Frocks</div>
       </div>
     </div>
-    <div class="coll-card" onclick="showShopWithFilter('kids-frocks')">
+    <div class="coll-card" data-group="kids" onclick="showShopWithFilter('kids-frocks')">
       <div class="coll-img-wrap"><img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Aira Series</div>
         <div class="coll-sub">Kids · Frocks</div>
       </div>
     </div>
-    <div class="coll-card" onclick="showPage('collections')">
+    <div class="coll-card" data-group="family" onclick="showPage('collections')">
       <div class="coll-img-wrap"><img src="catalog-images/mom_kids.jpg" alt="The Mom &amp; Kids Collection" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Mom &amp; Kids Collection</div>
@@ -3447,10 +3506,18 @@ function showPage(pageId, addToHistory = true) {
   if (pageId === 'shop') initShopGrid();
   if (pageId === 'new') initNewGrid();
   if (pageId === 'wishlist') initWishlistGrid();
-  if (addToHistory) {
-    const url = pageId === 'home' ? location.pathname : '#' + pageId;
-    history.pushState({ type: 'page', pageId }, '', url);
+  if (pageId === 'collections') {
+    document.querySelectorAll('.coll-card[data-group]').forEach(c => c.style.display = '');
   }
+  if (addToHistory) {
+    history.pushState({ type: 'page', pageId }, '', location.pathname);
+  }
+}
+function showCollectionsFiltered(group) {
+  showPage('collections');
+  document.querySelectorAll('.coll-card[data-group]').forEach(c => {
+    c.style.display = (c.dataset.group === group) ? '' : 'none';
+  });
 }
 
 function updateMobileNav(pageId) {
@@ -3892,7 +3959,7 @@ function openProduct(id, addToHistory = true) {
   showPage('product', false);
   initGallery();
   if (addToHistory) {
-    history.pushState({ type: 'product', id }, '', '#product-' + p.sku);
+    history.pushState({ type: 'product', id }, '', location.pathname);
   }
 }
 
@@ -4075,7 +4142,7 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   showPage('product', false);
   initGallery();
   if (addToHistory) {
-    history.pushState({ type: 'product', id: repProduct.id }, '', '#product-' + grp.repSku);
+    history.pushState({ type: 'product', id: repProduct.id }, '', location.pathname);
   }
 }
 
@@ -4606,6 +4673,19 @@ function closeSideMenu() {
   document.getElementById('sideMenu').classList.remove('open');
   document.getElementById('sideMenuOverlay').classList.remove('open');
   document.body.style.overflow = '';
+  closeSubmenu();
+}
+function openSubmenu(name) {
+  document.querySelectorAll('.sm-sub-section').forEach(el => el.classList.remove('active'));
+  const target = document.getElementById('smSub-' + name);
+  if (target) target.classList.add('active');
+  const sub = document.getElementById('sideSubmenu');
+  const menuWidth = document.getElementById('sideMenu').offsetWidth;
+  sub.style.transform = `translateX(${menuWidth}px)`;
+}
+function closeSubmenu() {
+  document.querySelectorAll('.sm-sub-section').forEach(el => el.classList.remove('active'));
+  document.getElementById('sideSubmenu').style.transform = 'translateX(-100%)';
 }
 
 // ══════════════════════════════════════════

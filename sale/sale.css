@@ -24,19 +24,20 @@
   transition: background 0.4s ease;
 }
 
-#saleBar.bar-teaser { background: #008080; color: #fff; }
-#saleBar.bar-live   { background: #FFD700; color: #1A1A1A; }
+#saleBar.bar-teaser { background: #fff; color: #008080; }
+#saleBar.bar-live   { background: #fff; color: #008080; }
 
 #saleBar .bar-code {
   display: inline-block;
   font-family: 'Courier New', Courier, monospace;
   font-weight: 700;
   font-size: 13px;
-  background: rgba(0, 0, 0, 0.14);
+  background: rgba(0, 128, 128, 0.12);
   border-radius: 4px;
   padding: 1px 7px;
   letter-spacing: 0.06em;
   vertical-align: baseline;
+  color: #005c5c;
 }
 
 #saleBar #barTimer {
