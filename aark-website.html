@@ -549,9 +549,11 @@ body.nav-solid .nav-logo {
   overflow: hidden; transition: var(--transition);
   cursor: pointer;
 }
-.product-card:hover { transform: none; box-shadow: none; }
+.product-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.product-card.soldout { opacity: 0.5; }
+.product-card.soldout:hover { transform: none; box-shadow: none; }
 .product-img-wrap {
-  position: relative; overflow: hidden; aspect-ratio: 3/4;
+  position: relative; overflow: hidden; aspect-ratio: 4/5;
   background: var(--cream-dark);
 }
 .product-img-main {
@@ -565,9 +567,26 @@ body.nav-solid .nav-logo {
 }
 .product-card:hover .product-img-main { opacity: 0; transform: scale(1.04); }
 .product-card:hover .product-img-hover { opacity: 1; }
-.product-badges {
-  position: absolute; top: 12px; left: 12px;
-  display: flex; flex-direction: column; gap: 6px;
+.img-fallback {
+  position: absolute; inset: 0; display: none;
+  background: var(--teal); align-items: center; justify-content: center;
+  font-family: var(--serif); font-size: 1.1rem; color: #fff;
+  text-align: center; padding: 16px; line-height: 1.4;
+}
+.card-badges {
+  position: absolute; top: 12px; left: 12px; right: 12px;
+  display: flex; justify-content: space-between; align-items: flex-start;
+  pointer-events: none;
+}
+.badge-series {
+  background: rgba(255,255,255,0.87); backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  color: var(--charcoal); font-size: 0.58rem; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
+}
+.badge-so {
+  background: rgba(15,15,15,0.75); color: #fff;
+  font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; padding: 4px 10px; border-radius: 20px;
 }
 .badge {
   display: inline-block; padding: 3px 10px;
@@ -579,7 +598,6 @@ body.nav-solid .nav-logo {
 .badge-best { background: var(--gold); color: white; }
 .badge-soldout { background: rgba(0,0,0,0.62); color: rgba(255,255,255,0.92); }
 .badge-variant { background: rgba(0,128,128,0.82); color: white; }
-.product-card.soldout .product-img-main { opacity: 0.6; }
 .badge-hand { background: var(--cream-dark); color: var(--teal); border: 1px solid var(--teal); }
 .product-actions {
   position: absolute; bottom: 0; left: 0; right: 0;
@@ -609,19 +627,16 @@ body.nav-solid .nav-logo {
   background: transparent; color: white; flex: 0 0 40px; border: none;
 }
 .product-action-btn.whatsapp:hover { color: #25D366; background: transparent; }
-.product-info { padding: 16px 18px 20px; }
-.product-cat { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--warm-grey); margin-bottom: 6px; }
-.product-name {
-  font-family: var(--serif); font-size: 1.1rem; font-weight: 500;
-  color: var(--text); margin-bottom: 6px; line-height: 1.3;
-}
-.product-price { display: flex; align-items: center; gap: 10px; }
-.price-current { font-size: 1rem; font-weight: 600; color: var(--teal); }
+.card-info { padding: 14px 16px 16px; }
+.card-print-name { font-family: var(--serif); font-size: 1.1rem; font-weight: 500; color: var(--text); line-height: 1.2; margin-bottom: 3px; }
+.card-subtitle { font-size: 0.69rem; color: var(--text-muted); letter-spacing: 0.04em; margin-bottom: 3px; }
+.card-material { font-size: 0.69rem; color: var(--warm-grey); margin-bottom: 10px; }
+.card-price { font-size: 1rem; font-weight: 600; color: var(--gold); margin-bottom: 12px; }
+.card-notify { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 12px; }
+.card-notify a { color: var(--teal); text-decoration: none; font-weight: 500; }
+.card-notify a:hover { text-decoration: underline; }
 .price-original { font-size: 0.85rem; color: var(--warm-grey); text-decoration: line-through; }
 .price-save { font-size: 0.68rem; color: #E8533A; font-weight: 600; }
-.product-rating { display: flex; align-items: center; gap: 4px; margin-top: 6px; }
-.stars { color: var(--gold); font-size: 0.75rem; letter-spacing: 1px; }
-.rating-count { font-size: 0.7rem; color: var(--warm-grey); }
 
 /* ══════════════════════════════════════════
    MARQUEE BAND
@@ -838,15 +853,22 @@ body.nav-solid .nav-logo {
 .riju-swatch.active { border-color: white; box-shadow: 0 0 0 1.5px white; }
 
 /* Card-level pattern swatches */
-.card-swatches { display: flex; gap: 4px; flex-wrap: wrap; padding: 2px 0; }
-.card-swatch {
-  width: 28px; height: 28px; border-radius: 4px; overflow: hidden;
-  border: 2px solid transparent; cursor: pointer;
-  transition: border-color 0.15s, transform 0.15s; flex-shrink: 0;
+.card-thumbs { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.card-thumb {
+  position: relative; width: 28px; height: 28px; border-radius: var(--radius);
+  overflow: hidden; flex-shrink: 0; cursor: pointer;
+  border: 1.5px solid var(--light-grey);
+  transition: border-color 0.18s, opacity 0.18s;
 }
-.card-swatch img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
-.card-swatch:hover { border-color: var(--teal); transform: scale(1.12); }
-.card-swatch.cs-active { border-color: var(--teal); }
+.card-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; pointer-events: none; }
+.card-thumb:hover { border-color: var(--teal); }
+.card-thumb.active { border-color: var(--teal); box-shadow: 0 0 0 1px var(--teal); }
+.card-thumb.sold { opacity: 0.4; }
+.thumb-sold-label {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.42); font-size: 0.4rem; font-weight: 700;
+  color: #fff; letter-spacing: 0.06em; text-transform: uppercase;
+}
 
 /* ══════════════════════════════════════════
    TESTIMONIALS
@@ -1907,9 +1929,9 @@ body.nav-solid .nav-logo {
   .sc-section { padding: 36px 0 44px; }
   .sc-arrow { display: none; }
   .instagram-grid { grid-template-columns: repeat(2, 1fr); }
-  .product-info { padding: 10px 10px 12px; }
-  .product-name { font-size: 0.9rem; }
-  .price-current { font-size: 0.9rem; }
+  .card-info { padding: 10px 10px 12px; }
+  .card-print-name { font-size: 0.9rem; }
+  .card-price { font-size: 0.9rem; }
   .detail-name { font-size: 1.45rem; }
   .detail-price .current { font-size: 1.3rem; }
   .thumb { width: 60px; height: 76px; }
@@ -3203,6 +3225,19 @@ for (const [key, grp] of Object.entries(VARIANT_GROUPS)) {
   grp.patterns.forEach(pt => { SKU_TO_VARIANT_GROUP[pt.sku] = key; });
 }
 
+const PRODUCT_STYLE_NAMES = {
+  SC007: 'Gram Katha',
+  SC013: 'Aangan',
+  F0002: 'Suvarna Bel',
+  F0003: 'Pakshi Bel',
+  F0004: 'Hara Bodhi',
+  F0005: 'Lal Bodhi',
+  F0006: 'Aranya Utsav',
+  F0009: 'Ranga Mukha',
+  F0012: 'Nilambari',
+  F0013: 'Surya Pushpa',
+};
+
 function buildProduct(file, index) {
   const [sku, priceWithExt] = file.split('_');
   const prefix = sku.slice(0, 2);
@@ -3430,26 +3465,34 @@ function buildProductCard(p) {
   const cardImg      = displayPattern ? displayPattern.imgs[0] : p.image;
   const cardHoverImg = displayPattern ? (displayPattern.imgs[1] || displayPattern.imgs[0]) : (p.hoverImage || p.image);
 
-  const badgeHTML = p.badge ? `<div class="badge badge-${p.badge}">New</div>` : '';
-  const soldOutHTML = p.isGroupRep
-    ? `<div class="badge badge-soldout card-so-badge"${isSoldOut ? '' : ' style="display:none"'}>Sold Out</div>`
-    : (isSoldOut ? `<div class="badge badge-soldout">Sold Out</div>` : '');
+  const headline = displayPattern ? displayPattern.name : (PRODUCT_STYLE_NAMES[p.sku] || p.series);
+  const subtitle  = displayPattern ? `${p.series} · ${p.categoryLabel}` : p.categoryLabel;
 
-  const cardSwatchesHTML = p.isGroupRep
-    ? `<div class="card-swatches" onclick="event.stopPropagation()">
+  const badgeSoHTML = p.isGroupRep
+    ? `<span class="badge-so card-so-badge"${isSoldOut ? '' : ' style="display:none"'}>Sold out</span>`
+    : (isSoldOut ? `<span class="badge-so">Sold out</span>` : '');
+
+  const thumbsHTML = p.isGroupRep
+    ? `<div class="card-thumbs" onclick="event.stopPropagation()">
         ${VARIANT_GROUPS[p.variantGroupKey].patterns.map((pt) => {
           const isActive = displayPattern && pt.sku === displayPattern.sku;
           const ptProd = products.find(x => x.sku === pt.sku);
           const ptSoldOut = inventoryLoaded && ptProd && inventory.hasOwnProperty(pt.sku) && ptProd.sizes.every(s => getAvailableStock(pt.sku, s) === 0);
-          return `<div class="card-swatch${isActive ? ' cs-active' : ''}" data-img="${pt.imgs[0]}" data-sku="${pt.sku}" data-sold-out="${ptSoldOut ? 'true' : 'false'}" title="${pt.name}"
+          return `<div class="card-thumb${isActive ? ' active' : ''}${ptSoldOut ? ' sold' : ''}" data-img="${pt.imgs[0]}" data-sku="${pt.sku}" data-sold-out="${ptSoldOut ? 'true' : 'false'}" title="${pt.name}"
             onmouseenter="cardSwatchEnter(this)"
             onmouseleave="cardSwatchLeave(this)"
             onclick="cardSwatchClick(this,'${pt.sku}',event)">
-            <img src="${pt.imgs[0]}" alt="${pt.name}" loading="lazy">
+            <img src="${pt.imgs[0]}" alt="${pt.name}" loading="lazy"
+                 onerror="this.parentElement.style.background='var(--teal-pale)'">
+            ${ptSoldOut ? '<span class="thumb-sold-label">sold</span>' : ''}
           </div>`;
         }).join('')}
       </div>`
-    : `<span class="rating-count">${p.sku}</span>`;
+    : '';
+
+  const priceHTML = isSoldOut
+    ? `<div class="card-notify">Sold out &nbsp;·&nbsp; <a href="#notify" onclick="event.stopPropagation()">Notify me</a></div>`
+    : `<div class="card-price">${getProductPriceLabel(p)}</div>`;
 
   const cartButtonHTML = cartEnabled && !isSoldOut
     ? `<button class="product-action-btn add-cart" onclick="addToCart(${p.id})" title="Add to Cart">Add to Cart</button>`
@@ -3461,24 +3504,25 @@ function buildProductCard(p) {
   return `
   <div class="product-card${isSoldOut ? ' soldout' : ''}" data-href="#product-${p.sku}" onclick="openProduct(${p.id})">
     <div class="product-img-wrap">
-      <img class="product-img-main" src="${cardImg}" alt="${p.name}" loading="lazy">
-      <img class="product-img-hover" src="${cardHoverImg}" alt="${p.name}" loading="lazy">
-      <div class="product-badges">${badgeHTML}${soldOutHTML}</div>
+      <img class="product-img-main" src="${cardImg}" alt="${headline}" loading="lazy"
+           onerror="this.style.display='none';const fb=this.parentElement.querySelector('.img-fallback');if(fb)fb.style.display='flex';">
+      <div class="img-fallback">${headline}</div>
+      <img class="product-img-hover" src="${cardHoverImg}" alt="${headline}" loading="lazy">
+      <div class="card-badges">
+        ${badgeSoHTML}
+      </div>
       <div class="product-actions" onclick="event.stopPropagation()">
         <button class="product-action-btn wishlist ${inWishlist?'active':''}" onclick="toggleWishlist(${p.id},this)" title="Wishlist">${getHeartIconMarkup()}</button>
         ${cartButtonHTML}
         ${whatsappButtonHTML}
       </div>
     </div>
-    <div class="product-info">
-      <div class="product-cat">${p.categoryLabel}</div>
-      <div class="product-name">${p.series}</div>
-      <div class="product-price">
-        <span class="price-current">${getProductPriceLabel(p)}</span>
-      </div>
-      <div class="product-rating">
-        ${cardSwatchesHTML}
-      </div>
+    <div class="card-info">
+      <div class="card-print-name">${headline}</div>
+      <div class="card-subtitle">${subtitle}</div>
+      <div class="card-material">${p.fabric}</div>
+      ${priceHTML}
+      ${thumbsHTML}
     </div>
   </div>`;
 }
@@ -4016,7 +4060,7 @@ function cardSwatchEnter(swatch) {
 function cardSwatchLeave(swatch) {
   const card = swatch.closest('.product-card');
   if (!card) return;
-  const active = card.querySelector('.card-swatch.cs-active') || card.querySelector('.card-swatch');
+  const active = card.querySelector('.card-thumb.active') || card.querySelector('.card-thumb');
   if (!active) return;
   const main  = card.querySelector('.product-img-main');
   const hover = card.querySelector('.product-img-hover');
@@ -4028,8 +4072,8 @@ function cardSwatchLeave(swatch) {
 function cardSwatchClick(swatch, sku, event) {
   event.stopPropagation();
   const card = swatch.closest('.product-card');
-  if (card) card.querySelectorAll('.card-swatch').forEach(s => s.classList.remove('cs-active'));
-  swatch.classList.add('cs-active');
+  if (card) card.querySelectorAll('.card-thumb').forEach(s => s.classList.remove('active'));
+  swatch.classList.add('active');
   const groupKey = SKU_TO_VARIANT_GROUP[sku];
   if (groupKey) openVariantProduct(groupKey, true, sku);
 }
