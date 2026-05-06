@@ -135,6 +135,7 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
   position: absolute; left: 50%; transform: translateX(-50%);
   transition: font-size 0.45s cubic-bezier(0.4,0,0.2,1), color 0.5s ease;
 }
+body.nav-solid .nav-logo { color: var(--gold-light); }
 .header.scrolled .nav-logo { font-size: 2rem; }
 .nav-logo span { color: inherit; }
 .nav-links {
@@ -219,7 +220,7 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
 }
 
 /* ══════════════════════════════════════════
-   SIDE MENU PANEL
+   SIDE MENU PANEL (Gucci style)
 ══════════════════════════════════════════ */
 .side-menu-overlay {
   position: fixed; inset: 0; z-index: 10000;
@@ -241,72 +242,64 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
 .side-menu.open { transform: translateX(0); }
 .side-menu-close {
   position: absolute; top: 22px; right: 22px;
-  width: 40px; height: 40px;
+  width: 40px; height: 40px; border-radius: 50%;
   background: none; color: rgba(255,255,255,0.55); border: none;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-size: 1.1rem; z-index: 20;
-  transition: color 0.2s;
+  cursor: pointer; font-size: 1.1rem; flex-shrink: 0;
+  transition: background 0.2s, color 0.2s;
 }
-.side-menu-close:hover { color: #fff; }
-/* ── Submenu panel (appears to the right of main menu) ── */
+.side-menu-close:hover { background: rgba(255,255,255,0.1); color: white; }
+.sm-nav-primary { display: flex; flex-direction: column; gap: 4px; margin-bottom: 32px; }
+.sm-nav-item {
+  display: flex; align-items: center; justify-content: space-between;
+  font-family: 'EB Garamond', Georgia, serif; font-size: 2rem; font-weight: 400;
+  color: rgba(255,255,255,0.85); padding: 8px 0; cursor: pointer;
+  border: none; background: none; text-align: left; width: 100%;
+  line-height: 1.15; letter-spacing: 0.03em; transition: color 0.2s;
+}
+.sm-nav-item:hover { color: white; }
+.sm-nav-item.sm-new { color: var(--gold-light); }
+.sm-nav-item.sm-new:hover { color: #FFD700; }
+.sm-arrow { font-size: 1.5rem; opacity: 0.5; transition: opacity 0.2s; }
+.sm-nav-item:hover .sm-arrow { opacity: 1; }
+.sm-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0 20px; }
+.sm-secondary-nav { display: flex; flex-direction: column; gap: 2px; }
+.sm-secondary-item {
+  display: block; font-size: 0.78rem; letter-spacing: 0.12em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4); padding: 7px 0;
+  cursor: pointer; border: none; background: none; text-align: left;
+  width: 100%; transition: color 0.2s;
+}
+.sm-secondary-item:hover { color: rgba(255,255,255,0.75); }
 .side-submenu {
   position: fixed; top: 0; left: 0; bottom: 0;
   width: 300px; max-width: calc(100vw - 380px);
-  background: #161616;
-  z-index: 10002;
+  background: #161616; z-index: 10002;
   transform: translateX(-100%);
   transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
   overflow-y: auto; padding: 80px 36px 48px;
 }
-/* ── Primary nav ── */
-.sm-nav-primary { display: flex; flex-direction: column; }
-.sm-nav-item {
-  display: flex; align-items: center; justify-content: space-between;
-  font-family: var(--serif); font-size: 1.55rem; font-weight: 300;
-  color: rgba(255,255,255,0.85); padding: 15px 0;
-  border: none; border-bottom: 1px solid rgba(255,255,255,0.08);
-  cursor: pointer; background: none; text-align: left; width: 100%;
-  letter-spacing: 0.04em; transition: color 0.2s;
-}
-.sm-nav-primary .sm-nav-item:first-child { border-top: 1px solid rgba(255,255,255,0.08); }
-.sm-nav-item:hover { color: #fff; }
-.sm-nav-item.sm-new { color: var(--gold-light, #c9a96e); }
-.sm-nav-item.sm-new:hover { color: #e5c890; }
-.sm-arrow { font-size: 1rem; color: rgba(255,255,255,0.3); transition: transform 0.2s, color 0.2s; }
-.sm-nav-item:hover .sm-arrow { color: rgba(255,255,255,0.65); transform: translateX(3px); }
-.sm-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 28px 0; }
-.sm-secondary-nav { display: flex; flex-direction: column; gap: 2px; }
-.sm-secondary-item {
-  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
-  color: rgba(255,255,255,0.35); padding: 7px 0;
-  cursor: pointer; background: none; border: none;
-  text-align: left; width: 100%; transition: color 0.2s;
-}
-.sm-secondary-item:hover { color: rgba(255,255,255,0.72); }
-/* ── Sub-panel ── */
-.sm-sub-section { display: none; flex-direction: column; }
-.sm-sub-section.active { display: flex; }
+.sm-sub-section { display: none; }
+.sm-sub-section.active { display: block; }
 .sm-back-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase;
-  color: rgba(255,255,255,0.38); background: none; border: none;
+  display: flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.4); background: none; border: none;
   cursor: pointer; padding: 0 0 24px; transition: color 0.2s;
 }
-.sm-back-btn:hover { color: rgba(255,255,255,0.8); }
+.sm-back-btn:hover { color: rgba(255,255,255,0.75); }
 .sm-sub-heading {
-  font-size: 0.68rem; letter-spacing: 0.25em; text-transform: uppercase;
-  color: rgba(255,255,255,0.3); margin-bottom: 16px;
+  font-family: 'EB Garamond', Georgia, serif; font-size: 1.5rem;
+  color: rgba(255,255,255,0.6); font-weight: 400; margin-bottom: 20px;
 }
 .sm-sub-item {
-  display: flex; align-items: center; justify-content: space-between;
-  font-family: var(--sans); font-size: 0.95rem; font-weight: 400;
-  letter-spacing: 0.05em; color: rgba(255,255,255,0.75); padding: 17px 0;
-  border: none; border-bottom: 1px solid rgba(255,255,255,0.08);
-  cursor: pointer; background: none; text-align: left; width: 100%;
-  transition: color 0.2s;
+  display: block; font-size: 0.9rem; color: rgba(255,255,255,0.82);
+  padding: 9px 0; cursor: pointer; border: none; background: none;
+  text-align: left; width: 100%; transition: color 0.2s;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
-.sm-sub-item:first-of-type { border-top: 1px solid rgba(255,255,255,0.08); }
-.sm-sub-item:hover { color: #fff; }
+.sm-sub-item:last-child { border-bottom: none; }
+.sm-sub-item:hover { color: white; }
 .menu-trigger {
   display: flex; align-items: center; gap: 8px;
   font-size: 0.72rem; font-weight: 500; letter-spacing: 0.16em;
@@ -1845,7 +1838,7 @@ body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
 ══════════════════════════════════════════ */
 @media (max-width: 1024px) {
   .nav-links, .nav-right .nav-link { display: none; }
-  .nav-left { display: flex; align-items: center; gap: 8px; }
+  .nav-left { display: block; }
   .nav-inner {
     display: grid;
     grid-template-columns: 1fr auto 1fr;
@@ -2173,7 +2166,76 @@ img {
 .ctx-section { padding: 3px 0; }
 #ctx-logo-section { display: none; }
 #ctx-menu.ctx-mode-logo .ctx-card-area { display: none; }
-#ctx-menu.ctx-mode-logo #ctx-logo-section { display: block; }</style>
+#ctx-menu.ctx-mode-logo #ctx-logo-section { display: block; }
+
+/* ═══════════════════════════════════════════════════
+   MOTHER'S DAY COMBO BUILDER
+═══════════════════════════════════════════════════ */
+.combo-builder { max-width: 660px; margin: 0 auto; padding: 32px 20px 80px; }
+.combo-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
+.combo-progress-label { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+.combo-progress-bar { flex: 1; height: 3px; background: var(--light-grey); border-radius: 2px; overflow: hidden; }
+.combo-progress-fill { height: 100%; background: var(--teal); border-radius: 2px; transition: width 0.45s ease; }
+.combo-step { background: #f8fefe; border: 1.5px solid rgba(0,128,128,0.13); border-radius: 12px; padding: 22px 22px 18px; margin-bottom: 16px; animation: csStepIn 0.35s ease; }
+@keyframes csStepIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+.combo-step-hd { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
+.combo-step-title { font-family: var(--serif); font-size: 1.15rem; font-weight: 500; }
+.combo-step-edit { font-size: 0.72rem; color: var(--teal); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.combo-step.cs-done { padding: 14px 22px; }
+.cs-done .combo-step-hd { margin-bottom: 4px; }
+.combo-step-chip { font-size: 0.83rem; color: var(--text-muted); }
+.combo-step-chip strong { color: var(--teal); }
+.combo-who-grid { display: flex; gap: 10px; flex-wrap: wrap; }
+.combo-who-pill { display: flex; align-items: center; gap: 7px; padding: 10px 18px; border: 2px solid var(--light-grey); border-radius: 40px; font-size: 0.88rem; background: white; color: var(--text); transition: all 0.2s; min-height: 44px; cursor: pointer; }
+.combo-who-pill.sel { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); font-weight: 500; }
+.combo-pat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.combo-pat-card { border: 2px solid var(--light-grey); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: white; }
+.combo-pat-card:hover { border-color: rgba(0,128,128,0.35); }
+.combo-pat-card.sel { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,128,128,0.1); }
+.combo-pat-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
+.combo-pat-lbl { padding: 8px 10px 10px; }
+.combo-pat-name { font-family: var(--serif); font-size: 0.88rem; font-weight: 500; }
+.combo-pat-count { font-size: 0.69rem; color: var(--text-muted); margin-top: 2px; }
+.combo-color-grid { display: flex; gap: 16px; flex-wrap: wrap; padding: 4px 0; }
+.combo-color-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
+.combo-color-swatch { width: 50px; height: 50px; border-radius: 50%; border: 3px solid transparent; transition: border-color 0.2s, transform 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.18); background-size: cover; }
+.combo-color-swatch:hover { transform: scale(1.1); }
+.combo-color-item.sel .combo-color-swatch { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(0,128,128,0.18); }
+.combo-color-name { font-size: 0.69rem; color: var(--text-muted); text-align: center; max-width: 58px; line-height: 1.2; }
+.combo-color-item.sel .combo-color-name { color: var(--teal); font-weight: 500; }
+.combo-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+.combo-style-card { border: 2px solid var(--light-grey); border-radius: 10px; padding: 18px 14px; cursor: pointer; transition: all 0.2s; text-align: center; background: white; }
+.combo-style-card:hover { border-color: rgba(0,128,128,0.35); }
+.combo-style-card.sel { border-color: var(--teal); background: var(--teal-pale); }
+.combo-style-name { font-family: var(--serif); font-size: 0.95rem; font-weight: 500; margin-top: 10px; }
+.combo-style-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
+.combo-boy-auto { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-pale); border: 1.5px solid var(--teal); border-radius: 40px; padding: 10px 18px; font-size: 0.88rem; color: var(--teal); font-weight: 500; margin-bottom: 18px; }
+.combo-summary-box { background: white; border: 1.5px solid rgba(0,128,128,0.18); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
+.combo-fabric-thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: var(--cream-dark); }
+.combo-fabric-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--teal-pale); }
+.cfab-pat { font-family: var(--serif); font-size: 1rem; font-weight: 500; }
+.cfab-col { font-size: 0.78rem; color: var(--teal); margin-top: 3px; }
+.combo-summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--teal-pale); font-size: 0.87rem; }
+.combo-summary-row:last-child { border-bottom: none; padding-bottom: 0; }
+.combo-summary-row .csr-lbl { color: var(--text-muted); }
+.combo-summary-row .csr-val { font-weight: 500; }
+.combo-summary-total { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 2px solid var(--teal-pale); font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
+.combo-summary-total .csr-val { color: var(--teal); }
+.combo-actions { display: flex; flex-direction: column; gap: 10px; }
+.combo-next-btn { margin-top: 18px; width: 100%; }
+.mday-combo-entry { background: linear-gradient(135deg,#E0F5F5 0%,#FFF8D6 100%); border-radius: 12px; padding: 22px 20px; margin: 0 0 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; border: 1px solid rgba(0,128,128,0.12); transition: box-shadow 0.25s; }
+.mday-combo-entry:hover { box-shadow: 0 8px 28px rgba(0,128,128,0.14); }
+.mce-eyebrow { font-size: 0.68rem; letter-spacing: 0.1em; color: var(--teal); font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
+.mce-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 500; color: var(--text); line-height: 1.2; }
+.mce-title em { font-style: italic; color: var(--teal); }
+.mce-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 5px; }
+.mce-arrow { font-size: 1.3rem; color: var(--teal); flex-shrink: 0; }
+@media (max-width: 600px) {
+  .combo-pat-grid { grid-template-columns: repeat(2,1fr); }
+  .combo-builder { padding: 24px 14px 60px; }
+  .mday-combo-entry { flex-direction: column; align-items: flex-start; }
+}
+</style>
 </head>
 <body>
 
@@ -2212,6 +2274,7 @@ img {
   <button class="side-menu-close" onclick="closeSideMenu()" aria-label="Close menu">✕</button>
   <nav class="sm-nav-primary">
     <button class="sm-nav-item sm-new" onclick="closeSideMenu();showPage('new')">New Arrivals</button>
+    <button class="sm-nav-item sm-new" onclick="closeSideMenu();openComboPage()">Mother's Day Combo</button>
     <button class="sm-nav-item" onclick="closeSideMenu();clearFilters();showPage('shop')">Man</button>
     <button class="sm-nav-item" onclick="openSubmenu('woman')">Woman <span class="sm-arrow">›</span></button>
     <button class="sm-nav-item" onclick="openSubmenu('kids')">Kids <span class="sm-arrow">›</span></button>
@@ -2320,6 +2383,18 @@ img {
 
   <!-- MOTHER'S DAY SALE BANNER — populated by sale/heroBanner.js -->
   <div id="mdayBanner"></div>
+
+  <!-- MOTHER'S DAY COMBO ENTRY BANNER -->
+  <div class="container" style="padding-top:0;">
+    <div class="mday-combo-entry" onclick="openComboPage()">
+      <div>
+        <div class="mce-eyebrow">Limited — Mother's Day 2025</div>
+        <div class="mce-title"><em>Family Fabric Combo</em></div>
+        <div class="mce-sub">One print, styled for Mom · Girl · Boy — build yours now</div>
+      </div>
+      <div class="mce-arrow">›</div>
+    </div>
+  </div>
 
   <!-- SERIES CAROUSEL (home) -->
   <section class="sc-section">
@@ -2585,39 +2660,44 @@ img {
     <div class="breadcrumb"><a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span><span>Collections</span></div>
   </div>
   <div class="coll-grid">
-    <div class="coll-card" data-group="women" onclick="showShopWithFilter('straight-cut-kurtis')">
+    <div class="coll-card" onclick="showShopWithFilter('straight-cut-kurtis')">
       <div class="coll-img-wrap"><img src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Riju Series</div>
         <div class="coll-sub">Women · Straight Cut Kurtis</div>
       </div>
     </div>
-    <div class="coll-card" data-group="women" onclick="showShopWithFilter('fusion-tops')">
+    <div class="coll-card" onclick="showShopWithFilter('fusion-tops')">
       <div class="coll-img-wrap"><img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Alpa Series</div>
         <div class="coll-sub">Women · Fusion Tops</div>
       </div>
     </div>
-    <div class="coll-card" data-group="women" onclick="showShopWithFilter('frocks')">
+    <div class="coll-card" onclick="showShopWithFilter('frocks')">
       <div class="coll-img-wrap"><img src="catalog-images/F0005_1.png" alt="The Ananta Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Ananta Series</div>
         <div class="coll-sub">Women · Frocks</div>
       </div>
     </div>
-    <div class="coll-card" data-group="kids" onclick="showShopWithFilter('kids-frocks')">
+    <div class="coll-card" onclick="showShopWithFilter('kids-frocks')">
       <div class="coll-img-wrap"><img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Aira Series</div>
         <div class="coll-sub">Kids · Frocks</div>
       </div>
     </div>
-    <div class="coll-card" data-group="family" onclick="showPage('collections')">
-      <div class="coll-img-wrap"><img src="catalog-images/mom_kids.jpg" alt="The Mom &amp; Kids Collection" loading="lazy"></div>
+    <div class="coll-card" data-group="family" onclick="openComboPage()">
+      <div class="coll-img-wrap" style="background:linear-gradient(135deg,#E0F5F5,#FFF8D6);display:flex;align-items:center;justify-content:center;min-height:220px;">
+        <div style="text-align:center;padding:24px;">
+          <div style="font-size:2.5rem;margin-bottom:10px;">🌸</div>
+          <div style="font-family:var(--serif);font-size:1.05rem;font-weight:500;color:var(--teal);">Design Yours</div>
+        </div>
+      </div>
       <div class="coll-label">
-        <div class="coll-name">The Mom &amp; Kids Collection</div>
-        <div class="coll-sub">Family · Signature Styling</div>
+        <div class="coll-name">Mother's Day Combo</div>
+        <div class="coll-sub">Family · Build Your Set</div>
       </div>
     </div>
   </div>
@@ -2960,6 +3040,21 @@ img {
       </div>
     </div>
   </section>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MOTHER'S DAY COMBO BUILDER PAGE
+══════════════════════════════════════════ -->
+<div id="page-mothers-day-combo" class="page">
+  <div class="inner-hero">
+    <h1><em>Mother's Day</em> Combo Collection</h1>
+    <p>One fabric, styled for everyone. Design matching sets for Mom, Girl, and Boy — all from the same beautiful print.</p>
+    <div class="breadcrumb"><a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span><a href="#" onclick="event.preventDefault(); showPage('collections')">Collections</a><span>/</span><span>Mother's Day Combo</span></div>
+  </div>
+  <div class="combo-builder">
+    <div class="combo-progress" id="mdcProgress"></div>
+    <div id="mdcSteps"></div>
+  </div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -3506,12 +3601,6 @@ function showPage(pageId, addToHistory = true) {
   if (addToHistory) {
     history.pushState({ type: 'page', pageId }, '', location.pathname);
   }
-}
-function showCollectionsFiltered(group) {
-  showPage('collections');
-  document.querySelectorAll('.coll-card[data-group]').forEach(c => {
-    c.style.display = (c.dataset.group === group) ? '' : 'none';
-  });
 }
 
 function updateMobileNav(pageId) {
@@ -4425,7 +4514,7 @@ function saveCart() {
     const toSave = cart.map(item => ({
       id: item.id, name: item.name, sku: item.sku, price: item.price,
       qty: item.qty, selectedSize: item.selectedSize, fabric: item.fabric,
-      image: item.image, series: item.series,
+      image: item.image, series: item.series, isCombo: item.isCombo || false,
     }));
     localStorage.setItem('aark_cart', JSON.stringify(toSave));
   } catch(e) {}
@@ -4440,7 +4529,7 @@ function updateCartQty(index, delta) {
   const item = cart[index];
   const newQty = item.qty + delta;
   if (newQty < 1) { removeFromCart(index); return; }
-  if (delta > 0 && inventoryLoaded) {
+  if (delta > 0 && inventoryLoaded && !item.isCombo) {
     const avail = getAvailableStock(item.sku, item.selectedSize);
     if (avail <= 0) { showToast('No more stock available for this size', 'error'); return; }
   }
@@ -4680,7 +4769,14 @@ function openSubmenu(name) {
 }
 function closeSubmenu() {
   document.querySelectorAll('.sm-sub-section').forEach(el => el.classList.remove('active'));
-  document.getElementById('sideSubmenu').style.transform = 'translateX(-100%)';
+  const sub = document.getElementById('sideSubmenu');
+  if (sub) sub.style.transform = 'translateX(-100%)';
+}
+function showCollectionsFiltered(group) {
+  showPage('collections');
+  document.querySelectorAll('.coll-card[data-group]').forEach(c => {
+    c.style.display = (c.dataset.group === group) ? '' : 'none';
+  });
 }
 
 // ══════════════════════════════════════════
@@ -5001,6 +5097,294 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
     console.error('[initFromHash] error:', e);
   }
 });
+
+/* ── MOTHER'S DAY COMBO BUILDER ─────────────────────── */
+const MDC_BASE = 'catalog-images/mothers-day-combo/';
+const MDC_PATTERNS = [
+  {
+    id: 'lotus-tulip', name: 'Lotus Tulip Stem', cardImg: MDC_BASE + 'p1a.jpg',
+    colors: [
+      { name: 'Teal',       img: MDC_BASE + 'p1a.jpg', pos: '5% 50%',  size: '200px' },
+      { name: 'Red/Maroon', img: MDC_BASE + 'p1a.jpg', pos: '95% 50%', size: '200px' },
+      { name: 'Black',      img: MDC_BASE + 'p1b.jpg', pos: '5% 50%',  size: '300px' },
+      { name: 'Blue',       img: MDC_BASE + 'p1b.jpg', pos: '50% 50%', size: '300px' },
+      { name: 'White',      img: MDC_BASE + 'p1b.jpg', pos: '95% 50%', size: '300px' },
+    ]
+  },
+  {
+    id: 'peacock-floral', name: 'Peacock Floral', cardImg: MDC_BASE + 'p2.jpg',
+    colors: [
+      { name: 'Blue',          img: MDC_BASE + 'p2.jpg', pos: '5% 50%',  size: '500px' },
+      { name: 'Maroon/Purple', img: MDC_BASE + 'p2.jpg', pos: '28% 50%', size: '500px' },
+      { name: 'Mustard/Gold',  img: MDC_BASE + 'p2.jpg', pos: '52% 50%', size: '500px' },
+      { name: 'Dark Brown',    img: MDC_BASE + 'p2.jpg', pos: '76% 50%', size: '500px' },
+      { name: 'Red',           img: MDC_BASE + 'p2.jpg', pos: '95% 50%', size: '500px' },
+    ]
+  },
+  {
+    id: 'bold-lotus', name: 'Large Bold Lotus', cardImg: MDC_BASE + 'p3.jpg',
+    colors: [
+      { name: 'White/Multi',  img: MDC_BASE + 'p3.jpg', pos: '5% 50%',  size: '400px' },
+      { name: 'Mustard/Gold', img: MDC_BASE + 'p3.jpg', pos: '35% 50%', size: '400px' },
+      { name: 'Black',        img: MDC_BASE + 'p3.jpg', pos: '65% 50%', size: '400px' },
+      { name: 'Red/Rust',     img: MDC_BASE + 'p3.jpg', pos: '95% 50%', size: '400px' },
+    ]
+  }
+];
+const MDC_PRICES = { mom: 1299, girl: 899, boy: 799 };
+
+let mdcState = {
+  who: new Set(), patternIdx: null, colorIdx: null,
+  momStyle: null, girlStyle: null, boyConfirmed: false, activeStep: 1
+};
+
+function openComboPage() {
+  mdcState = {
+    who: new Set(), patternIdx: null, colorIdx: null,
+    momStyle: null, girlStyle: null, boyConfirmed: false, activeStep: 1
+  };
+  showPage('mothers-day-combo');
+  mdcRender();
+}
+
+function mdcApplicableSteps() {
+  const w = mdcState.who;
+  const s = [1, 2, 3];
+  if (w.has('mom'))  s.push(4);
+  if (w.has('girl')) s.push(5);
+  if (w.has('boy'))  s.push(6);
+  s.push(7);
+  return s;
+}
+
+function mdcRender() {
+  const steps = mdcApplicableSteps();
+  const activeIdx = steps.indexOf(mdcState.activeStep);
+  const total = steps.length;
+  document.getElementById('mdcProgress').innerHTML = `
+    <span class="combo-progress-label">Step ${activeIdx + 1} of ${total}</span>
+    <div class="combo-progress-bar">
+      <div class="combo-progress-fill" style="width:${Math.round((activeIdx + 1) / total * 100)}%"></div>
+    </div>`;
+  let html = '';
+  for (let si = 0; si < steps.length; si++) {
+    const step = steps[si];
+    if (si < activeIdx)                  html += mdcCollapsedHtml(step);
+    else if (step === mdcState.activeStep) html += mdcExpandedHtml(step);
+  }
+  document.getElementById('mdcSteps').innerHTML = html;
+}
+
+function mdcStepLabel(step) {
+  return { 1:'Who is this for?', 2:'Choose a fabric pattern', 3:'Pick a color',
+           4:"Mom's style", 5:"Girl's style", 6:"Boy's style", 7:'Review & Add to Cart' }[step];
+}
+
+function mdcChipSummary(step) {
+  if (step === 1) return '<strong>' + [...mdcState.who].map(w => w[0].toUpperCase() + w.slice(1)).join(', ') + '</strong>';
+  if (step === 2) return `<strong>${MDC_PATTERNS[mdcState.patternIdx].name}</strong>`;
+  if (step === 3) return `<strong>${MDC_PATTERNS[mdcState.patternIdx].colors[mdcState.colorIdx].name}</strong>`;
+  if (step === 4) return `<strong>${mdcState.momStyle === 'kurta' ? 'Kurta Style' : 'Frock Style'}</strong>`;
+  if (step === 5) return `<strong>${mdcState.girlStyle === 'simple-frock' ? 'Simple Frock' : 'Skirt & Top'}</strong>`;
+  if (step === 6) return '<strong>3/4 Kurta</strong> — auto-selected';
+  return '';
+}
+
+function mdcCollapsedHtml(step) {
+  return `<div class="combo-step cs-done">
+    <div class="combo-step-hd">
+      <span class="combo-step-title">${mdcStepLabel(step)}</span>
+      <span class="combo-step-edit" onclick="mdcEdit(${step})">Edit</span>
+    </div>
+    <div class="combo-step-chip">${mdcChipSummary(step)}</div>
+  </div>`;
+}
+
+function mdcExpandedHtml(step) {
+  return `<div class="combo-step">
+    <div class="combo-step-hd"><span class="combo-step-title">${mdcStepLabel(step)}</span></div>
+    ${mdcStepBody(step)}
+  </div>`;
+}
+
+function mdcStepBody(step) {
+  if (step === 1) return mdcStep1Html();
+  if (step === 2) return mdcStep2Html();
+  if (step === 3) return mdcStep3Html();
+  if (step === 4) return mdcStep4Html();
+  if (step === 5) return mdcStep5Html();
+  if (step === 6) return mdcStep6Html();
+  if (step === 7) return mdcStep7Html();
+  return '';
+}
+
+function mdcStep1Html() {
+  const w = mdcState.who;
+  const pills = [['mom','👩','Mom'],['girl','👧','Girl (kid)'],['boy','👦','Boy (kid)']].map(([id, icon, label]) =>
+    `<button class="combo-who-pill${w.has(id) ? ' sel' : ''}" onclick="mdcToggleWho('${id}')">${icon} ${label}</button>`
+  ).join('');
+  return `<div class="combo-who-grid">${pills}</div>
+    <button class="btn btn-teal combo-next-btn" ${w.size ? '' : 'disabled'} onclick="mdcProceed(1)">Continue →</button>`;
+}
+
+function mdcStep2Html() {
+  const cards = MDC_PATTERNS.map((p, i) =>
+    `<div class="combo-pat-card${mdcState.patternIdx === i ? ' sel' : ''}" onclick="mdcSelectPattern(${i})">
+      <img class="combo-pat-img" src="${p.cardImg}" alt="${p.name}" loading="lazy">
+      <div class="combo-pat-lbl">
+        <div class="combo-pat-name">${p.name}</div>
+        <div class="combo-pat-count">${p.colors.length} colors</div>
+      </div>
+    </div>`).join('');
+  return `<div class="combo-pat-grid">${cards}</div>
+    <button class="btn btn-teal combo-next-btn" ${mdcState.patternIdx !== null ? '' : 'disabled'} onclick="mdcProceed(2)">Continue →</button>`;
+}
+
+function mdcStep3Html() {
+  const pat = MDC_PATTERNS[mdcState.patternIdx];
+  const swatches = pat.colors.map((c, i) =>
+    `<div class="combo-color-item${mdcState.colorIdx === i ? ' sel' : ''}" onclick="mdcSelectColor(${i})">
+      <div class="combo-color-swatch" style="background-image:url('${c.img}');background-position:${c.pos};background-size:${c.size};"></div>
+      <span class="combo-color-name">${c.name}</span>
+    </div>`).join('');
+  return `<div class="combo-color-grid">${swatches}</div>
+    <button class="btn btn-teal combo-next-btn" ${mdcState.colorIdx !== null ? '' : 'disabled'} onclick="mdcProceed(3)">Continue →</button>`;
+}
+
+const MDC_SVG_KURTA = `<svg viewBox="0 0 56 80" width="56" height="80" fill="none"><circle cx="28" cy="9" r="7" fill="#008080" opacity=".25"/><path d="M20 18Q16 24 14 30L14 68Q14 70 16 70L40 70Q42 70 42 68L42 30Q40 24 36 18Z" fill="#008080" opacity=".25"/><path d="M24 18L28 24L32 18" stroke="#008080" stroke-width="1.5"/></svg>`;
+const MDC_SVG_FROCK  = `<svg viewBox="0 0 56 80" width="56" height="80" fill="none"><circle cx="28" cy="9" r="7" fill="#008080" opacity=".25"/><path d="M20 18Q16 24 15 30L15 44L41 44L41 30Q40 24 36 18Z" fill="#008080" opacity=".3"/><path d="M15 44L6 72Q6 74 8 74L48 74Q50 74 50 72L41 44Z" fill="#008080" opacity=".18"/></svg>`;
+const MDC_SVG_SFROK = `<svg viewBox="0 0 56 80" width="56" height="80" fill="none"><circle cx="28" cy="9" r="6" fill="#008080" opacity=".25"/><path d="M22 16L10 72Q10 74 12 74L44 74Q46 74 46 72L34 16Z" fill="#008080" opacity=".22"/><path d="M24 16Q28 21 32 16" stroke="#008080" stroke-width="1.4"/></svg>`;
+const MDC_SVG_SKIRT  = `<svg viewBox="0 0 56 80" width="56" height="80" fill="none"><circle cx="28" cy="9" r="6" fill="#008080" opacity=".25"/><rect x="19" y="16" width="18" height="19" rx="3" fill="#008080" opacity=".3"/><rect x="18" y="35" width="20" height="4" rx="2" fill="#FFD700" opacity=".7"/><path d="M18 39L9 72Q9 74 11 74L45 74Q47 74 47 72L38 39Z" fill="#008080" opacity=".18"/></svg>`;
+
+function mdcStep4Html() {
+  return `<div class="combo-style-grid">
+    <div class="combo-style-card${mdcState.momStyle === 'kurta' ? ' sel' : ''}" onclick="mdcSelectStyle('mom','kurta')">
+      ${MDC_SVG_KURTA}<div class="combo-style-name">Kurta Style</div><div class="combo-style-desc">Long tunic, straight cut</div>
+    </div>
+    <div class="combo-style-card${mdcState.momStyle === 'frock' ? ' sel' : ''}" onclick="mdcSelectStyle('mom','frock')">
+      ${MDC_SVG_FROCK}<div class="combo-style-name">Frock Style</div><div class="combo-style-desc">Flared dress silhouette</div>
+    </div>
+  </div>
+  <button class="btn btn-teal combo-next-btn" ${mdcState.momStyle ? '' : 'disabled'} onclick="mdcProceed(4)">Continue →</button>`;
+}
+
+function mdcStep5Html() {
+  return `<div class="combo-style-grid">
+    <div class="combo-style-card${mdcState.girlStyle === 'simple-frock' ? ' sel' : ''}" onclick="mdcSelectStyle('girl','simple-frock')">
+      ${MDC_SVG_SFROK}<div class="combo-style-name">Simple Frock</div><div class="combo-style-desc">Classic flared dress</div>
+    </div>
+    <div class="combo-style-card${mdcState.girlStyle === 'skirt-top' ? ' sel' : ''}" onclick="mdcSelectStyle('girl','skirt-top')">
+      ${MDC_SVG_SKIRT}<div class="combo-style-name">Skirt & Top</div><div class="combo-style-desc">Matching two-piece set</div>
+    </div>
+  </div>
+  <button class="btn btn-teal combo-next-btn" ${mdcState.girlStyle ? '' : 'disabled'} onclick="mdcProceed(5)">Continue →</button>`;
+}
+
+function mdcStep6Html() {
+  return `<div class="combo-boy-auto">
+    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></svg>
+    3/4 Kurta — automatically selected
+  </div>
+  <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:18px;">Boys get a 3/4 length kurta in the same fabric and color.</p>
+  <button class="btn btn-teal" onclick="mdcProceed(6)">Got it — Continue →</button>`;
+}
+
+function mdcStep7Html() {
+  const pat = MDC_PATTERNS[mdcState.patternIdx];
+  const col = pat.colors[mdcState.colorIdx];
+  const w = mdcState.who;
+  let total = 0;
+  let rows = '';
+  if (w.has('mom'))  { const s = mdcState.momStyle === 'kurta' ? 'Kurta Style' : 'Frock Style'; rows += `<div class="combo-summary-row"><span class="csr-lbl">Mom</span><span class="csr-val">${s} · ₹${MDC_PRICES.mom}</span></div>`; total += MDC_PRICES.mom; }
+  if (w.has('girl')) { const s = mdcState.girlStyle === 'simple-frock' ? 'Simple Frock' : 'Skirt & Top'; rows += `<div class="combo-summary-row"><span class="csr-lbl">Girl</span><span class="csr-val">${s} · ₹${MDC_PRICES.girl}</span></div>`; total += MDC_PRICES.girl; }
+  if (w.has('boy'))  { rows += `<div class="combo-summary-row"><span class="csr-lbl">Boy</span><span class="csr-val">3/4 Kurta · ₹${MDC_PRICES.boy}</span></div>`; total += MDC_PRICES.boy; }
+
+  const waLines = [
+    `Fabric: ${pat.name} – ${col.name}`,
+    w.has('mom')  ? `Mom: ${mdcState.momStyle === 'kurta' ? 'Kurta Style' : 'Frock Style'} (₹${MDC_PRICES.mom})` : '',
+    w.has('girl') ? `Girl: ${mdcState.girlStyle === 'simple-frock' ? 'Simple Frock' : 'Skirt & Top'} (₹${MDC_PRICES.girl})` : '',
+    w.has('boy')  ? `Boy: 3/4 Kurta (₹${MDC_PRICES.boy})` : '',
+    `Total: ₹${total}`,
+    '',
+    'Please share sizing details and confirm availability.'
+  ].filter(Boolean).join('\n');
+  const waHref = buildWhatsAppHref("Hi! I'd like to order a Mother's Day Fabric Combo 🌸\n\n" + waLines);
+
+  return `<div class="combo-summary-box">
+    <div class="combo-fabric-row">
+      <img class="combo-fabric-thumb" src="${pat.cardImg}" alt="${pat.name}" loading="lazy">
+      <div><div class="cfab-pat">${pat.name}</div><div class="cfab-col">${col.name}</div></div>
+    </div>
+    ${rows}
+    <div class="combo-summary-total"><span>Total</span><span class="csr-val">₹${total}</span></div>
+  </div>
+  <div class="combo-actions">
+    <button class="btn btn-teal btn-full btn-lg" onclick="mdcAddToCart()">Add to Cart</button>
+    <a class="btn btn-whatsapp btn-full" href="${waHref}" target="_blank">${WA_ICON} Order via WhatsApp</a>
+  </div>`;
+}
+
+function mdcToggleWho(person) {
+  if (mdcState.who.has(person)) mdcState.who.delete(person); else mdcState.who.add(person);
+  mdcRender();
+}
+function mdcSelectPattern(idx) {
+  if (mdcState.patternIdx !== idx) mdcState.colorIdx = null;
+  mdcState.patternIdx = idx;
+  mdcRender();
+}
+function mdcSelectColor(idx) { mdcState.colorIdx = idx; mdcRender(); }
+function mdcSelectStyle(who, style) {
+  if (who === 'mom') mdcState.momStyle = style;
+  else if (who === 'girl') mdcState.girlStyle = style;
+  mdcRender();
+}
+function mdcProceed(fromStep) {
+  const steps = mdcApplicableSteps();
+  const idx = steps.indexOf(fromStep);
+  if (idx < steps.length - 1) {
+    mdcState.activeStep = steps[idx + 1];
+    mdcRender();
+    document.getElementById('mdcProgress').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+function mdcEdit(step) {
+  if (step <= 2) mdcState.colorIdx = null;
+  if (step <= 1) { mdcState.momStyle = null; mdcState.girlStyle = null; }
+  mdcState.activeStep = step;
+  mdcRender();
+}
+function mdcAddToCart() {
+  const pat = MDC_PATTERNS[mdcState.patternIdx];
+  const col = pat.colors[mdcState.colorIdx];
+  const w = mdcState.who;
+  let total = 0;
+  if (w.has('mom'))  total += MDC_PRICES.mom;
+  if (w.has('girl')) total += MDC_PRICES.girl;
+  if (w.has('boy'))  total += MDC_PRICES.boy;
+  const detailStr = [
+    w.has('mom')  ? `Mom: ${mdcState.momStyle === 'kurta' ? 'Kurta' : 'Frock'}` : '',
+    w.has('girl') ? `Girl: ${mdcState.girlStyle === 'simple-frock' ? 'Simple Frock' : 'Skirt & Top'}` : '',
+    w.has('boy')  ? 'Boy: 3/4 Kurta' : ''
+  ].filter(Boolean).join(' · ');
+  const skuSuffix = pat.id.replace('-','').slice(0,5).toUpperCase() + col.name.replace(/[^A-Za-z]/g,'').toUpperCase().slice(0,4);
+  cart.push({
+    id: 'mdc-' + Date.now(),
+    name: "Mother's Day Combo",
+    sku: 'MDC-' + skuSuffix,
+    price: total,
+    qty: 1,
+    selectedSize: detailStr,
+    fabric: pat.name + ' · ' + col.name,
+    image: pat.cardImg,
+    series: "Mother's Day Combo",
+    isCombo: true
+  });
+  renderCart();
+  saveCart();
+  openCart();
+  showToast("Combo added to cart!", 'success');
+}
 </script>
 
 <!-- CUSTOM CONTEXT MENU -->
