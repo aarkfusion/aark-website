@@ -45,7 +45,13 @@
 }
 
 @media (max-width: 480px) {
-  #saleBar { font-size: 11px; }
+  #saleBar {
+    font-size: 11px;
+    height: auto;
+    min-height: 40px;
+    white-space: normal;
+    padding: 7px 12px;
+  }
   #saleBar .bar-code { font-size: 11px; }
 }
 
