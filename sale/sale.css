@@ -120,6 +120,21 @@
 .banner-teaser .mday-sub .sub-code { background: rgba(0, 128, 128, 0.12); color: #005c5c; }
 .banner-live   .mday-sub .sub-code { background: rgba(0, 0, 0, 0.12);     color: #1A1A1A; }
 
+/* Combo tagline inside banner */
+.mday-combo-link {
+  font-family: 'Jost', sans-serif;
+  font-size: 0.88rem;
+  color: #008080;
+  margin-bottom: 28px;
+  letter-spacing: 0.02em;
+}
+.mday-combo-link em {
+  font-family: 'EB Garamond', Georgia, serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
 /* Countdown boxes */
 .mday-countdown {
   display: flex;

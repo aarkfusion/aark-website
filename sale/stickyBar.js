@@ -11,6 +11,10 @@
   // ── Build and insert bar ──────────────────────────────────────────────────
   const bar = document.createElement('div');
   bar.id = 'saleBar';
+  bar.style.cursor = 'pointer';
+  bar.addEventListener('click', function () {
+    if (typeof openComboPage === 'function') openComboPage();
+  });
   document.body.insertBefore(bar, document.body.firstChild);
 
   const mainHeader = document.getElementById('header');
