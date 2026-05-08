@@ -263,6 +263,11 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
 .sm-nav-item.sm-new:hover { color: #FFD700; }
 .sm-arrow { font-size: 1.5rem; opacity: 0.5; transition: opacity 0.2s; }
 .sm-nav-item:hover .sm-arrow { opacity: 1; }
+.sm-nav-split { padding: 0; }
+.sm-split-label { flex: 1; font-family: 'EB Garamond', Georgia, serif; font-size: 2rem; font-weight: 400; color: inherit; padding: 8px 0; cursor: pointer; border: none; background: none; text-align: left; line-height: 1.15; letter-spacing: 0.03em; transition: color 0.2s; }
+.sm-split-label:hover { color: var(--teal-light); }
+.sm-split-arrow { background: none; border: none; cursor: pointer; padding: 8px 8px 8px 0; color: inherit; display: flex; align-items: center; }
+.sm-split-arrow:hover .sm-arrow { opacity: 1; }
 .sm-divider { height: 1px; background: rgba(255,255,255,0.1); margin: 4px 0 20px; }
 .sm-secondary-nav { display: flex; flex-direction: column; gap: 2px; }
 .sm-secondary-item {
@@ -2362,9 +2367,9 @@ img {
   <nav class="sm-nav-primary">
     <button class="sm-nav-item" onclick="closeSideMenu();openComboPage()">Mother's Day Combo</button>
     <button class="sm-nav-item" onclick="closeSideMenu();showPage('men')">Men</button>
-    <button class="sm-nav-item" onclick="openSubmenu('woman')">Women <span class="sm-arrow">›</span></button>
-    <button class="sm-nav-item" onclick="openSubmenu('kids')">Kids <span class="sm-arrow">›</span></button>
-    <button class="sm-nav-item" onclick="closeSideMenu();showPage('collections')">Collections</button>
+    <button class="sm-nav-item" onmouseenter="openSubmenuHover('woman')" onmouseleave="closeSubmenuHover()" onclick="closeSideMenu();clearFilters();showPage('shop')">Women <span class="sm-arrow">›</span></button>
+    <button class="sm-nav-item" onmouseenter="openSubmenuHover('kids')" onmouseleave="closeSubmenuHover()" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">Kids <span class="sm-arrow">›</span></button>
+    <button class="sm-nav-item" onmouseenter="openSubmenuHover('collections')" onmouseleave="closeSubmenuHover()" onclick="closeSideMenu();showPage('collections')">Collections <span class="sm-arrow">›</span></button>
   </nav>
   <div class="sm-divider"></div>
   <nav class="sm-secondary-nav">
@@ -2374,7 +2379,7 @@ img {
     <button class="sm-secondary-item" onclick="closeSideMenu();showPage('contact')">Contact</button>
   </nav>
 </div>
-<div class="side-submenu" id="sideSubmenu">
+<div class="side-submenu" id="sideSubmenu" onmouseenter="cancelCloseSubmenu()" onmouseleave="closeSubmenuHover()">
   <div class="sm-sub-section" id="smSub-woman">
     <button class="sm-back-btn" onclick="closeSubmenu()">‹ Back</button>
     <p class="sm-sub-heading">Women</p>
@@ -2387,8 +2392,16 @@ img {
   <div class="sm-sub-section" id="smSub-kids">
     <button class="sm-back-btn" onclick="closeSubmenu()">‹ Back</button>
     <p class="sm-sub-heading">Kids</p>
-    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">View All</button>
-    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">Kids' Frocks</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">The Aira Series <span style="font-size:0.7rem;opacity:0.55;margin-left:6px;font-style:italic;">Coming Soon</span></button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('kids')">Collections</button>
+  </div>
+  <div class="sm-sub-section" id="smSub-collections">
+    <button class="sm-back-btn" onclick="closeSubmenu()">‹ Back</button>
+    <p class="sm-sub-heading">Collections</p>
+    <button class="sm-sub-item" onclick="closeSideMenu();showPage('collections')">View All</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('women')">Women</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('kids')">Kids</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('family')">Family</button>
   </div>
 </div>
 
@@ -2491,7 +2504,10 @@ img {
             <div class="sc-label">The Alpa Series</div>
           </div>
           <div class="sc-card" data-href="#shop-kids-frocks" onclick="showShopWithFilter('kids-frocks')">
-            <div class="sc-img-wrap"><img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy"></div>
+            <div class="sc-img-wrap" style="position:relative;">
+              <img src="mdc/1/girl_skirt_1_1.png" alt="The Aira Series" loading="lazy">
+              <div style="position:absolute;top:10px;right:10px;background:var(--teal);color:#fff;font-size:0.62rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:4px 10px;border-radius:12px;">Coming Soon</div>
+            </div>
             <div class="sc-label">The Aira Series</div>
           </div>
           <!-- clones for seamless loop (first 3 repeated) -->
@@ -2734,40 +2750,40 @@ img {
     <div class="breadcrumb"><a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span><span>Collections</span></div>
   </div>
   <div class="coll-grid">
-    <div class="coll-card" onclick="showShopWithFilter('straight-cut-kurtis')">
+    <div class="coll-card" data-group="women" onclick="showShopWithFilter('straight-cut-kurtis')">
       <div class="coll-img-wrap"><img src="catalog-images/SC001_1.png" alt="The Riju Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Riju Series</div>
         <div class="coll-sub">Women · Straight Cut Kurtis</div>
       </div>
     </div>
-    <div class="coll-card" onclick="showShopWithFilter('fusion-tops')">
+    <div class="coll-card" data-group="women" onclick="showShopWithFilter('fusion-tops')">
       <div class="coll-img-wrap"><img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Alpa Series</div>
         <div class="coll-sub">Women · Fusion Tops</div>
       </div>
     </div>
-    <div class="coll-card" onclick="showShopWithFilter('frocks')">
+    <div class="coll-card" data-group="women" onclick="showShopWithFilter('frocks')">
       <div class="coll-img-wrap"><img src="catalog-images/F0005_1.png" alt="The Ananta Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Ananta Series</div>
         <div class="coll-sub">Women · Frocks</div>
       </div>
     </div>
-    <div class="coll-card" onclick="showShopWithFilter('kids-frocks')">
-      <div class="coll-img-wrap"><img src="catalog-images/KF001_750.jpg" alt="The Aira Series" loading="lazy"></div>
+    <div class="coll-card" data-group="kids" onclick="showShopWithFilter('kids-frocks')">
+      <div class="coll-img-wrap" style="position:relative;">
+        <img src="mdc/1/girl_skirt_1_1.png" alt="The Aira Series" loading="lazy">
+        <div style="position:absolute;top:10px;right:10px;background:var(--teal);color:#fff;font-size:0.62rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:4px 10px;border-radius:12px;">Coming Soon</div>
+      </div>
       <div class="coll-label">
         <div class="coll-name">The Aira Series</div>
-        <div class="coll-sub">Kids · Frocks</div>
+        <div class="coll-sub">Kids · Coming Soon</div>
       </div>
     </div>
     <div class="coll-card" data-group="family" onclick="openComboPage()">
-      <div class="coll-img-wrap" style="background:linear-gradient(135deg,#E0F5F5,#FFF8D6);display:flex;align-items:center;justify-content:center;min-height:220px;">
-        <div style="text-align:center;padding:24px;">
-          <div style="font-size:2.5rem;margin-bottom:10px;">🌸</div>
-          <div style="font-family:var(--serif);font-size:1.05rem;font-weight:500;color:var(--teal);">Design Yours</div>
-        </div>
+      <div class="coll-img-wrap">
+        <img src="hero_images/2.png" alt="Mother's Day Combo" loading="lazy">
       </div>
       <div class="coll-label">
         <div class="coll-name">Mother's Day Combo</div>
@@ -3598,23 +3614,14 @@ function sortProductList(list, mode = currentSort) {
   }
 
   if (inventoryLoaded) {
-    const groupSoldOut = (p) => {
-      if (p.isGroupRep && p.variantGroupKey) {
-        return !VARIANT_GROUPS[p.variantGroupKey].patterns.some(pt => {
-          const prod = products.find(x => x.sku === pt.sku);
-          return !(prod && inventory.hasOwnProperty(pt.sku) && prod.sizes.every(s => getAvailableStock(pt.sku, s) === 0));
-        });
-      }
-      return inventory.hasOwnProperty(p.sku) && p.sizes.every(s => getAvailableStock(p.sku, s) === 0);
-    };
-    sorted.sort((a, b) => (groupSoldOut(a) ? 1 : 0) - (groupSoldOut(b) ? 1 : 0));
+    sorted.sort((a, b) => (isFullySoldOut(a) ? 1 : 0) - (isFullySoldOut(b) ? 1 : 0));
   }
 
   return sorted;
 }
 
 function getFilteredProducts() {
-  let filtered = products.filter(p => !p.isGroupHidden);
+  let filtered = products.filter(p => !p.isGroupHidden && !isFullySoldOut(p));
 
   if (activeFilters.category) {
     filtered = filtered.filter(product => product.cat === activeFilters.category);
@@ -3661,6 +3668,21 @@ function getAvailableStock(sku, size) {
   const inCart = cart.filter(c => c.sku === sku && c.selectedSize === size)
                      .reduce((s, c) => s + c.qty, 0);
   return Math.max(0, base - inCart - getConfirmedDeductions(sku, size));
+}
+
+// true when a product has no stock — untracked SKUs (absent from inventory.json) are treated as sold out
+function isFullySoldOut(p) {
+  if (!inventoryLoaded) return false;
+  if (p.isGroupRep && p.variantGroupKey) {
+    return !VARIANT_GROUPS[p.variantGroupKey].patterns.some(pt => {
+      if (!inventory.hasOwnProperty(pt.sku)) return false; // untracked = sold out
+      const prod = products.find(x => x.sku === pt.sku);
+      if (!prod) return false;
+      return !prod.sizes.every(s => getAvailableStock(pt.sku, s) === 0);
+    });
+  }
+  if (!inventory.hasOwnProperty(p.sku)) return true; // untracked = hidden
+  return p.sizes.every(s => getAvailableStock(p.sku, s) === 0);
 }
 let activeFilters = {};
 let currentSort = 'newest';
@@ -3984,15 +4006,37 @@ function isTypingTarget(target) {
 // GRID INITIALIZERS
 // ══════════════════════════════════════════
 function initHomeGrids() {
-  const homeProducts = sortProductList(products.filter(p => !p.isGroupHidden), 'series').slice(0, 8);
-  document.getElementById('homeProductGrid').innerHTML = homeProducts.map(buildProductCard).join('');
+  const el = document.getElementById('homeProductGrid');
+  if (!el) return;
+  const homeProducts = sortProductList(products.filter(p => !p.isGroupHidden && !isFullySoldOut(p)), 'series').slice(0, 8);
+  el.innerHTML = homeProducts.map(buildProductCard).join('');
 }
+
+const KIDS_COMING_SOON_HTML = `
+  <div style="grid-column:1/-1;position:relative;min-height:420px;overflow:hidden;border-radius:16px;display:flex;align-items:center;justify-content:center;">
+    <div style="position:absolute;inset:0;background-color:#faf7f2;background-image:linear-gradient(45deg,rgba(0,128,128,0.07) 25%,transparent 25%,transparent 75%,rgba(0,128,128,0.07) 75%),linear-gradient(-45deg,rgba(0,128,128,0.07) 25%,transparent 25%,transparent 75%,rgba(0,128,128,0.07) 75%);background-size:28px 28px;"></div>
+    <div style="position:absolute;inset:0;background:radial-gradient(ellipse 80% 70% at 50% 50%,transparent 35%,#faf7f2 100%);"></div>
+    <div style="position:relative;z-index:1;text-align:center;padding:52px 32px;max-width:560px;">
+      <div style="font-size:0.85rem;color:var(--teal);letter-spacing:0.45em;margin-bottom:20px;opacity:0.55;">◆ &nbsp; ◆ &nbsp; ◆</div>
+      <div style="display:inline-block;font-size:0.68rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;padding:5px 16px;border-radius:20px;background:var(--teal);color:#fff;margin-bottom:24px;">Coming Soon</div>
+      <h2 style="font-family:var(--serif);font-size:clamp(2rem,5vw,3.2rem);font-weight:400;color:#1a1a1a;margin:0 0 16px;line-height:1.1;letter-spacing:0.02em;">Kids' Collection</h2>
+      <div style="width:48px;height:2px;background:var(--gold);margin:0 auto 24px;border-radius:2px;"></div>
+      <p style="font-size:1rem;color:#666;line-height:1.75;margin:0 auto 38px;max-width:420px;">We're crafting something special — soft, breathable ethnic frocks for your little ones, rooted in tradition and made for play.</p>
+      <a href="https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC?mode=gi_t" target="_blank" style="display:inline-flex;align-items:center;gap:8px;background:var(--teal);color:white;padding:12px 28px;border-radius:50px;font-size:0.92rem;font-weight:500;text-decoration:none;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;flex-shrink:0;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+        Get Notified on WhatsApp
+      </a>
+    </div>
+  </div>`;
 
 function initShopGrid() {
   const filtered = getFilteredProducts();
+  const emptyHTML = activeFilters.category === 'kids-frocks'
+    ? KIDS_COMING_SOON_HTML
+    : `<div style="grid-column:1/-1;background:white;border-radius:12px;padding:32px;text-align:center;box-shadow:var(--shadow-sm);">No products match those filters yet.</div>`;
   document.getElementById('shopProductGrid').innerHTML = filtered.length
     ? filtered.map(buildProductCard).join('')
-    : `<div style="grid-column:1/-1;background:white;border-radius:12px;padding:32px;text-align:center;box-shadow:var(--shadow-sm);">No products match those filters yet.</div>`;
+    : emptyHTML;
   document.getElementById('shopResultCount').textContent = `Showing ${filtered.length} products`;
   document.querySelectorAll('.filter-chip').forEach(chip => {
     chip.classList.toggle(
@@ -4004,7 +4048,7 @@ function initShopGrid() {
 }
 
 function initNewGrid() {
-  const newProducts = sortProductList(products.filter(p => p.badge === 'new' && !p.isGroupHidden));
+  const newProducts = sortProductList(products.filter(p => p.badge === 'new' && !p.isGroupHidden && !isFullySoldOut(p)));
   document.getElementById('newPageGrid').innerHTML = newProducts.map(buildProductCard).join('');
 }
 
@@ -4865,6 +4909,10 @@ function closeSubmenu() {
   const sub = document.getElementById('sideSubmenu');
   if (sub) sub.style.transform = 'translateX(-100%)';
 }
+let _submenuTimer = null;
+function openSubmenuHover(name) { clearTimeout(_submenuTimer); openSubmenu(name); }
+function closeSubmenuHover() { _submenuTimer = setTimeout(closeSubmenu, 200); }
+function cancelCloseSubmenu() { clearTimeout(_submenuTimer); }
 function showCollectionsFiltered(group) {
   showPage('collections');
   document.querySelectorAll('.coll-card[data-group]').forEach(c => {

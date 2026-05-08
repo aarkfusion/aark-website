@@ -26,7 +26,7 @@ const mockInventory = {
   SC002: { S: 0, M: 0, L: 1, XL: 2 },
   F0002: { XS: 1, S: 2, M: 3, L: 1, XL: 2, XXL: 0 },
   ST011: { XS: 0, S: 1, M: 2, L: 0 },
-  // KF001 absent → all sizes = 0
+  KF001: { '2-3yr': 2, '4-5yr': 1, '6-7yr': 0 }, // tracked with stock
 };
 
 // ── Replicate production filter logic ──────────────────────────────────────────
@@ -35,8 +35,28 @@ function getAvailableStock(inventory, sku, size) {
   return Math.max(0, (inventory[sku] || {})[size] || 0);
 }
 
-function getFilteredProducts(products, inventory, inventoryLoaded, activeFilters) {
-  let filtered = [...products];
+function isFullySoldOut(p, inventory, inventoryLoaded, variantGroups, products) {
+  if (!inventoryLoaded) return false;
+  if (p.isGroupRep && p.variantGroupKey) {
+    const grp = variantGroups[p.variantGroupKey];
+    if (!grp) return false;
+    return !grp.patterns.some(pt => {
+      if (!inventory.hasOwnProperty(pt.sku)) return false; // untracked = sold out
+      const ptProd = products.find(x => x.sku === pt.sku);
+      if (!ptProd) return false;
+      const ptSizes = ptProd.sizes;
+      return !ptSizes.every(s => getAvailableStock(inventory, pt.sku, s) === 0);
+    });
+  }
+  if (!inventory.hasOwnProperty(p.sku)) return true; // untracked = hidden
+  return p.sizes.every(s => getAvailableStock(inventory, p.sku, s) === 0);
+}
+
+// allProducts: full catalog (includes isGroupHidden items) so group-sold-out check can find all patterns.
+// Matches production where isFullySoldOut closes over the global `products` array.
+function getFilteredProducts(products, inventory, inventoryLoaded, activeFilters, variantGroups = {}, allProducts = null) {
+  const fullList = allProducts || products;
+  let filtered = products.filter(p => !isFullySoldOut(p, inventory, inventoryLoaded, variantGroups, fullList));
 
   if (activeFilters.category) {
     filtered = filtered.filter(p => p.cat === activeFilters.category);
@@ -152,6 +172,79 @@ suite('Clear Filters');
   af = {};
   const r = getFilteredProducts(mockProducts, mockInventory, true, af);
   assert(r.length === mockProducts.length, 'After clear: all products shown');
+}
+
+// ── Suite 8: Sold-out product hiding ──────────────────────────────────────────
+suite('Sold-Out Product Hiding');
+{
+  const soldOutProducts = [
+    { id: 10, sku: 'SC013', cat: 'straight-cut-kurtis', sizes: ['XS','S','M','L','XL','XXL'], isGroupRep: false, variantGroupKey: null },
+    { id: 11, sku: 'SC004', cat: 'straight-cut-kurtis', sizes: ['XS','S','M','L','XL','XXL'], isGroupRep: true,  variantGroupKey: 'riju-kurti-2' },
+    { id: 12, sku: 'SC005', cat: 'straight-cut-kurtis', sizes: ['XS','S','M','L','XL','XXL'], isGroupRep: false, variantGroupKey: 'riju-kurti-2', isGroupHidden: true },
+    { id: 13, sku: 'STGRP', cat: 'fusion-tops',         sizes: ['XS','S','M','L','XL'],       isGroupRep: true,  variantGroupKey: 'all-dead-group' },
+    { id: 14, sku: 'STPAT', cat: 'fusion-tops',         sizes: ['XS','S','M','L','XL'],       isGroupRep: false, variantGroupKey: 'all-dead-group', isGroupHidden: true },
+  ];
+  const soldOutInventory = {
+    SC013: { XS:0, S:0, M:0, L:0, XL:0, XXL:0 },  // fully sold out standalone
+    SC004: { XS:0, S:0, M:0, L:0, XL:0, XXL:0 },  // one sold-out pattern in group
+    SC005: { XS:0, S:0, M:1, L:0, XL:0, XXL:0 },  // in-stock pattern keeps group visible
+    STGRP: { XS:0, S:0, M:0, L:0, XL:0 },          // both patterns sold out
+    STPAT: { XS:0, S:0, M:0, L:0, XL:0 },
+  };
+  const mockGroups = {
+    'riju-kurti-2': { repSku: 'SC004', patterns: [{ sku:'SC004' }, { sku:'SC005' }] },
+    'all-dead-group': { repSku: 'STGRP', patterns: [{ sku:'STGRP' }, { sku:'STPAT' }] },
+  };
+
+  // Standalone — all sizes 0 → hidden
+  const visProducts = soldOutProducts.filter(p => !p.isGroupHidden);
+  // Pass full soldOutProducts so group pattern lookup can find isGroupHidden siblings
+  const r1 = getFilteredProducts(visProducts, soldOutInventory, true, {}, mockGroups, soldOutProducts);
+  assert(!r1.find(p => p.sku === 'SC013'), 'SC013 hidden — standalone, all sizes 0');
+
+  // Group rep — group has one in-stock pattern → stays visible
+  assert(!!r1.find(p => p.sku === 'SC004'), 'SC004 group stays visible — SC005 has M:1 in stock');
+
+  // Group rep — all patterns fully sold out → hidden
+  assert(!r1.find(p => p.sku === 'STGRP'), 'STGRP group hidden — all patterns at zero');
+
+  // Inventory not loaded → nothing hidden (show all)
+  const r2 = getFilteredProducts(visProducts, soldOutInventory, false, {}, mockGroups, soldOutProducts);
+  assert(!!r2.find(p => p.sku === 'SC013'), 'SC013 visible when inventoryLoaded=false');
+  assert(r2.length === visProducts.length, 'All products shown when inventory not yet loaded');
+
+  // Untracked product → hidden (absent from inventory.json means zero stock)
+  const untrackedProducts = [{ id:20, sku:'KF099', cat:'kids-frocks', sizes:['2-3yr'], isGroupRep:false, variantGroupKey:null }];
+  const r3 = getFilteredProducts(untrackedProducts, {}, true, {}, {});
+  assert(!r3.find(p => p.sku === 'KF099'), 'Untracked SKU is hidden — absent from inventory.json means no stock');
+
+  // Untracked product → visible when inventory not yet loaded
+  const r3b = getFilteredProducts(untrackedProducts, {}, false, {}, {});
+  assert(!!r3b.find(p => p.sku === 'KF099'), 'Untracked SKU visible before inventory loads');
+}
+
+// ── Suite 9: initHomeGrids null-safety ────────────────────────────────────────
+// Root cause: initHomeGrids threw when homeProductGrid element was absent,
+// silently killing initShopGrid() in the same fetch callback.
+suite('initHomeGrids null-safety');
+{
+  function simulateInitHomeGrids(getElementById, products, inventory, inventoryLoaded, variantGroups) {
+    const el = getElementById('homeProductGrid');
+    if (!el) return 'early-return'; // guard — must not throw
+    const full = products.filter(p => !p.isGroupHidden && !isFullySoldOut(p, inventory, inventoryLoaded, variantGroups, products));
+    el.innerHTML = full.map(p => p.sku).join(',');
+    return 'rendered';
+  }
+
+  // Element absent → returns early without throwing (would have killed initShopGrid)
+  const noEl = simulateInitHomeGrids(() => null, mockProducts, mockInventory, true, {});
+  assert(noEl === 'early-return', 'initHomeGrids returns early when homeProductGrid is absent');
+
+  // Element present → renders normally (use mockInventory so products aren't all hidden as untracked)
+  const fakeEl = { innerHTML: '' };
+  const withEl = simulateInitHomeGrids(() => fakeEl, mockProducts, mockInventory, true, {});
+  assert(withEl === 'rendered', 'initHomeGrids renders when element exists');
+  assert(fakeEl.innerHTML.length > 0, 'innerHTML is populated when element exists');
 }
 
 // ── Summary ────────────────────────────────────────────────────────────────────
