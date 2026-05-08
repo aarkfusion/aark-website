@@ -53,8 +53,8 @@ function validateCoupon(code, cartSubtotal, comboSubtotal) {
   const discountAmount = comboDisc + regularDisc;
   const hasCombo = comboSubtotal > 0;
   const badgeText = hasCombo
-    ? `20% off Combo · 15% off all else + Free Shipping! 🌸`
-    : `15% off + Free Shipping! 🌸`;
+    ? `20% off Combo · 15% off store wide + Free Shipping! 🌸`
+    : `15% off store wide + Free Shipping! 🌸`;
   return {
     valid: true,
     discountPercent: SALE_DISCOUNT_PERCENT,

@@ -34,7 +34,7 @@
     banner.innerHTML =
       '<div class="mday-pill">Coming Soon</div>' +
       '<h2 class="mday-headline">Mother\'s Day Sale</h2>' +
-      '<p class="mday-sub">Use code <span class="sub-code">MOM26</span> — 15% off everything · 20% off Combo + Free Shipping</p>' +
+      '<p class="mday-sub">Use code <span class="sub-code">MOM26</span> — 15% off store wide · 20% off Combo + Free Shipping</p>' +
       '<p class="mday-combo-link">✦ <em>Woven as One</em> — a matching fabric set for your whole family</p>' +
       '<div class="mday-countdown">' +
         '<div class="mday-box"><div class="mday-digit" id="mdD">--</div><div class="mday-label">Days</div></div>' +
@@ -60,7 +60,7 @@
     banner.innerHTML =
       '<div class="mday-pill">Limited Time Only</div>' +
       '<h2 class="mday-headline">🌸 Mother\'s Day Sale is LIVE!</h2>' +
-      '<p class="mday-sub">Use code <span class="sub-code">MOM26</span> at checkout — 15% off · 20% off Combo + Free Shipping</p>' +
+      '<p class="mday-sub">Use code <span class="sub-code">MOM26</span> at checkout — 15% off store wide · 20% off Combo + Free Shipping</p>' +
       '<p class="mday-combo-link">✦ <em>Woven as One</em> — a matching fabric set for your whole family</p>' +
       '<div class="mday-countdown">' +
         '<div class="mday-box"><div class="mday-digit" id="mdH">--</div><div class="mday-label">Hours</div></div>' +
