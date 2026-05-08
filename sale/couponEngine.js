@@ -12,9 +12,12 @@ function getSaleState() {
   return 'live';
 }
 
-// validateCoupon(code, cartSubtotal) → result object
-// Returns { valid, discountPercent, discountAmount, shippingCost, finalTotal, state, message }
-function validateCoupon(code, cartSubtotal) {
+// validateCoupon(code, cartSubtotal, comboSubtotal) → result object
+// comboSubtotal: portion of cartSubtotal from Mother's Day Combo items (defaults 0)
+// Returns { valid, discountPercent, comboDiscountPercent, discountAmount, hasCombo, badgeText, shippingCost, finalTotal, state, message }
+function validateCoupon(code, cartSubtotal, comboSubtotal) {
+  comboSubtotal = comboSubtotal || 0;
+  const regularSubtotal = cartSubtotal - comboSubtotal;
   const normalized  = (code || '').trim().toUpperCase();
   const baseShip    = cartSubtotal >= SHIPPING_FREE_AT ? 0 : SHIPPING_FLAT;
 
@@ -44,16 +47,25 @@ function validateCoupon(code, cartSubtotal) {
     };
   }
 
-  // Sale is live — apply discount
-  const discountAmount = Math.round(cartSubtotal * SALE_DISCOUNT_PERCENT / 100);
+  // Sale is live — apply tiered discount (20% on Combo, 15% on everything else)
+  const comboDisc    = Math.round(comboSubtotal * SALE_COMBO_DISCOUNT_PERCENT / 100);
+  const regularDisc  = Math.round(regularSubtotal * SALE_DISCOUNT_PERCENT / 100);
+  const discountAmount = comboDisc + regularDisc;
+  const hasCombo = comboSubtotal > 0;
+  const badgeText = hasCombo
+    ? `20% off Combo · 15% off all else + Free Shipping! 🌸`
+    : `15% off + Free Shipping! 🌸`;
   return {
     valid: true,
     discountPercent: SALE_DISCOUNT_PERCENT,
+    comboDiscountPercent: SALE_COMBO_DISCOUNT_PERCENT,
     discountAmount,
+    hasCombo,
+    badgeText,
     shippingCost: 0,
     finalTotal: cartSubtotal - discountAmount,
     state: 'active',
-    message: `MOM26 applied — ${SALE_DISCOUNT_PERCENT}% off + Free Shipping! 🌸`,
+    message: `MOM26 applied — ${badgeText}`,
   };
 }
 

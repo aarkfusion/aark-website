@@ -821,7 +821,7 @@ button { cursor: pointer; font-family: inherit; border: none; }
           <div class="summary-divider"></div>
           <div class="summary-row"><span>Subtotal</span><span id="summarySubtotal">₹0</span></div>
           <div class="summary-row discount" id="summaryDiscountRow" style="display:none;">
-            <span>Discount (MOM26 −15%)</span>
+            <span>Discount (MOM26)</span>
             <span class="amount" id="summaryDiscountAmt">−₹0</span>
           </div>
           <div class="summary-row"><span>Shipping</span><span id="summaryShipping">₹0</span></div>
@@ -994,11 +994,12 @@ function generateOrderId() {
 // ── SUMMARY ──
 function renderSummary() {
   const subtotal = cart.reduce((s, item) => s + (Number(item.price) || 0) * item.qty, 0);
+  const comboSubtotal = cart.filter(i => i.isCombo).reduce((s,i) => s + (Number(i.price)||0)*i.qty, 0);
 
   // Validate coupon (auto-clear if expired)
   let couponResult = null;
   if (appliedCoupon) {
-    couponResult = validateCoupon(appliedCoupon, subtotal);
+    couponResult = validateCoupon(appliedCoupon, subtotal, comboSubtotal);
     if (!couponResult.valid) {
       appliedCoupon = null;
       try { localStorage.removeItem('aark_applied_coupon'); } catch(e) {}
@@ -1051,7 +1052,8 @@ function renderCheckoutCoupon() {
   const area = document.getElementById('checkoutCouponArea');
   if (!area) return;
   const subtotal = cart.reduce((s, item) => s + (Number(item.price) || 0) * item.qty, 0);
-  const result   = appliedCoupon ? validateCoupon(appliedCoupon, subtotal) : null;
+  const comboSubtotal = cart.filter(i => i.isCombo).reduce((s,i) => s + (Number(i.price)||0)*i.qty, 0);
+  const result   = appliedCoupon ? validateCoupon(appliedCoupon, subtotal, comboSubtotal) : null;
 
   if (result && result.valid) {
     area.innerHTML = `
@@ -1059,7 +1061,7 @@ function renderCheckoutCoupon() {
         <span class="ck-icon">🌸</span>
         <div>
           <div class="ck-label">MOM26 applied ✓</div>
-          <div class="ck-desc">15% off + Free Shipping</div>
+          <div class="ck-desc">${result.badgeText}</div>
         </div>
         <button class="ck-remove" onclick="removeCheckoutCoupon()">Remove</button>
       </div>`;
@@ -1082,7 +1084,8 @@ function applyCheckoutCoupon() {
   const code = input.value.trim();
   if (!code) return;
   const subtotal = cart.reduce((s, item) => s + (Number(item.price) || 0) * item.qty, 0);
-  const result   = validateCoupon(code, subtotal);
+  const comboSubtotal = cart.filter(i => i.isCombo).reduce((s,i) => s + (Number(i.price)||0)*i.qty, 0);
+  const result   = validateCoupon(code, subtotal, comboSubtotal);
   if (result.valid) {
     appliedCoupon = code.toUpperCase();
     try { localStorage.setItem('aark_applied_coupon', appliedCoupon); } catch(e) {}
