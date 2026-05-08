@@ -2176,71 +2176,98 @@ img {
 #ctx-menu.ctx-mode-logo #ctx-logo-section { display: block; }
 
 /* ═══════════════════════════════════════════════════
-   MOTHER'S DAY COMBO BUILDER
+   MOTHER'S DAY COMBO BUILDER (accordion)
 ═══════════════════════════════════════════════════ */
-.combo-builder { max-width: 660px; margin: 0 auto; padding: 32px 20px 80px; }
-.combo-progress { display: flex; align-items: center; gap: 12px; margin-bottom: 36px; }
-.combo-progress-label { font-size: 0.72rem; color: var(--text-muted); white-space: nowrap; letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
-.combo-progress-bar { flex: 1; height: 3px; background: var(--light-grey); border-radius: 2px; overflow: hidden; }
-.combo-progress-fill { height: 100%; background: var(--teal); border-radius: 2px; transition: width 0.45s ease; }
-.combo-step { background: #f8fefe; border: 1.5px solid rgba(0,128,128,0.13); border-radius: 12px; padding: 22px 22px 18px; margin-bottom: 16px; animation: csStepIn 0.35s ease; }
-@keyframes csStepIn { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
-.combo-step-hd { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 16px; }
-.combo-step-title { font-family: var(--serif); font-size: 1.15rem; font-weight: 500; }
-.combo-step-edit { font-size: 0.72rem; color: var(--teal); cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
-.combo-step.cs-done { padding: 14px 22px; }
-.cs-done .combo-step-hd { margin-bottom: 4px; }
-.combo-step-chip { font-size: 0.83rem; color: var(--text-muted); }
-.combo-step-chip strong { color: var(--teal); }
-.combo-who-grid { display: flex; gap: 10px; flex-wrap: wrap; }
-.combo-who-pill { display: flex; align-items: center; gap: 7px; padding: 10px 18px; border: 2px solid var(--light-grey); border-radius: 40px; font-size: 0.88rem; background: white; color: var(--text); transition: all 0.2s; min-height: 44px; cursor: pointer; }
-.combo-who-pill.sel { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); font-weight: 500; }
-.combo-pat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
-.combo-pat-card { border: 2px solid var(--light-grey); border-radius: 10px; overflow: hidden; cursor: pointer; transition: all 0.2s; background: white; }
-.combo-pat-card:hover { border-color: rgba(0,128,128,0.35); }
-.combo-pat-card.sel { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,128,128,0.1); }
-.combo-pat-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; }
-.combo-pat-lbl { padding: 8px 10px 10px; }
-.combo-pat-name { font-family: var(--serif); font-size: 0.88rem; font-weight: 500; }
-.combo-pat-count { font-size: 0.69rem; color: var(--text-muted); margin-top: 2px; }
-.combo-color-grid { display: flex; gap: 16px; flex-wrap: wrap; padding: 4px 0; }
-.combo-color-item { display: flex; flex-direction: column; align-items: center; gap: 6px; cursor: pointer; }
-.combo-color-swatch { width: 50px; height: 50px; border-radius: 50%; border: 3px solid transparent; transition: border-color 0.2s, transform 0.15s; box-shadow: 0 2px 8px rgba(0,0,0,0.18); background-size: cover; }
-.combo-color-swatch:hover { transform: scale(1.1); }
-.combo-color-item.sel .combo-color-swatch { border-color: var(--teal); box-shadow: 0 0 0 4px rgba(0,128,128,0.18); }
-.combo-color-name { font-size: 0.69rem; color: var(--text-muted); text-align: center; max-width: 58px; line-height: 1.2; }
-.combo-color-item.sel .combo-color-name { color: var(--teal); font-weight: 500; }
-.combo-style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.combo-style-card { border: 2px solid var(--light-grey); border-radius: 10px; padding: 18px 14px; cursor: pointer; transition: all 0.2s; text-align: center; background: white; }
-.combo-style-card:hover { border-color: rgba(0,128,128,0.35); }
-.combo-style-card.sel { border-color: var(--teal); background: var(--teal-pale); }
-.combo-style-name { font-family: var(--serif); font-size: 0.95rem; font-weight: 500; margin-top: 10px; }
-.combo-style-desc { font-size: 0.72rem; color: var(--text-muted); margin-top: 3px; }
-.combo-boy-auto { display: inline-flex; align-items: center; gap: 8px; background: var(--teal-pale); border: 1.5px solid var(--teal); border-radius: 40px; padding: 10px 18px; font-size: 0.88rem; color: var(--teal); font-weight: 500; margin-bottom: 18px; }
-.combo-summary-box { background: white; border: 1.5px solid rgba(0,128,128,0.18); border-radius: 12px; padding: 18px; margin-bottom: 18px; }
-.combo-fabric-thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; flex-shrink: 0; background: var(--cream-dark); }
-.combo-fabric-row { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid var(--teal-pale); }
-.cfab-pat { font-family: var(--serif); font-size: 1rem; font-weight: 500; }
-.cfab-col { font-size: 0.78rem; color: var(--teal); margin-top: 3px; }
-.combo-summary-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--teal-pale); font-size: 0.87rem; }
-.combo-summary-row:last-child { border-bottom: none; padding-bottom: 0; }
-.combo-summary-row .csr-lbl { color: var(--text-muted); }
-.combo-summary-row .csr-val { font-weight: 500; }
-.combo-summary-total { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 2px solid var(--teal-pale); font-family: var(--serif); font-size: 1.15rem; font-weight: 600; }
-.combo-summary-total .csr-val { color: var(--teal); }
-.combo-actions { display: flex; flex-direction: column; gap: 10px; }
-.combo-next-btn { margin-top: 18px; width: 100%; }
-.mday-combo-entry { background: linear-gradient(135deg,#E0F5F5 0%,#FFF8D6 100%); border-radius: 12px; padding: 22px 20px; margin: 0 0 32px; display: flex; align-items: center; justify-content: space-between; gap: 16px; cursor: pointer; border: 1px solid rgba(0,128,128,0.12); transition: box-shadow 0.25s; }
-.mday-combo-entry:hover { box-shadow: 0 8px 28px rgba(0,128,128,0.14); }
-.mce-eyebrow { font-size: 0.68rem; letter-spacing: 0.1em; color: var(--teal); font-weight: 600; text-transform: uppercase; margin-bottom: 5px; }
-.mce-title { font-family: var(--serif); font-size: 1.3rem; font-weight: 500; color: var(--text); line-height: 1.2; }
-.mce-title em { font-style: italic; color: var(--teal); }
-.mce-sub { font-size: 0.78rem; color: var(--text-muted); margin-top: 5px; }
-.mce-arrow { font-size: 1.3rem; color: var(--teal); flex-shrink: 0; }
+.pat-grid { max-width: 780px; margin: 0 auto 80px; padding: 0 20px; display: flex; flex-direction: column; gap: 18px; }
+.pat-card { background: #fff; border: 2px solid var(--light-grey); border-radius: 12px; overflow: hidden; transition: border-color 0.25s ease, box-shadow 0.25s ease; }
+.pat-card.open { border-color: rgba(0,128,128,0.5); box-shadow: 0 6px 28px rgba(0,128,128,0.1); }
+.pat-hdr { display: flex; align-items: center; gap: 14px; padding: 14px 16px; cursor: pointer; user-select: none; -webkit-tap-highlight-color: transparent; }
+.pat-hdr:hover { background: rgba(0,128,128,0.03); }
+.pat-thumb { width: 68px; height: 90px; object-fit: cover; border-radius: 8px; flex-shrink: 0; background: var(--teal-pale); display: block; }
+.pat-thumb-ph { width: 68px; height: 90px; border-radius: 8px; flex-shrink: 0; background: linear-gradient(135deg,var(--teal-pale),#fff8d6); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+.pat-hdr-info { flex: 1; min-width: 0; }
+.pat-nm { font-family: var(--serif); font-size: 1.12rem; font-weight: 500; line-height: 1.2; }
+.pat-mt { font-size: 0.76rem; color: var(--text-muted); margin-top: 3px; }
+.pat-pv { font-size: 0.76rem; color: var(--teal); margin-top: 5px; font-weight: 500; min-height: 1em; }
+.pat-chev { width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--cream-dark); flex-shrink: 0; transition: transform 0.3s ease, background 0.2s; color: var(--text-muted); }
+.pat-card.open .pat-chev { transform: rotate(180deg); background: var(--teal-pale); color: var(--teal); }
+.pat-body { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.5s ease, opacity 0.35s ease; }
+.pat-card.open .pat-body { max-height: 6000px; opacity: 1; }
+.pat-body-in { border-top: 1px solid var(--light-grey); padding: 20px 16px 24px; display: flex; flex-direction: column; gap: 14px; }
+/* Step blocks */
+.mdc-step { border: 1.5px solid var(--light-grey); border-radius: 10px; overflow: hidden; }
+.mdc-step.s-active { border-color: rgba(0,128,128,0.45); }
+.mdc-step.s-done   { border-color: var(--light-grey); background: var(--cream-dark); }
+.mdc-step.s-locked { opacity: 0.45; pointer-events: none; }
+.mdc-step-hd { display: flex; align-items: center; gap: 10px; padding: 11px 14px; }
+.mdc-step.s-done .mdc-step-hd { cursor: pointer; }
+.mdc-step.s-done .mdc-step-hd:hover { background: rgba(0,128,128,0.04); }
+.mdc-step-num { width: 22px; height: 22px; border-radius: 50%; background: var(--light-grey); color: var(--text-muted); font-size: 0.68rem; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.mdc-step.s-active .mdc-step-num, .mdc-step.s-done .mdc-step-num { background: var(--teal); color: #fff; }
+.mdc-step-ttl { font-size: 0.87rem; font-weight: 500; flex: 1; color: var(--text); }
+.mdc-step-chip { font-size: 0.74rem; color: var(--teal); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 130px; }
+.mdc-step-edit { font-size: 0.7rem; color: var(--text-muted); text-decoration: underline; cursor: pointer; flex-shrink: 0; }
+.mdc-step-edit:hover { color: var(--teal); }
+.mdc-step-bd { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.4s ease, opacity 0.3s ease; }
+.mdc-step.s-active .mdc-step-bd { max-height: 3000px; opacity: 1; }
+.mdc-step-bd-in { padding: 2px 14px 16px; }
+/* Who pills */
+.mdc-who-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.mdc-who-pill { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border: 2px solid var(--light-grey); border-radius: 40px; font-size: 0.87rem; cursor: pointer; background: #fff; color: var(--text); transition: border-color 0.18s, background 0.18s, color 0.18s; min-height: 42px; user-select: none; }
+.mdc-who-pill.sel { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); font-weight: 500; }
+/* Person panels */
+.mdc-pp { border: 1.5px solid var(--light-grey); border-radius: 9px; overflow: hidden; margin-bottom: 10px; }
+.mdc-pp:last-of-type { margin-bottom: 0; }
+.mdc-pp-hd { display: flex; align-items: center; gap: 8px; padding: 10px 14px; background: var(--cream-dark); border-bottom: 1px solid var(--light-grey); font-size: 0.83rem; font-weight: 600; color: var(--text); }
+.mdc-pp-chip { margin-left: auto; font-size: 0.72rem; color: var(--teal); font-weight: 500; }
+.mdc-pp-body { padding: 12px 14px 14px; }
+.mdc-sub-lbl { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; margin-top: 12px; }
+.mdc-sub-lbl:first-child { margin-top: 0; }
+/* Color swatches */
+.mdc-cr { display: flex; gap: 10px; flex-wrap: wrap; padding: 2px 0 4px; }
+.mdc-ci { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
+.mdc-cs { width: 40px; height: 40px; border-radius: 50%; border: 3px solid transparent; background-size: cover; box-shadow: 0 2px 6px rgba(0,0,0,0.18); transition: border-color 0.18s, transform 0.15s, box-shadow 0.18s; }
+.mdc-cs:hover { transform: scale(1.1); }
+.mdc-ci.sel .mdc-cs { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,128,128,0.2); }
+.mdc-cl { font-size: 0.58rem; color: var(--text-muted); text-align: center; max-width: 44px; line-height: 1.25; }
+.mdc-ci.sel .mdc-cl { color: var(--teal); font-weight: 600; }
+/* Style cards */
+.mdc-sr { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+.mdc-sc { border: 2px solid var(--light-grey); border-radius: 8px; padding: 12px 9px 10px; cursor: pointer; text-align: center; background: #fff; transition: border-color 0.18s, background 0.18s; }
+.mdc-sc:hover { border-color: rgba(0,128,128,0.4); }
+.mdc-sc.sel { border-color: var(--teal); background: var(--teal-pale); }
+.mdc-sc svg { display: block; margin: 0 auto 5px; }
+.mdc-sn { font-family: var(--serif); font-size: 0.88rem; font-weight: 500; }
+.mdc-sd { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+/* Size pills */
+.mdc-szr { display: flex; gap: 7px; flex-wrap: wrap; }
+.mdc-szp { padding: 5px 12px; border: 1.5px solid var(--light-grey); border-radius: 20px; font-size: 0.79rem; cursor: pointer; background: #fff; transition: border-color 0.15s, background 0.15s, color 0.15s; user-select: none; }
+.mdc-szp:hover { border-color: rgba(0,128,128,0.45); }
+.mdc-szp.sel { border-color: var(--teal); background: var(--teal); color: #fff; }
+/* Boy auto note */
+.mdc-boy { display: flex; align-items: center; gap: 8px; background: var(--teal-pale); border: 1.5px solid rgba(0,128,128,0.28); border-radius: 7px; padding: 8px 12px; font-size: 0.8rem; color: var(--teal); font-weight: 500; margin-bottom: 10px; }
+/* Summary */
+.mdc-sum-box { background: #fff; border: 1.5px solid rgba(0,128,128,0.18); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+.mdc-sum-row { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--teal-pale); font-size: 0.84rem; }
+.mdc-sum-row:last-of-type { border-bottom: none; padding-bottom: 0; }
+.mdc-sum-sw { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; background-size: cover; box-shadow: 0 1px 5px rgba(0,0,0,0.15); }
+.mdc-sum-info { flex: 1; min-width: 0; }
+.mdc-sum-who    { font-weight: 500; font-size: 0.84rem; }
+.mdc-sum-detail { font-size: 0.74rem; color: var(--text-muted); margin-top: 1px; }
+.mdc-sum-price  { font-weight: 600; font-size: 0.84rem; color: var(--text); flex-shrink: 0; }
+.mdc-sum-total { display: flex; justify-content: space-between; margin-top: 14px; padding-top: 14px; border-top: 2px solid var(--teal-pale); font-family: var(--serif); font-size: 1.1rem; font-weight: 600; }
+.mdc-sum-total-val { color: var(--teal); }
+.mdc-next-btn { margin-top: 16px; width: 100%; }
+.mdc-gap-sm { margin-top: 10px; width: 100%; }
+.btn-mdc-ol { display: block; width: 100%; padding: 13px 20px; border: 2px solid var(--teal); border-radius: 8px; font-family: var(--sans); font-size: 0.9rem; font-weight: 600; letter-spacing: 0.04em; cursor: pointer; text-align: center; background: transparent; color: var(--teal); transition: background 0.2s; }
+.btn-mdc-ol:hover { background: var(--teal-pale); }
+.mdc-hint { display: inline-flex; align-items: center; gap: 6px; font-size: 0.76rem; color: var(--text-muted); background: rgba(0,128,128,0.06); border-radius: 20px; padding: 5px 14px; margin-top: 6px; }
 @media (max-width: 600px) {
-  .combo-pat-grid { grid-template-columns: repeat(2,1fr); }
-  .combo-builder { padding: 24px 14px 60px; }
-  .mday-combo-entry { flex-direction: column; align-items: flex-start; }
+  .pat-thumb, .pat-thumb-ph { width: 58px; height: 76px; }
+  .pat-thumb-ph { font-size: 1.3rem; }
+  .mdc-sr { gap: 7px; }
+  .mdc-step-chip { max-width: 90px; }
+  .pat-grid { padding: 0 14px; }
 }
 </style>
 </head>
@@ -3042,14 +3069,12 @@ img {
 ══════════════════════════════════════════ -->
 <div id="page-mothers-day-combo" class="page">
   <div class="inner-hero">
-    <h1><em>Mother's Day</em> Combo Collection</h1>
-    <p>One fabric, styled for everyone. Design matching sets for Mom, Girl, and Boy — all from the same beautiful print.</p>
+    <h1><em>Woven as One</em></h1>
+    <p>Same fabric, your own color — mix or match across the whole family.</p>
     <div class="breadcrumb"><a href="/" onclick="event.preventDefault(); showPage('home')">Home</a><span>/</span><a href="#" onclick="event.preventDefault(); showPage('collections')">Collections</a><span>/</span><span>Mother's Day Combo</span></div>
+    <span class="mdc-hint"><svg width="13" height="13" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M10 6v4l2.5 2.5"/></svg> Tap a pattern below to begin</span>
   </div>
-  <div class="combo-builder">
-    <div class="combo-progress" id="mdcProgress"></div>
-    <div id="mdcSteps"></div>
-  </div>
+  <div class="pat-grid" id="mdcPatGrid"></div>
 </div>
 
 <!-- ══════════════════════════════════════════
@@ -5092,7 +5117,7 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
   }
 });
 
-/* ── MOTHER'S DAY COMBO BUILDER ─────────────────────── */
+/* ── MOTHER'S DAY COMBO BUILDER (accordion) ─────────── */
 const MDC_BASE = 'catalog-images/mothers-day-combo/';
 const MDC_PATTERNS = [
   {
@@ -5102,7 +5127,7 @@ const MDC_PATTERNS = [
       { name: 'Red/Maroon', img: MDC_BASE + 'p1a.jpg', pos: '95% 50%', size: '200px' },
       { name: 'Black',      img: MDC_BASE + 'p1b.jpg', pos: '5% 50%',  size: '300px' },
       { name: 'Blue',       img: MDC_BASE + 'p1b.jpg', pos: '50% 50%', size: '300px' },
-      { name: 'White',      img: MDC_BASE + 'p1b.jpg', pos: '95% 50%', size: '300px' },
+      { name: 'White',      img: MDC_BASE + 'p1b.jpg', pos: '95% 50%', size: '300px' }
     ]
   },
   {
@@ -5112,7 +5137,7 @@ const MDC_PATTERNS = [
       { name: 'Maroon/Purple', img: MDC_BASE + 'p2.jpg', pos: '28% 50%', size: '500px' },
       { name: 'Mustard/Gold',  img: MDC_BASE + 'p2.jpg', pos: '52% 50%', size: '500px' },
       { name: 'Dark Brown',    img: MDC_BASE + 'p2.jpg', pos: '76% 50%', size: '500px' },
-      { name: 'Red',           img: MDC_BASE + 'p2.jpg', pos: '95% 50%', size: '500px' },
+      { name: 'Red',           img: MDC_BASE + 'p2.jpg', pos: '95% 50%', size: '500px' }
     ]
   },
   {
@@ -5121,264 +5146,252 @@ const MDC_PATTERNS = [
       { name: 'White/Multi',  img: MDC_BASE + 'p3.jpg', pos: '5% 50%',  size: '400px' },
       { name: 'Mustard/Gold', img: MDC_BASE + 'p3.jpg', pos: '35% 50%', size: '400px' },
       { name: 'Black',        img: MDC_BASE + 'p3.jpg', pos: '65% 50%', size: '400px' },
-      { name: 'Red/Rust',     img: MDC_BASE + 'p3.jpg', pos: '95% 50%', size: '400px' },
+      { name: 'Red/Rust',     img: MDC_BASE + 'p3.jpg', pos: '95% 50%', size: '400px' }
     ]
   }
 ];
 const MDC_PRICES = { mom: 1299, girl: 899, boy: 799 };
+const MOM_SIZES  = ['XS', 'M', 'L', 'XL', 'XXL'];
+/* KIDS_SIZES already defined above */
 
-let mdcState = {
-  who: new Set(), patternIdx: null, colorIdx: null,
-  momStyle: null, girlStyle: null, boyConfirmed: false, activeStep: 1
-};
+let mdcAccState = {};
+MDC_PATTERNS.forEach(function(p) { mdcAccState[p.id] = mdcFreshState(); });
+let mdcOpenId = null;
+
+function mdcFreshState() {
+  return {
+    who: new Set(),
+    persons: {
+      mom:  { colorIdx: null, style: null, size: null },
+      girl: { colorIdx: null, style: null, size: null },
+      boy:  { colorIdx: null, size: null }
+    },
+    step: 'who'
+  };
+}
 
 function openComboPage() {
-  mdcState = {
-    who: new Set(), patternIdx: null, colorIdx: null,
-    momStyle: null, girlStyle: null, boyConfirmed: false, activeStep: 1
-  };
+  MDC_PATTERNS.forEach(function(p) { mdcAccState[p.id] = mdcFreshState(); });
+  mdcOpenId = null;
   showPage('mothers-day-combo');
-  mdcRender();
+  mdcRenderAll();
 }
 
-function mdcApplicableSteps() {
-  const w = mdcState.who;
-  const s = [1, 2, 3];
-  if (w.has('mom'))  s.push(4);
-  if (w.has('girl')) s.push(5);
-  if (w.has('boy'))  s.push(6);
-  s.push(7);
-  return s;
-}
+/* ── MDC ACCORDION HELPERS ──────────────────────────── */
+const MDC_SVG_CHK   = '<svg width="12" height="12" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10l4 4 8-8"/></svg>';
+const MDC_SVG_CHEV  = '<svg width="14" height="14" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 8l5 5 5-5"/></svg>';
+const MDC_SVG_KURTA = '<svg viewBox="0 0 56 80" width="42" height="60" fill="none"><circle cx="28" cy="9" r="7" fill="#008080" opacity=".25"/><path d="M20 18Q16 24 14 30L14 68Q14 70 16 70L40 70Q42 70 42 68L42 30Q40 24 36 18Z" fill="#008080" opacity=".25"/><path d="M24 18L28 24L32 18" stroke="#008080" stroke-width="1.5"/></svg>';
+const MDC_SVG_FROCK = '<svg viewBox="0 0 56 80" width="42" height="60" fill="none"><circle cx="28" cy="9" r="7" fill="#008080" opacity=".25"/><path d="M20 18Q16 24 15 30L15 44L41 44L41 30Q40 24 36 18Z" fill="#008080" opacity=".3"/><path d="M15 44L6 72Q6 74 8 74L48 74Q50 74 50 72L41 44Z" fill="#008080" opacity=".18"/></svg>';
+const MDC_SVG_SFROK = '<svg viewBox="0 0 56 80" width="42" height="60" fill="none"><circle cx="28" cy="9" r="6" fill="#008080" opacity=".25"/><path d="M22 16L10 72Q10 74 12 74L44 74Q46 74 46 72L34 16Z" fill="#008080" opacity=".22"/><path d="M24 16Q28 21 32 16" stroke="#008080" stroke-width="1.4"/></svg>';
+const MDC_SVG_SKIRT = '<svg viewBox="0 0 56 80" width="42" height="60" fill="none"><circle cx="28" cy="9" r="6" fill="#008080" opacity=".25"/><rect x="19" y="16" width="18" height="19" rx="3" fill="#008080" opacity=".3"/><rect x="18" y="35" width="20" height="4" rx="2" fill="#FFD700" opacity=".7"/><path d="M18 39L9 72Q9 74 11 74L45 74Q47 74 47 72L38 39Z" fill="#008080" opacity=".18"/></svg>';
 
-function mdcRender() {
-  const steps = mdcApplicableSteps();
-  const activeIdx = steps.indexOf(mdcState.activeStep);
-  const total = steps.length;
-  document.getElementById('mdcProgress').innerHTML = `
-    <span class="combo-progress-label">Step ${activeIdx + 1} of ${total}</span>
-    <div class="combo-progress-bar">
-      <div class="combo-progress-fill" style="width:${Math.round((activeIdx + 1) / total * 100)}%"></div>
-    </div>`;
-  let html = '';
-  for (let si = 0; si < steps.length; si++) {
-    const step = steps[si];
-    if (si < activeIdx)                  html += mdcCollapsedHtml(step);
-    else if (step === mdcState.activeStep) html += mdcExpandedHtml(step);
+function mdcPersonDone(pid, person) {
+  var pr = mdcAccState[pid].persons[person];
+  if (pr.colorIdx === null || pr.size === null) return false;
+  if (person === 'mom'  && !pr.style) return false;
+  if (person === 'girl' && !pr.style) return false;
+  return true;
+}
+function mdcStepDone(pid, s) {
+  var st = mdcAccState[pid];
+  if (s === 'who') return st.who.size > 0;
+  if (s === 'configure') {
+    if (!st.who.size) return false;
+    var ok = true;
+    st.who.forEach(function(p) { if (!mdcPersonDone(pid, p)) ok = false; });
+    return ok;
   }
-  document.getElementById('mdcSteps').innerHTML = html;
+  return false;
 }
-
-function mdcStepLabel(step) {
-  return { 1:'Who is this for?', 2:'Choose a fabric pattern', 3:'Pick a color',
-           4:"Mom's style", 5:"Girl's style", 6:"Boy's style", 7:'Review & Add to Cart' }[step];
+function mdcCanEnter(pid, s) {
+  if (s === 'who')       return true;
+  if (s === 'configure') return mdcStepDone(pid, 'who');
+  if (s === 'summary')   return mdcStepDone(pid, 'configure');
+  return false;
 }
-
-function mdcChipSummary(step) {
-  if (step === 1) return '<strong>' + [...mdcState.who].map(w => w[0].toUpperCase() + w.slice(1)).join(', ') + '</strong>';
-  if (step === 2) return `<strong>${MDC_PATTERNS[mdcState.patternIdx].name}</strong>`;
-  if (step === 3) return `<strong>${MDC_PATTERNS[mdcState.patternIdx].colors[mdcState.colorIdx].name}</strong>`;
-  if (step === 4) return `<strong>${mdcState.momStyle === 'kurta' ? 'Kurta Style' : 'Frock Style'}</strong>`;
-  if (step === 5) return `<strong>${mdcState.girlStyle === 'simple-frock' ? 'Simple Frock' : 'Skirt & Top'}</strong>`;
-  if (step === 6) return '<strong>3/4 Kurta</strong> — auto-selected';
+function mdcStepCls(pid, s) {
+  var active = mdcOpenId === pid && mdcAccState[pid].step === s;
+  var done   = mdcStepDone(pid, s);
+  if (active)                            return 's-active';
+  if (done)                              return 's-done';
+  if (!mdcCanEnter(pid, s) && !done)     return 's-locked';
   return '';
 }
-
-function mdcCollapsedHtml(step) {
-  return `<div class="combo-step cs-done">
-    <div class="combo-step-hd">
-      <span class="combo-step-title">${mdcStepLabel(step)}</span>
-      <span class="combo-step-edit" onclick="mdcEdit(${step})">Edit</span>
-    </div>
-    <div class="combo-step-chip">${mdcChipSummary(step)}</div>
-  </div>`;
+function mdcFirstIncomplete(pid) {
+  if (!mdcStepDone(pid, 'who'))       return 'who';
+  if (!mdcStepDone(pid, 'configure')) return 'configure';
+  return 'summary';
 }
-
-function mdcExpandedHtml(step) {
-  return `<div class="combo-step">
-    <div class="combo-step-hd"><span class="combo-step-title">${mdcStepLabel(step)}</span></div>
-    ${mdcStepBody(step)}
-  </div>`;
+function mdcChipWho(pid) {
+  return Array.from(mdcAccState[pid].who).map(function(w) { return w[0].toUpperCase() + w.slice(1); }).join(', ');
 }
-
-function mdcStepBody(step) {
-  if (step === 1) return mdcStep1Html();
-  if (step === 2) return mdcStep2Html();
-  if (step === 3) return mdcStep3Html();
-  if (step === 4) return mdcStep4Html();
-  if (step === 5) return mdcStep5Html();
-  if (step === 6) return mdcStep6Html();
-  if (step === 7) return mdcStep7Html();
-  return '';
-}
-
-function mdcStep1Html() {
-  const w = mdcState.who;
-  const pills = [['mom','👩','Mom'],['girl','👧','Girl (kid)'],['boy','👦','Boy (kid)']].map(([id, icon, label]) =>
-    `<button class="combo-who-pill${w.has(id) ? ' sel' : ''}" onclick="mdcToggleWho('${id}')">${icon} ${label}</button>`
-  ).join('');
-  return `<div class="combo-who-grid">${pills}</div>
-    <button class="btn btn-teal combo-next-btn" ${w.size ? '' : 'disabled'} onclick="mdcProceed(1)">Continue →</button>`;
-}
-
-function mdcStep2Html() {
-  const cards = MDC_PATTERNS.map((p, i) =>
-    `<div class="combo-pat-card${mdcState.patternIdx === i ? ' sel' : ''}" onclick="mdcSelectPattern(${i})">
-      <img class="combo-pat-img" src="${p.cardImg}" alt="${p.name}" loading="lazy">
-      <div class="combo-pat-lbl">
-        <div class="combo-pat-name">${p.name}</div>
-        <div class="combo-pat-count">${p.colors.length} colors</div>
-      </div>
-    </div>`).join('');
-  return `<div class="combo-pat-grid">${cards}</div>
-    <button class="btn btn-teal combo-next-btn" ${mdcState.patternIdx !== null ? '' : 'disabled'} onclick="mdcProceed(2)">Continue →</button>`;
-}
-
-function mdcStep3Html() {
-  const pat = MDC_PATTERNS[mdcState.patternIdx];
-  const swatches = pat.colors.map((c, i) =>
-    `<div class="combo-color-item${mdcState.colorIdx === i ? ' sel' : ''}" onclick="mdcSelectColor(${i})">
-      <div class="combo-color-swatch" style="background-image:url('${c.img}');background-position:${c.pos};background-size:${c.size};"></div>
-      <span class="combo-color-name">${c.name}</span>
-    </div>`).join('');
-  return `<div class="combo-color-grid">${swatches}</div>
-    <button class="btn btn-teal combo-next-btn" ${mdcState.colorIdx !== null ? '' : 'disabled'} onclick="mdcProceed(3)">Continue →</button>`;
-}
-
-const MDC_SVG_KURTA = `<svg viewBox="0 0 56 80" width="56" height="80" fill="none"><circle cx="28" cy="9" r="7" fill="#008080" opacity=".25"/><path d="M20 18Q16 24 14 30L14 68Q14 70 16 70L40 70Q42 70 42 68L42 30Q40 24 36 18Z" fill="#008080" opacity=".25"/><path d="M24 18L28 24L32 18" stroke="#008080" stroke-width="1.5"/></svg>`;
-const MDC_SVG_FROCK  = `<svg viewBox="0 0 56 80" width="56" height="80" fill="none"><circle cx="28" cy="9" r="7" fill="#008080" opacity=".25"/><path d="M20 18Q16 24 15 30L15 44L41 44L41 30Q40 24 36 18Z" fill="#008080" opacity=".3"/><path d="M15 44L6 72Q6 74 8 74L48 74Q50 74 50 72L41 44Z" fill="#008080" opacity=".18"/></svg>`;
-const MDC_SVG_SFROK = `<svg viewBox="0 0 56 80" width="56" height="80" fill="none"><circle cx="28" cy="9" r="6" fill="#008080" opacity=".25"/><path d="M22 16L10 72Q10 74 12 74L44 74Q46 74 46 72L34 16Z" fill="#008080" opacity=".22"/><path d="M24 16Q28 21 32 16" stroke="#008080" stroke-width="1.4"/></svg>`;
-const MDC_SVG_SKIRT  = `<svg viewBox="0 0 56 80" width="56" height="80" fill="none"><circle cx="28" cy="9" r="6" fill="#008080" opacity=".25"/><rect x="19" y="16" width="18" height="19" rx="3" fill="#008080" opacity=".3"/><rect x="18" y="35" width="20" height="4" rx="2" fill="#FFD700" opacity=".7"/><path d="M18 39L9 72Q9 74 11 74L45 74Q47 74 47 72L38 39Z" fill="#008080" opacity=".18"/></svg>`;
-
-function mdcStep4Html() {
-  return `<div class="combo-style-grid">
-    <div class="combo-style-card${mdcState.momStyle === 'kurta' ? ' sel' : ''}" onclick="mdcSelectStyle('mom','kurta')">
-      ${MDC_SVG_KURTA}<div class="combo-style-name">Kurta Style</div><div class="combo-style-desc">Long tunic, straight cut</div>
-    </div>
-    <div class="combo-style-card${mdcState.momStyle === 'frock' ? ' sel' : ''}" onclick="mdcSelectStyle('mom','frock')">
-      ${MDC_SVG_FROCK}<div class="combo-style-name">Frock Style</div><div class="combo-style-desc">Flared dress silhouette</div>
-    </div>
-  </div>
-  <button class="btn btn-teal combo-next-btn" ${mdcState.momStyle ? '' : 'disabled'} onclick="mdcProceed(4)">Continue →</button>`;
-}
-
-function mdcStep5Html() {
-  return `<div class="combo-style-grid">
-    <div class="combo-style-card${mdcState.girlStyle === 'simple-frock' ? ' sel' : ''}" onclick="mdcSelectStyle('girl','simple-frock')">
-      ${MDC_SVG_SFROK}<div class="combo-style-name">Simple Frock</div><div class="combo-style-desc">Classic flared dress</div>
-    </div>
-    <div class="combo-style-card${mdcState.girlStyle === 'skirt-top' ? ' sel' : ''}" onclick="mdcSelectStyle('girl','skirt-top')">
-      ${MDC_SVG_SKIRT}<div class="combo-style-name">Skirt & Top</div><div class="combo-style-desc">Matching two-piece set</div>
-    </div>
-  </div>
-  <button class="btn btn-teal combo-next-btn" ${mdcState.girlStyle ? '' : 'disabled'} onclick="mdcProceed(5)">Continue →</button>`;
-}
-
-function mdcStep6Html() {
-  return `<div class="combo-boy-auto">
-    <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="10" cy="10" r="8"/><path d="M7 10l2 2 4-4"/></svg>
-    3/4 Kurta — automatically selected
-  </div>
-  <p style="font-size:0.82rem;color:var(--text-muted);margin-bottom:18px;">Boys get a 3/4 length kurta in the same fabric and color.</p>
-  <button class="btn btn-teal" onclick="mdcProceed(6)">Got it — Continue →</button>`;
-}
-
-function mdcStep7Html() {
-  const pat = MDC_PATTERNS[mdcState.patternIdx];
-  const col = pat.colors[mdcState.colorIdx];
-  const w = mdcState.who;
-  let total = 0;
-  let rows = '';
-  if (w.has('mom'))  { const s = mdcState.momStyle === 'kurta' ? 'Kurta Style' : 'Frock Style'; rows += `<div class="combo-summary-row"><span class="csr-lbl">Mom</span><span class="csr-val">${s} · ₹${MDC_PRICES.mom}</span></div>`; total += MDC_PRICES.mom; }
-  if (w.has('girl')) { const s = mdcState.girlStyle === 'simple-frock' ? 'Simple Frock' : 'Skirt & Top'; rows += `<div class="combo-summary-row"><span class="csr-lbl">Girl</span><span class="csr-val">${s} · ₹${MDC_PRICES.girl}</span></div>`; total += MDC_PRICES.girl; }
-  if (w.has('boy'))  { rows += `<div class="combo-summary-row"><span class="csr-lbl">Boy</span><span class="csr-val">3/4 Kurta · ₹${MDC_PRICES.boy}</span></div>`; total += MDC_PRICES.boy; }
-
-  const waLines = [
-    `Fabric: ${pat.name} – ${col.name}`,
-    w.has('mom')  ? `Mom: ${mdcState.momStyle === 'kurta' ? 'Kurta Style' : 'Frock Style'} (₹${MDC_PRICES.mom})` : '',
-    w.has('girl') ? `Girl: ${mdcState.girlStyle === 'simple-frock' ? 'Simple Frock' : 'Skirt & Top'} (₹${MDC_PRICES.girl})` : '',
-    w.has('boy')  ? `Boy: 3/4 Kurta (₹${MDC_PRICES.boy})` : '',
-    `Total: ₹${total}`,
-    '',
-    'Please share sizing details and confirm availability.'
-  ].filter(Boolean).join('\n');
-  const waHref = buildWhatsAppHref("Hi! I'd like to order a Mother's Day Fabric Combo 🌸\n\n" + waLines);
-
-  return `<div class="combo-summary-box">
-    <div class="combo-fabric-row">
-      <img class="combo-fabric-thumb" src="${pat.cardImg}" alt="${pat.name}" loading="lazy">
-      <div><div class="cfab-pat">${pat.name}</div><div class="cfab-col">${col.name}</div></div>
-    </div>
-    ${rows}
-    <div class="combo-summary-total"><span>Total</span><span class="csr-val">₹${total}</span></div>
-  </div>
-  <div class="combo-actions">
-    <button class="btn btn-teal btn-full btn-lg" onclick="mdcAddToCart()">Add to Cart</button>
-    <a class="btn btn-whatsapp btn-full" href="${waHref}" target="_blank">${WA_ICON} Order via WhatsApp</a>
-  </div>`;
-}
-
-function mdcToggleWho(person) {
-  if (mdcState.who.has(person)) mdcState.who.delete(person); else mdcState.who.add(person);
-  mdcRender();
-}
-function mdcSelectPattern(idx) {
-  if (mdcState.patternIdx !== idx) mdcState.colorIdx = null;
-  mdcState.patternIdx = idx;
-  mdcRender();
-}
-function mdcSelectColor(idx) { mdcState.colorIdx = idx; mdcRender(); }
-function mdcSelectStyle(who, style) {
-  if (who === 'mom') mdcState.momStyle = style;
-  else if (who === 'girl') mdcState.girlStyle = style;
-  mdcRender();
-}
-function mdcProceed(fromStep) {
-  const steps = mdcApplicableSteps();
-  const idx = steps.indexOf(fromStep);
-  if (idx < steps.length - 1) {
-    mdcState.activeStep = steps[idx + 1];
-    mdcRender();
-    document.getElementById('mdcProgress').scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-}
-function mdcEdit(step) {
-  if (step <= 2) mdcState.colorIdx = null;
-  if (step <= 1) { mdcState.momStyle = null; mdcState.girlStyle = null; }
-  mdcState.activeStep = step;
-  mdcRender();
-}
-function mdcAddToCart() {
-  const pat = MDC_PATTERNS[mdcState.patternIdx];
-  const col = pat.colors[mdcState.colorIdx];
-  const w = mdcState.who;
-  let total = 0;
-  if (w.has('mom'))  total += MDC_PRICES.mom;
-  if (w.has('girl')) total += MDC_PRICES.girl;
-  if (w.has('boy'))  total += MDC_PRICES.boy;
-  const detailStr = [
-    w.has('mom')  ? `Mom: ${mdcState.momStyle === 'kurta' ? 'Kurta' : 'Frock'}` : '',
-    w.has('girl') ? `Girl: ${mdcState.girlStyle === 'simple-frock' ? 'Simple Frock' : 'Skirt & Top'}` : '',
-    w.has('boy')  ? 'Boy: 3/4 Kurta' : ''
-  ].filter(Boolean).join(' · ');
-  const skuSuffix = pat.id.replace('-','').slice(0,5).toUpperCase() + col.name.replace(/[^A-Za-z]/g,'').toUpperCase().slice(0,4);
-  cart.push({
-    id: 'mdc-' + Date.now(),
-    name: "Mother's Day Combo",
-    sku: 'MDC-' + skuSuffix,
-    price: total,
-    qty: 1,
-    selectedSize: detailStr,
-    fabric: pat.name + ' · ' + col.name,
-    image: pat.cardImg,
-    series: "Mother's Day Combo",
-    isCombo: true
+function mdcChipCfg(pid) {
+  var st = mdcAccState[pid];
+  var parts = [];
+  ['mom','girl','boy'].forEach(function(p) {
+    if (!st.who.has(p)) return;
+    var pr = st.persons[p];
+    if (pr.colorIdx !== null) parts.push(p[0].toUpperCase() + ': ' + MDC_PATTERNS.find(function(x){return x.id===pid;}).colors[pr.colorIdx].name);
   });
-  renderCart();
-  saveCart();
-  openCart();
-  showToast("Combo added to cart!", 'success');
+  return parts.join(' · ');
 }
+function mdcHdrPreview(pid) {
+  var st = mdcAccState[pid];
+  if (!st.who.size) return '';
+  var pat = MDC_PATTERNS.find(function(x){return x.id===pid;});
+  var parts = [];
+  ['mom','girl','boy'].forEach(function(p) {
+    if (!st.who.has(p)) return;
+    var pr = st.persons[p];
+    parts.push(p[0].toUpperCase()+p.slice(1)+': '+(pr.colorIdx !== null ? pat.colors[pr.colorIdx].name : '–'));
+  });
+  return parts.join(' · ');
+}
+
+function mdcColorRow(pid, person, colors) {
+  var pr = mdcAccState[pid].persons[person];
+  return '<div class="mdc-cr">' + colors.map(function(c,i) {
+    return '<div class="mdc-ci'+(pr.colorIdx===i?' sel':'')+'" onclick="mdcSetColor(\''+pid+'\',\''+person+'\','+i+')">' +
+      '<div class="mdc-cs" style="background-image:url(\''+c.img+'\');background-position:'+c.pos+';background-size:'+c.size+';"></div>' +
+      '<span class="mdc-cl">'+c.name+'</span></div>';
+  }).join('') + '</div>';
+}
+
+function mdcPersonPanel(pid, person, pat) {
+  var pr = mdcAccState[pid].persons[person];
+  var icons  = {mom:'👩',girl:'👧',boy:'👦'};
+  var labels = {mom:'Mom',girl:'Girl',boy:'Boy'};
+  var colorName = pr.colorIdx !== null ? pat.colors[pr.colorIdx].name : '';
+  var body = '<div class="mdc-sub-lbl">Color</div>' + mdcColorRow(pid, person, pat.colors);
+  if (person === 'mom') {
+    body += '<div class="mdc-sub-lbl" style="margin-top:12px">Style</div><div class="mdc-sr">' +
+      '<div class="mdc-sc'+(pr.style==='kurta'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'mom\',\'kurta\')">'+MDC_SVG_KURTA+'<div class="mdc-sn">Kurta</div><div class="mdc-sd">Long tunic, straight cut</div></div>' +
+      '<div class="mdc-sc'+(pr.style==='frock'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'mom\',\'frock\')">'+MDC_SVG_FROCK+'<div class="mdc-sn">Frock</div><div class="mdc-sd">Flared dress silhouette</div></div></div>';
+  } else if (person === 'girl') {
+    body += '<div class="mdc-sub-lbl" style="margin-top:12px">Style</div><div class="mdc-sr">' +
+      '<div class="mdc-sc'+(pr.style==='simple-frock'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'girl\',\'simple-frock\')">'+MDC_SVG_SFROK+'<div class="mdc-sn">Simple Frock</div><div class="mdc-sd">Classic flared dress</div></div>' +
+      '<div class="mdc-sc'+(pr.style==='skirt-top'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'girl\',\'skirt-top\')">'+MDC_SVG_SKIRT+'<div class="mdc-sn">Skirt &amp; Top</div><div class="mdc-sd">Two-piece set</div></div></div>';
+  } else {
+    body += '<div class="mdc-boy" style="margin-top:12px">'+MDC_SVG_CHK+' 3/4 Kurta — auto selected</div>';
+  }
+  var szOpts = (person === 'mom') ? MOM_SIZES : KIDS_SIZES;
+  body += '<div class="mdc-sub-lbl" style="margin-top:12px">Size</div><div class="mdc-szr">' +
+    szOpts.map(function(sz){ return '<div class="mdc-szp'+(pr.size===sz?' sel':'')+'" onclick="mdcSetSize(\''+pid+'\',\''+person+'\',\''+sz+'\')">'+sz+'</div>'; }).join('') + '</div>';
+  return '<div class="mdc-pp"><div class="mdc-pp-hd"><span>'+icons[person]+'</span><span>'+labels[person]+'</span>'+(colorName?'<span class="mdc-pp-chip">'+colorName+'</span>':'')+'</div><div class="mdc-pp-body">'+body+'</div></div>';
+}
+
+function mdcRenderWho(pid) {
+  var st = mdcAccState[pid]; var cls = mdcStepCls(pid,'who'); var done = mdcStepDone(pid,'who');
+  var pills = [['mom','👩','Mom'],['girl','👧','Girl'],['boy','👦','Boy']].map(function(item){
+    return '<div class="mdc-who-pill'+(st.who.has(item[0])?' sel':'')+'" onclick="mdcToggleWho2(\''+pid+'\',\''+item[0]+'\')">'+item[1]+' '+item[2]+'</div>';
+  }).join('');
+  return '<div class="mdc-step '+cls+'" id="sb-'+pid+'-who"><div class="mdc-step-hd" onclick="mdcEditStep(\''+pid+'\',\'who\')">' +
+    '<div class="mdc-step-num">'+(done?MDC_SVG_CHK:'1')+'</div><span class="mdc-step-ttl">Build your family set</span>' +
+    (done?'<span class="mdc-step-chip">'+mdcChipWho(pid)+'</span><span class="mdc-step-edit">Edit</span>':'') +
+    '</div><div class="mdc-step-bd"><div class="mdc-step-bd-in"><div class="mdc-who-row">'+pills+'</div>' +
+    '<button class="btn btn-teal mdc-next-btn"'+(st.who.size?'':' disabled')+' onclick="mdcAdvance(\''+pid+'\',\'who\')">Continue →</button>' +
+    '</div></div></div>';
+}
+function mdcRenderCfg(pid) {
+  var st = mdcAccState[pid]; var cls = mdcStepCls(pid,'configure'); var done = mdcStepDone(pid,'configure');
+  var pat = MDC_PATTERNS.find(function(x){return x.id===pid;});
+  var panels = '';
+  ['mom','girl','boy'].forEach(function(p){ if(st.who.has(p)) panels += mdcPersonPanel(pid,p,pat); });
+  if (!panels) panels = '<p style="font-size:0.82rem;color:var(--text-muted);padding:4px 0 6px">Select who this is for in step 1.</p>';
+  return '<div class="mdc-step '+cls+'" id="sb-'+pid+'-configure"><div class="mdc-step-hd" onclick="mdcEditStep(\''+pid+'\',\'configure\')">' +
+    '<div class="mdc-step-num">'+(done?MDC_SVG_CHK:'2')+'</div><span class="mdc-step-ttl">Color, style &amp; size</span>' +
+    (done?'<span class="mdc-step-chip">'+mdcChipCfg(pid)+'</span><span class="mdc-step-edit">Edit</span>':'') +
+    '</div><div class="mdc-step-bd"><div class="mdc-step-bd-in">'+panels +
+    '<button class="btn btn-teal mdc-next-btn"'+(done?'':' disabled')+' onclick="mdcAdvance(\''+pid+'\',\'configure\')">Continue →</button>' +
+    '</div></div></div>';
+}
+function mdcRenderSum(pid) {
+  var st = mdcAccState[pid]; var cls = mdcStepCls(pid,'summary');
+  var active = mdcOpenId === pid && st.step === 'summary';
+  var pat = MDC_PATTERNS.find(function(x){return x.id===pid;});
+  var body = '';
+  if (active && mdcCanEnter(pid,'summary')) {
+    var total = 0; var rows = '';
+    var waLines = ["Hi AARK! I'd like to order the Mother's Day Combo:",'Fabric pattern: '+pat.name];
+    ['mom','girl','boy'].forEach(function(person) {
+      if (!st.who.has(person)) return;
+      var pr = st.persons[person]; var color = pat.colors[pr.colorIdx]; var price = MDC_PRICES[person]; total += price;
+      var styleLabel = person==='mom'?(pr.style==='kurta'?'Kurta':'Frock'):person==='girl'?(pr.style==='simple-frock'?'Simple Frock':'Skirt & Top'):'3/4 Kurta';
+      var pLabel = person[0].toUpperCase()+person.slice(1);
+      rows += '<div class="mdc-sum-row"><div class="mdc-sum-sw" style="background-image:url(\''+color.img+'\');background-position:'+color.pos+';background-size:'+color.size+';"></div>' +
+        '<div class="mdc-sum-info"><div class="mdc-sum-who">'+pLabel+'</div><div class="mdc-sum-detail">'+styleLabel+' · '+pr.size+' · '+color.name+'</div></div>' +
+        '<div class="mdc-sum-price">₹'+price+'</div></div>';
+      waLines.push(pLabel+': '+styleLabel+', '+color.name+', Size '+pr.size);
+    });
+    waLines.push('Total: ₹'+total);
+    var waHref = buildWhatsAppHref(waLines.join('\n'));
+    body = '<div class="mdc-sum-box">'+rows+'<div class="mdc-sum-total"><span>Total</span><span class="mdc-sum-total-val">₹'+total+'</span></div></div>' +
+      '<a href="'+waHref+'" target="_blank" style="text-decoration:none;"><button class="btn btn-teal mdc-next-btn">Order via WhatsApp →</button></a>' +
+      '<button class="btn-mdc-ol mdc-gap-sm" onclick="mdcResetPat(\''+pid+'\')">Start over</button>';
+  }
+  return '<div class="mdc-step '+cls+'" id="sb-'+pid+'-summary"><div class="mdc-step-hd">' +
+    '<div class="mdc-step-num">3</div><span class="mdc-step-ttl">Review &amp; Order</span>' +
+    '</div><div class="mdc-step-bd"><div class="mdc-step-bd-in">'+body+'</div></div></div>';
+}
+
+function mdcRenderCard(p) {
+  var pid = p.id; var isOpen = mdcOpenId === pid; var prev = mdcHdrPreview(pid);
+  return '<div class="pat-card'+(isOpen?' open':'')+'" id="pc-'+pid+'">' +
+    '<div class="pat-hdr" onclick="mdcTogglePat(\''+pid+'\')">' +
+    '<img class="pat-thumb" src="'+p.cardImg+'" alt="'+p.name+'" loading="lazy" onerror="this.outerHTML=\'<div class=&quot;pat-thumb-ph&quot;>🪷</div>\'">' +
+    '<div class="pat-hdr-info"><h2 class="pat-nm">'+p.name+'</h2><p class="pat-mt">'+p.colors.length+' colorways — pick one per person</p>' +
+    '<p class="pat-pv" id="pp-'+pid+'">'+prev+'</p></div>' +
+    '<div class="pat-chev">'+MDC_SVG_CHEV+'</div></div>' +
+    '<div class="pat-body"><div class="pat-body-in" id="pbi-'+pid+'">'+(isOpen?mdcRenderSteps(pid):'')+' </div></div></div>';
+}
+function mdcRenderSteps(pid) { return mdcRenderWho(pid)+mdcRenderCfg(pid)+mdcRenderSum(pid); }
+function mdcRenderAll() {
+  var el = document.getElementById('mdcPatGrid');
+  if (el) el.innerHTML = MDC_PATTERNS.map(mdcRenderCard).join('');
+}
+function mdcRefresh(pid) {
+  var body = document.getElementById('pbi-'+pid);
+  if (body) body.innerHTML = mdcRenderSteps(pid);
+  var prev = document.getElementById('pp-'+pid);
+  if (prev) prev.textContent = mdcHdrPreview(pid);
+}
+function mdcTogglePat(pid) {
+  if (mdcOpenId === pid) {
+    var card = document.getElementById('pc-'+pid);
+    if (card) card.classList.remove('open');
+    mdcOpenId = null;
+  } else {
+    if (mdcOpenId) { var prev2 = document.getElementById('pc-'+mdcOpenId); if(prev2) prev2.classList.remove('open'); }
+    mdcOpenId = pid;
+    mdcAccState[pid].step = mdcFirstIncomplete(pid);
+    var card2 = document.getElementById('pc-'+pid);
+    if (card2) card2.classList.add('open');
+    mdcRefresh(pid);
+  }
+}
+function mdcAdvance(pid, fromStep) {
+  var next = {who:'configure',configure:'summary'};
+  mdcAccState[pid].step = next[fromStep] || 'summary';
+  mdcRefresh(pid);
+  setTimeout(function(){
+    var t = document.getElementById('sb-'+pid+'-'+mdcAccState[pid].step);
+    if(t) t.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }, 60);
+}
+function mdcEditStep(pid, s) {
+  if (!mdcStepDone(pid,s) && !mdcCanEnter(pid,s)) return;
+  mdcAccState[pid].step = s; mdcRefresh(pid);
+}
+function mdcToggleWho2(pid, person) {
+  var w = mdcAccState[pid].who;
+  if (w.has(person)) { w.delete(person); mdcAccState[pid].persons[person] = {colorIdx:null,style:null,size:null}; }
+  else w.add(person);
+  mdcRefresh(pid);
+}
+function mdcSetColor(pid, person, idx) { mdcAccState[pid].persons[person].colorIdx = idx; mdcRefresh(pid); }
+function mdcSetStyle(pid, person, style) { mdcAccState[pid].persons[person].style = style; mdcRefresh(pid); }
+function mdcSetSize(pid, person, sz) { mdcAccState[pid].persons[person].size = sz; mdcRefresh(pid); }
+function mdcResetPat(pid) { mdcAccState[pid] = mdcFreshState(); mdcRefresh(pid); }
 </script>
 
 <!-- CUSTOM CONTEXT MENU -->
