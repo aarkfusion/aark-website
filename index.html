@@ -2217,9 +2217,17 @@ img {
 .mdc-step.s-active .mdc-step-bd { max-height: 3000px; opacity: 1; }
 .mdc-step-bd-in { padding: 2px 14px 16px; }
 /* Who pills */
-.mdc-who-row { display: flex; gap: 10px; flex-wrap: wrap; }
+.mdc-who-row { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 6px; }
 .mdc-who-pill { display: flex; align-items: center; gap: 7px; padding: 9px 18px; border: 2px solid var(--light-grey); border-radius: 40px; font-size: 0.87rem; cursor: pointer; background: #fff; color: var(--text); transition: border-color 0.18s, background 0.18s, color 0.18s; min-height: 42px; user-select: none; }
 .mdc-who-pill.sel { border-color: var(--teal); background: var(--teal-pale); color: var(--teal); font-weight: 500; }
+/* Kid count rows */
+.mdc-who-cnt-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 2px; border-bottom: 1px solid #f0f0f0; }
+.mdc-who-cnt-row:last-child { border-bottom: none; }
+.mdc-who-cnt-lbl { font-size: 0.9rem; font-weight: 500; color: var(--text); }
+.mdc-who-cnt-ctrl { display: flex; align-items: center; gap: 12px; }
+.mdc-cnt-btn { width: 30px; height: 30px; border: 1.5px solid var(--teal); border-radius: 50%; background: #fff; color: var(--teal); font-size: 1.1rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1; transition: background 0.15s, color 0.15s; }
+.mdc-cnt-btn:disabled { border-color: #ccc; color: #ccc; cursor: not-allowed; }
+.mdc-cnt-num { font-size: 1rem; font-weight: 600; min-width: 22px; text-align: center; color: var(--text); }
 /* Person panels */
 .mdc-pp { border: 1.5px solid var(--light-grey); border-radius: 9px; overflow: hidden; margin-bottom: 10px; }
 .mdc-pp:last-of-type { margin-bottom: 0; }
@@ -2244,6 +2252,7 @@ img {
 .mdc-sc svg { display: block; margin: 0 auto 5px; }
 .mdc-sn { font-family: var(--serif); font-size: 0.88rem; font-weight: 500; }
 .mdc-sd { font-size: 0.65rem; color: var(--text-muted); margin-top: 2px; }
+.mdc-sp { font-size: 0.78rem; font-weight: 600; color: var(--teal); margin-top: 5px; }
 /* Size pills */
 .mdc-szr { display: flex; gap: 7px; flex-wrap: wrap; }
 .mdc-szp { padding: 5px 12px; border: 1.5px solid var(--light-grey); border-radius: 20px; font-size: 0.79rem; cursor: pointer; background: #fff; transition: border-color 0.15s, background 0.15s, color 0.15s; user-select: none; }
@@ -5243,7 +5252,7 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
 const MDC_BASE = 'mdc/';
 const MDC_PATTERNS = [
   {
-    id: 'lotus-vine', name: 'Lotus Vine',
+    id: 'lotus-vine', name: 'Lotus Vine', fabric: 'Kalamkari Cotton',
     cardImg: 'mdc/1/swatch_1_1.png',
     colors: [
       { id: 'lv-black-gold', name: 'Black & Gold', swatch: 'mdc/1/swatch_1_1.png',  momImg: 'mdc/1/mom_kurta_1_1.jpeg', momFrockImg: 'mdc/1/mom_frock_1_1.jpeg', girlImg: 'mdc/1/girl_frock_1_1.jpeg', girlSkirtImg: 'mdc/1/girl_skirt_1_1.png', boyImg: 'mdc/1/boy_1_1.jpeg' },
@@ -5251,7 +5260,7 @@ const MDC_PATTERNS = [
     ]
   },
   {
-    id: 'kalamkari-peacock', name: 'Kalamkari Peacock',
+    id: 'kalamkari-peacock', name: 'Kalamkari Peacock', fabric: 'Kalamkari Cotton',
     cardImg: 'mdc/2/swatch_2_1.jpeg',
     colors: [
       { id: 'kp-black',  name: 'Black',  swatch: 'mdc/2/swatch_2_1.jpeg', momImg: 'mdc/2/mom_kurta_2_1.jpeg', momFrockImg: 'mdc/2/mom_frock_2_1.jpeg', girlImg: 'mdc/2/girl_frock_2_1.jpeg', girlSkirtImg: 'mdc/2/girl_skirt_2_1.png', boyImg: 'mdc/2/boy_2_1.jpeg' },
@@ -5261,7 +5270,7 @@ const MDC_PATTERNS = [
     ]
   },
   {
-    id: 'hanging-lotus', name: 'Hanging Lotus',
+    id: 'hanging-lotus', name: 'Hanging Lotus', fabric: 'Kalamkari Cotton',
     cardImg: 'mdc/3/swatch3_1.jpeg',
     colors: [
       { id: 'hl-cream',  name: 'Cream',  swatch: 'mdc/3/swatch3_1.jpeg', momImg: 'mdc/3/mom_kurta_3_1.jpeg', momFrockImg: 'mdc/3/mom_frock_3_1.jpeg', girlImg: 'mdc/3/girl_frock_3_1.jpeg', girlSkirtImg: 'mdc/3/girl_skirt_3_1.png', boyImg: 'mdc/3/boy_3_1.jpeg' },
@@ -5270,7 +5279,7 @@ const MDC_PATTERNS = [
     ]
   },
   {
-    id: 'golden-bloom', name: 'Golden Bloom',
+    id: 'golden-bloom', name: 'Golden Bloom', fabric: 'Kalamkari Silk',
     cardImg: 'mdc/4/swatch_4_1.jpeg',
     colors: [
       { id: 'gb-royal-blue', name: 'Royal Blue', swatch: 'mdc/4/swatch_4_1.jpeg', momImg: 'mdc/4/mom_kurtha_4_1.JPG', momFrockImg: 'mdc/4/mom_frock_4_1.jpg', girlImg: 'mdc/4/girl_frock_4_1.JPG', girlSkirtImg: 'mdc/4/girl_skirt_4_1.png', boyImg: 'mdc/4/boy_4_1.JPG' },
@@ -5288,12 +5297,12 @@ let mdcOpenId = null;
 
 function mdcFreshState() {
   return {
-    who: new Set(),
-    persons: {
-      mom:  { colorIdx: null, style: null, size: null },
-      girl: { colorIdx: null, style: null, size: null },
-      boy:  { colorIdx: null, size: null }
-    },
+    momSelected: false,
+    girlCount: 0,
+    boyCount: 0,
+    mom:   { colorIdx: null, style: null, size: null },
+    girls: [],
+    boys:  [],
     step: 'who'
   };
 }
@@ -5313,38 +5322,38 @@ const MDC_SVG_FROCK = '<svg viewBox="0 0 56 80" width="42" height="60" fill="non
 const MDC_SVG_SFROK = '<svg viewBox="0 0 56 80" width="42" height="60" fill="none"><circle cx="28" cy="9" r="6" fill="#008080" opacity=".25"/><path d="M22 16L10 72Q10 74 12 74L44 74Q46 74 46 72L34 16Z" fill="#008080" opacity=".22"/><path d="M24 16Q28 21 32 16" stroke="#008080" stroke-width="1.4"/></svg>';
 const MDC_SVG_SKIRT = '<svg viewBox="0 0 56 80" width="42" height="60" fill="none"><circle cx="28" cy="9" r="6" fill="#008080" opacity=".25"/><rect x="19" y="16" width="18" height="19" rx="3" fill="#008080" opacity=".3"/><rect x="18" y="35" width="20" height="4" rx="2" fill="#FFD700" opacity=".7"/><path d="M18 39L9 72Q9 74 11 74L45 74Q47 74 47 72L38 39Z" fill="#008080" opacity=".18"/></svg>';
 
-function mdcPersonDone(pid, person) {
-  var pr = mdcAccState[pid].persons[person];
-  if (pr.colorIdx === null || pr.size === null) return false;
-  if (person === 'mom'  && !pr.style) return false;
-  if (person === 'girl' && !pr.style) return false;
+function mdcPersonDone(pr, needsStyle) {
+  if (!pr || pr.colorIdx === null || pr.size === null) return false;
+  if (needsStyle && !pr.style) return false;
   return true;
 }
 function mdcMissingText(pid) {
   var st = mdcAccState[pid];
-  if (!st.who.size) return 'Step 1: select who this set is for';
+  if (!st.momSelected && st.girlCount === 0 && st.boyCount === 0) return 'Step 1: select who this set is for';
   var missing = [];
-  st.who.forEach(function(person) {
-    var pr = st.persons[person];
-    var label = person[0].toUpperCase() + person.slice(1);
+  function chk(pr, label, needsStyle) {
     var parts = [];
-    if (pr.colorIdx === null) { parts.push('color'); }
+    if (pr.colorIdx === null) parts.push('color');
     else {
-      if ((person === 'mom' || person === 'girl') && !pr.style) parts.push('style');
+      if (needsStyle && !pr.style) parts.push('style');
       if (!pr.size) parts.push('size');
     }
     if (parts.length) missing.push(label + ': ' + parts.join(' & '));
-  });
+  }
+  if (st.momSelected) chk(st.mom, 'Mom', true);
+  st.girls.forEach(function(g, i) { chk(g, st.girlCount === 1 ? 'Girl' : 'Girl '+(i+1), true); });
+  st.boys.forEach(function(b, i) { chk(b, st.boyCount === 1 ? 'Boy' : 'Boy '+(i+1), false); });
   return missing.join(' · ');
 }
 function mdcStepDone(pid, s) {
   var st = mdcAccState[pid];
-  if (s === 'who') return st.who.size > 0;
+  if (s === 'who') return st.momSelected || st.girlCount > 0 || st.boyCount > 0;
   if (s === 'configure') {
-    if (!st.who.size) return false;
-    var ok = true;
-    st.who.forEach(function(p) { if (!mdcPersonDone(pid, p)) ok = false; });
-    return ok;
+    if (!mdcStepDone(pid, 'who')) return false;
+    if (st.momSelected && !mdcPersonDone(st.mom, true)) return false;
+    for (var i = 0; i < st.girls.length; i++) if (!mdcPersonDone(st.girls[i], true)) return false;
+    for (var j = 0; j < st.boys.length; j++) if (!mdcPersonDone(st.boys[j], false)) return false;
+    return true;
   }
   return false;
 }
@@ -5368,96 +5377,115 @@ function mdcFirstIncomplete(pid) {
   return 'summary';
 }
 function mdcChipWho(pid) {
-  return Array.from(mdcAccState[pid].who).map(function(w) { return w[0].toUpperCase() + w.slice(1); }).join(', ');
+  var st = mdcAccState[pid]; var parts = [];
+  if (st.momSelected) parts.push('Mom');
+  if (st.girlCount === 1) parts.push('1 Girl');
+  else if (st.girlCount > 1) parts.push(st.girlCount + ' Girls');
+  if (st.boyCount === 1) parts.push('1 Boy');
+  else if (st.boyCount > 1) parts.push(st.boyCount + ' Boys');
+  return parts.join(', ');
 }
 function mdcChipCfg(pid) {
-  var st = mdcAccState[pid];
-  var parts = [];
-  ['mom','girl','boy'].forEach(function(p) {
-    if (!st.who.has(p)) return;
-    var pr = st.persons[p];
-    if (pr.colorIdx !== null) parts.push(p[0].toUpperCase() + ': ' + MDC_PATTERNS.find(function(x){return x.id===pid;}).colors[pr.colorIdx].name);
-  });
+  var st = mdcAccState[pid]; var pat = MDC_PATTERNS.find(function(x){return x.id===pid;}); var parts = [];
+  if (st.momSelected && st.mom.colorIdx !== null) parts.push('Mom: '+pat.colors[st.mom.colorIdx].name);
+  if (st.girls.length > 0 && st.girls[0].colorIdx !== null) parts.push('Girl: '+pat.colors[st.girls[0].colorIdx].name);
+  if (st.boys.length > 0 && st.boys[0].colorIdx !== null) parts.push('Boy: '+pat.colors[st.boys[0].colorIdx].name);
   return parts.join(' · ');
 }
 function mdcHdrPreview(pid) {
   var st = mdcAccState[pid];
-  if (!st.who.size) return '';
-  var pat = MDC_PATTERNS.find(function(x){return x.id===pid;});
-  var parts = [];
-  ['mom','girl','boy'].forEach(function(p) {
-    if (!st.who.has(p)) return;
-    var pr = st.persons[p];
-    parts.push(p[0].toUpperCase()+p.slice(1)+': '+(pr.colorIdx !== null ? pat.colors[pr.colorIdx].name : '–'));
-  });
+  if (!st.momSelected && st.girlCount === 0 && st.boyCount === 0) return '';
+  var pat = MDC_PATTERNS.find(function(x){return x.id===pid;}); var parts = [];
+  if (st.momSelected) parts.push('Mom: '+(st.mom.colorIdx !== null ? pat.colors[st.mom.colorIdx].name : '–'));
+  st.girls.forEach(function(g, i) { parts.push((st.girlCount===1?'Girl':'Girl '+(i+1))+': '+(g.colorIdx !== null ? pat.colors[g.colorIdx].name : '–')); });
+  st.boys.forEach(function(b, i) { parts.push((st.boyCount===1?'Boy':'Boy '+(i+1))+': '+(b.colorIdx !== null ? pat.colors[b.colorIdx].name : '–')); });
   return parts.join(' · ');
 }
 
-function mdcColorRow(pid, person, colors) {
-  var pr = mdcAccState[pid].persons[person];
+function mdcColorRow(pid, person, colors, kidIdx) {
+  var pr = person === 'mom' ? mdcAccState[pid].mom :
+           person === 'girl' ? mdcAccState[pid].girls[kidIdx] :
+           mdcAccState[pid].boys[kidIdx];
+  var kidArg = (kidIdx !== null && kidIdx !== undefined) ? ','+kidIdx : '';
   return '<div class="mdc-cr">' + colors.map(function(c,i) {
-    return '<div class="mdc-ci'+(pr.colorIdx===i?' sel':'')+'" onclick="mdcSetColor(\''+pid+'\',\''+person+'\','+i+')">' +
+    return '<div class="mdc-ci'+(pr.colorIdx===i?' sel':'')+'" onclick="mdcSetColor(\''+pid+'\',\''+person+'\','+i+kidArg+')">' +
       '<div class="mdc-cs" style="background-image:url(\''+c.swatch+'\');background-size:cover;background-position:center;"></div>' +
       '<span class="mdc-cl">'+c.name+'</span></div>';
   }).join('') + '</div>';
 }
 
-function mdcPersonPanel(pid, person, pat) {
-  var pr = mdcAccState[pid].persons[person];
+function mdcPersonPanel(pid, person, pat, kidIdx) {
+  var st = mdcAccState[pid];
+  var pr = person === 'mom' ? st.mom :
+           person === 'girl' ? st.girls[kidIdx] :
+           st.boys[kidIdx];
   var icons  = {mom:'👩',girl:'👧',boy:'👦'};
-  var labels = {mom:'Mom',girl:'Girl',boy:'Boy'};
+  var girlMulti = st.girlCount > 1; var boyMulti = st.boyCount > 1;
+  var label = person === 'mom' ? 'Mom' :
+              person === 'girl' ? (girlMulti ? 'Girl '+(kidIdx+1) : 'Girl') :
+              (boyMulti ? 'Boy '+(kidIdx+1) : 'Boy');
+  var kidArg = (kidIdx !== null && kidIdx !== undefined) ? ','+kidIdx : '';
   var colorName = pr.colorIdx !== null ? pat.colors[pr.colorIdx].name : '';
-  var body = '<div class="mdc-sub-lbl">Color</div>' + mdcColorRow(pid, person, pat.colors);
+  var body = '<div class="mdc-sub-lbl">Color</div>' + mdcColorRow(pid, person, pat.colors, kidIdx);
   if (pr.colorIdx !== null) {
     var _defC = pat.colors[pr.colorIdx];
     var _styleImg = 'width:100%;aspect-ratio:2/3;object-fit:cover;object-position:top;border-radius:5px;margin-bottom:6px;display:block;';
     if (person === 'mom') {
       body += '<div class="mdc-sub-lbl" style="margin-top:12px">Style</div><div class="mdc-sr">' +
-        '<div class="mdc-sc'+(pr.style==='kurta'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'mom\',\'kurta\')"><img src="'+_defC.momImg+'" style="'+_styleImg+'" loading="lazy"><div class="mdc-sn">Kurta</div><div class="mdc-sd">Long tunic, straight cut</div></div>' +
-        '<div class="mdc-sc'+(pr.style==='frock'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'mom\',\'frock\')"><img src="'+_defC.momFrockImg+'" style="'+_styleImg+'" loading="lazy"><div class="mdc-sn">Frock</div><div class="mdc-sd">Flared dress silhouette</div></div></div>';
+        '<div class="mdc-sc'+(pr.style==='kurta'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'mom\',\'kurta\')"><img src="'+_defC.momImg+'" style="'+_styleImg+'" loading="lazy"><div class="mdc-sn">Kurta</div><div class="mdc-sd">Long tunic, straight cut</div><div class="mdc-sp">₹1,299</div></div>' +
+        '<div class="mdc-sc'+(pr.style==='frock'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'mom\',\'frock\')"><img src="'+_defC.momFrockImg+'" style="'+_styleImg+'" loading="lazy"><div class="mdc-sn">Frock</div><div class="mdc-sd">Flared dress silhouette</div><div class="mdc-sp">₹1,299</div></div></div>';
       if (pr.style !== null) {
-        var szOpts = MOM_SIZES;
         body += '<div class="mdc-sub-lbl" style="margin-top:12px">Size</div><div class="mdc-szr">' +
-          szOpts.map(function(sz){ return '<div class="mdc-szp'+(pr.size===sz?' sel':'')+'" onclick="mdcSetSize(\''+pid+'\',\'mom\',\''+sz+'\')">'+sz+'</div>'; }).join('') + '</div>';
+          MOM_SIZES.map(function(sz){ return '<div class="mdc-szp'+(pr.size===sz?' sel':'')+'" onclick="mdcSetSize(\''+pid+'\',\'mom\',\''+sz+'\')">'+sz+'</div>'; }).join('') + '</div>';
       }
     } else if (person === 'girl') {
       body += '<div class="mdc-sub-lbl" style="margin-top:12px">Style</div><div class="mdc-sr">' +
-        '<div class="mdc-sc'+(pr.style==='simple-frock'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'girl\',\'simple-frock\')"><img src="'+_defC.girlImg+'" style="'+_styleImg+'" loading="lazy"><div class="mdc-sn">Simple Frock</div><div class="mdc-sd">Classic flared dress</div></div>' +
-        '<div class="mdc-sc'+(pr.style==='skirt-top'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'girl\',\'skirt-top\')"><img src="'+_defC.girlSkirtImg+'" style="'+_styleImg+'" loading="lazy"><div class="mdc-sn">Skirt &amp; Top</div><div class="mdc-sd">Two-piece set</div></div></div>';
+        '<div class="mdc-sc'+(pr.style==='simple-frock'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'girl\',\'simple-frock\''+kidArg+')"><img src="'+_defC.girlImg+'" style="'+_styleImg+'" loading="lazy"><div class="mdc-sn">Simple Frock</div><div class="mdc-sd">Classic flared dress</div><div class="mdc-sp">₹899</div></div>' +
+        '<div class="mdc-sc'+(pr.style==='skirt-top'?' sel':'')+'" onclick="mdcSetStyle(\''+pid+'\',\'girl\',\'skirt-top\''+kidArg+')"><img src="'+_defC.girlSkirtImg+'" style="'+_styleImg+'" loading="lazy"><div class="mdc-sn">Skirt &amp; Top</div><div class="mdc-sd">Two-piece set</div><div class="mdc-sp">₹899</div></div></div>';
       if (pr.style !== null) {
         body += '<div class="mdc-sub-lbl" style="margin-top:12px">Size</div><div class="mdc-szr">' +
-          KIDS_SIZES.map(function(sz){ return '<div class="mdc-szp'+(pr.size===sz?' sel':'')+'" onclick="mdcSetSize(\''+pid+'\',\'girl\',\''+sz+'\')">'+sz+'</div>'; }).join('') + '</div>';
+          KIDS_SIZES.map(function(sz){ return '<div class="mdc-szp'+(pr.size===sz?' sel':'')+'" onclick="mdcSetSize(\''+pid+'\',\'girl\',\''+sz+'\''+kidArg+')">'+sz+'</div>'; }).join('') + '</div>';
       }
     } else {
-      body += '<div class="mdc-boy" style="margin-top:12px">'+MDC_SVG_CHK+' 3/4 Kurta — auto selected</div>' +
+      body += '<div class="mdc-boy" style="margin-top:12px">'+MDC_SVG_CHK+' 3/4 Kurta — auto selected <span style="color:var(--teal);font-weight:600;margin-left:6px;">₹799</span></div>' +
         '<img src="'+_defC.boyImg+'" style="width:100%;max-width:150px;aspect-ratio:2/3;object-fit:cover;object-position:top;border-radius:8px;margin:10px auto 0;display:block;" loading="lazy">';
       body += '<div class="mdc-sub-lbl" style="margin-top:12px">Size</div><div class="mdc-szr">' +
-        KIDS_SIZES.map(function(sz){ return '<div class="mdc-szp'+(pr.size===sz?' sel':'')+'" onclick="mdcSetSize(\''+pid+'\',\'boy\',\''+sz+'\')">'+sz+'</div>'; }).join('') + '</div>';
+        KIDS_SIZES.map(function(sz){ return '<div class="mdc-szp'+(pr.size===sz?' sel':'')+'" onclick="mdcSetSize(\''+pid+'\',\'boy\',\''+sz+'\''+kidArg+')">'+sz+'</div>'; }).join('') + '</div>';
     }
   }
-  return '<div class="mdc-pp"><div class="mdc-pp-hd"><span>'+icons[person]+'</span><span>'+labels[person]+'</span>'+(colorName?'<span class="mdc-pp-chip">'+colorName+'</span>':'')+'</div><div class="mdc-pp-body">'+body+'</div></div>';
+  return '<div class="mdc-pp"><div class="mdc-pp-hd"><span>'+icons[person]+'</span><span>'+label+'</span>'+(colorName?'<span class="mdc-pp-chip">'+colorName+'</span>':'')+'</div><div class="mdc-pp-body">'+body+'</div></div>';
 }
 
 function mdcRenderWho(pid) {
   var st = mdcAccState[pid]; var cls = mdcStepCls(pid,'who'); var done = mdcStepDone(pid,'who');
-  var pills = [['mom','👩','Mom'],['girl','👧','Girl'],['boy','👦','Boy']].map(function(item){
-    return '<div class="mdc-who-pill'+(st.who.has(item[0])?' sel':'')+'" onclick="mdcToggleWho2(\''+pid+'\',\''+item[0]+'\')">'+item[1]+' '+item[2]+'</div>';
-  }).join('');
-  var contBtn = st.who.size
+  var momPill = '<div class="mdc-who-pill'+(st.momSelected?' sel':'')+'" onclick="mdcToggleMom(\''+pid+'\')">👩 Mom</div>';
+  var girlRow = '<div class="mdc-who-cnt-row"><span class="mdc-who-cnt-lbl">👧 Girls</span><div class="mdc-who-cnt-ctrl">' +
+    '<button class="mdc-cnt-btn" onclick="mdcSetKidCount(\''+pid+'\',\'girl\',-1)"'+(st.girlCount===0?' disabled':'')+'>−</button>' +
+    '<span class="mdc-cnt-num">'+st.girlCount+'</span>' +
+    '<button class="mdc-cnt-btn" onclick="mdcSetKidCount(\''+pid+'\',\'girl\',1)"'+(st.girlCount>=4?' disabled':'')+'>+</button>' +
+    '</div></div>';
+  var boyRow = '<div class="mdc-who-cnt-row"><span class="mdc-who-cnt-lbl">👦 Boys</span><div class="mdc-who-cnt-ctrl">' +
+    '<button class="mdc-cnt-btn" onclick="mdcSetKidCount(\''+pid+'\',\'boy\',-1)"'+(st.boyCount===0?' disabled':'')+'>−</button>' +
+    '<span class="mdc-cnt-num">'+st.boyCount+'</span>' +
+    '<button class="mdc-cnt-btn" onclick="mdcSetKidCount(\''+pid+'\',\'boy\',1)"'+(st.boyCount>=4?' disabled':'')+'>+</button>' +
+    '</div></div>';
+  var contBtn = done
     ? '<button class="btn btn-teal mdc-next-btn" onclick="mdcAdvance(\''+pid+'\',\'who\')">Continue →</button>'
     : '<div class="mdc-tip-wrap" data-tip="Select at least one family member to continue"><button class="btn btn-teal mdc-next-btn" disabled style="pointer-events:none;width:100%;margin-top:0;">Continue →</button></div>';
   return '<div class="mdc-step '+cls+'" id="sb-'+pid+'-who"><div class="mdc-step-hd" onclick="mdcEditStep(\''+pid+'\',\'who\')">' +
     '<div class="mdc-step-num">'+(done?MDC_SVG_CHK:'1')+'</div><span class="mdc-step-ttl">Build your family set</span>' +
     (done?'<span class="mdc-step-chip">'+mdcChipWho(pid)+'</span><span class="mdc-step-edit">Edit</span>':'') +
-    '</div><div class="mdc-step-bd"><div class="mdc-step-bd-in"><div class="mdc-who-row">'+pills+'</div>' +
-    contBtn +
+    '</div><div class="mdc-step-bd"><div class="mdc-step-bd-in"><div class="mdc-who-row">'+momPill+'</div>' +
+    girlRow + boyRow + contBtn +
     '</div></div></div>';
 }
 function mdcRenderCfg(pid) {
   var st = mdcAccState[pid]; var cls = mdcStepCls(pid,'configure'); var done = mdcStepDone(pid,'configure');
   var pat = MDC_PATTERNS.find(function(x){return x.id===pid;});
   var panels = '';
-  ['mom','girl','boy'].forEach(function(p){ if(st.who.has(p)) panels += mdcPersonPanel(pid,p,pat); });
+  if (st.momSelected) panels += mdcPersonPanel(pid,'mom',pat,null);
+  st.girls.forEach(function(_,i){ panels += mdcPersonPanel(pid,'girl',pat,i); });
+  st.boys.forEach(function(_,i){ panels += mdcPersonPanel(pid,'boy',pat,i); });
   if (!panels) panels = '<p style="font-size:0.82rem;color:var(--text-muted);padding:4px 0 6px">Select who this is for in step 1.</p>';
   var cfgMissingAttr = !done ? mdcMissingText(pid).replace(/&/g,'&amp;').replace(/"/g,'&quot;') : '';
   var contBtn = done
@@ -5481,16 +5509,24 @@ function mdcRenderSum(pid) {
     if (canAdd) {
       var total = 0; var rows = '';
       var waLines = ["Hi AARK! I'd like to order the Mother's Day Combo:",'Fabric pattern: '+pat.name];
-      ['mom','girl','boy'].forEach(function(person) {
-        if (!st.who.has(person)) return;
-        var pr = st.persons[person]; var color = pat.colors[pr.colorIdx]; var price = MDC_PRICES[person]; total += price;
-        var personImg = person==='mom' ? (pr.style==='frock' ? color.momFrockImg : color.momImg) : person==='girl' ? (pr.style==='skirt-top' ? color.girlSkirtImg : color.girlImg) : color.boyImg;
-        var styleLabel = person==='mom'?(pr.style==='kurta'?'Kurta':'Frock'):person==='girl'?(pr.style==='simple-frock'?'Simple Frock':'Skirt & Top'):'3/4 Kurta';
-        var pLabel = person[0].toUpperCase()+person.slice(1);
+      function addRow(pr, pLabel, personImg, styleLabel, price) {
+        total += price;
         rows += '<div class="mdc-sum-row"><div class="mdc-sum-sw" style="background-image:url(\''+personImg+'\');background-size:cover;background-position:top center;"></div>' +
-          '<div class="mdc-sum-info"><div class="mdc-sum-who">'+pLabel+'</div><div class="mdc-sum-detail">'+styleLabel+' · '+pr.size+' · '+color.name+'</div></div>' +
+          '<div class="mdc-sum-info"><div class="mdc-sum-who">'+pLabel+'</div><div class="mdc-sum-detail">'+styleLabel+' · '+pr.size+' · '+pat.colors[pr.colorIdx].name+'</div></div>' +
           '<div class="mdc-sum-price">₹'+price+'</div></div>';
-        waLines.push(pLabel+': '+styleLabel+', '+color.name+', Size '+pr.size);
+        waLines.push(pLabel+': '+styleLabel+', '+pat.colors[pr.colorIdx].name+', Size '+pr.size);
+      }
+      if (st.momSelected) {
+        var mpr = st.mom; var mc = pat.colors[mpr.colorIdx];
+        addRow(mpr, 'Mom', mpr.style==='frock'?mc.momFrockImg:mc.momImg, mpr.style==='kurta'?'Kurta':'Frock', MDC_PRICES.mom);
+      }
+      st.girls.forEach(function(gpr, i) {
+        var gc = pat.colors[gpr.colorIdx]; var gl = st.girlCount===1?'Girl':'Girl '+(i+1);
+        addRow(gpr, gl, gpr.style==='skirt-top'?gc.girlSkirtImg:gc.girlImg, gpr.style==='simple-frock'?'Simple Frock':'Skirt & Top', MDC_PRICES.girl);
+      });
+      st.boys.forEach(function(bpr, i) {
+        var bc = pat.colors[bpr.colorIdx]; var bl = st.boyCount===1?'Boy':'Boy '+(i+1);
+        addRow(bpr, bl, bc.boyImg, '3/4 Kurta', MDC_PRICES.boy);
       });
       waLines.push('Total: ₹'+total);
       var waHref = buildWhatsAppHref(waLines.join('\n'));
@@ -5516,7 +5552,7 @@ function mdcRenderCard(p) {
   return '<div class="pat-card'+(isOpen?' open':'')+'" id="pc-'+pid+'">' +
     '<div class="pat-hdr" onclick="mdcTogglePat(\''+pid+'\')">' +
     '<img class="pat-thumb" src="'+p.cardImg+'" alt="'+p.name+'" loading="lazy" onerror="this.outerHTML=\'<div class=&quot;pat-thumb-ph&quot;>🪷</div>\'">' +
-    '<div class="pat-hdr-info"><h2 class="pat-nm">'+p.name+'</h2><p class="pat-mt">'+p.colors.length+(p.colors.length===1?' colorway':' colorways')+' — pick one per person</p>' +
+    '<div class="pat-hdr-info"><h2 class="pat-nm">'+p.name+'</h2><p class="pat-mt">'+p.fabric+' · '+p.colors.length+(p.colors.length===1?' colorway':' colorways')+' — pick one per person</p>' +
     '<p class="pat-pv" id="pp-'+pid+'">'+prev+'</p></div>' +
     '<div class="pat-chev">'+MDC_SVG_CHEV+'</div></div>' +
     '<div class="pat-body"><div class="pat-body-in" id="pbi-'+pid+'">'+(isOpen?mdcRenderSteps(pid):'')+' </div></div></div>';
@@ -5559,26 +5595,61 @@ function mdcEditStep(pid, s) {
   if (s !== 'summary' && !mdcStepDone(pid,s) && !mdcCanEnter(pid,s)) return;
   mdcAccState[pid].step = s; mdcRefresh(pid);
 }
-function mdcToggleWho2(pid, person) {
-  var w = mdcAccState[pid].who;
-  if (w.has(person)) { w.delete(person); mdcAccState[pid].persons[person] = {colorIdx:null,style:null,size:null}; }
-  else w.add(person);
+function mdcToggleMom(pid) {
+  var st = mdcAccState[pid]; st.momSelected = !st.momSelected;
+  if (!st.momSelected) st.mom = { colorIdx: null, style: null, size: null };
   mdcRefresh(pid);
 }
-function mdcSetColor(pid, person, idx) { mdcAccState[pid].persons[person].colorIdx = idx; mdcRefresh(pid); }
-function mdcSetStyle(pid, person, style) { mdcAccState[pid].persons[person].style = style; mdcRefresh(pid); }
-function mdcSetSize(pid, person, sz) { mdcAccState[pid].persons[person].size = sz; mdcRefresh(pid); }
+function mdcSetKidCount(pid, type, delta) {
+  var st = mdcAccState[pid];
+  var arr = type === 'girl' ? 'girls' : 'boys';
+  var cnt = type === 'girl' ? 'girlCount' : 'boyCount';
+  var newCount = Math.max(0, Math.min(4, st[cnt] + delta));
+  st[cnt] = newCount;
+  while (st[arr].length > newCount) st[arr].pop();
+  while (st[arr].length < newCount) {
+    st[arr].push(type === 'girl' ? { colorIdx: null, style: null, size: null } : { colorIdx: null, size: null });
+  }
+  mdcRefresh(pid);
+}
+function mdcSetColor(pid, person, idx, kidIdx) {
+  var st = mdcAccState[pid];
+  if (person === 'mom') st.mom.colorIdx = idx;
+  else if (person === 'girl') st.girls[kidIdx].colorIdx = idx;
+  else st.boys[kidIdx].colorIdx = idx;
+  mdcRefresh(pid);
+}
+function mdcSetStyle(pid, person, style, kidIdx) {
+  var st = mdcAccState[pid];
+  if (person === 'mom') st.mom.style = style;
+  else if (person === 'girl') st.girls[kidIdx].style = style;
+  mdcRefresh(pid);
+}
+function mdcSetSize(pid, person, sz, kidIdx) {
+  var st = mdcAccState[pid];
+  if (person === 'mom') st.mom.size = sz;
+  else if (person === 'girl') st.girls[kidIdx].size = sz;
+  else st.boys[kidIdx].size = sz;
+  mdcRefresh(pid);
+}
 function mdcResetPat(pid) { mdcAccState[pid] = mdcFreshState(); mdcRefresh(pid); }
 function mdcAddToCartForPat(pid) {
   var st = mdcAccState[pid];
   var pat = MDC_PATTERNS.find(function(x){return x.id===pid;});
-  var total = 0;
-  var detailParts = [];
-  st.who.forEach(function(person) {
-    var pr = st.persons[person]; var price = MDC_PRICES[person]; total += price;
-    var color = pat.colors[pr.colorIdx];
-    var styleLabel = person==='mom'?(pr.style==='kurta'?'Kurta':'Frock'):person==='girl'?(pr.style==='simple-frock'?'Simple Frock':'Skirt & Top'):'3/4 Kurta';
-    detailParts.push(person[0].toUpperCase()+person.slice(1)+': '+styleLabel+' · '+color.name+' · '+pr.size);
+  var total = 0; var detailParts = [];
+  if (st.momSelected) {
+    var mpr = st.mom; total += MDC_PRICES.mom;
+    detailParts.push('Mom: '+(mpr.style==='kurta'?'Kurta':'Frock')+' · '+pat.colors[mpr.colorIdx].name+' · '+mpr.size);
+  }
+  st.girls.forEach(function(gpr, i) {
+    total += MDC_PRICES.girl;
+    var gl = st.girlCount===1?'Girl':'Girl '+(i+1);
+    detailParts.push(gl+': '+(gpr.style==='simple-frock'?'Simple Frock':'Skirt & Top')+' · '+pat.colors[gpr.colorIdx].name+' · '+gpr.size);
+  });
+  st.boys.forEach(function(bpr, i) {
+    total += MDC_PRICES.boy;
+    var bl = st.boyCount===1?'Boy':'Boy '+(i+1);
+    detailParts.push(bl+': 3/4 Kurta · '+pat.colors[bpr.colorIdx].name+' · '+bpr.size);
   });
   cart.push({
     id: 'mdc-'+Date.now(),
@@ -5587,7 +5658,7 @@ function mdcAddToCartForPat(pid) {
     price: total,
     qty: 1,
     selectedSize: detailParts.join(' | '),
-    fabric: pat.name,
+    fabric: pat.fabric,
     image: pat.cardImg,
     series: "Mother's Day Combo",
     allowCart: true
