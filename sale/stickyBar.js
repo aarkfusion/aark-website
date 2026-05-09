@@ -55,8 +55,7 @@
   function renderTeaser() {
     bar.className = 'bar-teaser';
     bar.innerHTML =
-      '🎁 Mother’s Day Sale starts in <span id="barTimer">—</span>' +
-      ' — Use code <span class="bar-code">MOM26</span> for 15% off store wide · 20% off Combo + Free Shipping';
+      "🌸 Mother’s Day Special Offers Arriving Soon — <span id=\"barTimer\">—</span>";
     requestAnimationFrame(applyBarOffset);
 
     if (timer) clearInterval(timer);
@@ -77,8 +76,7 @@
   function renderLive() {
     bar.className = 'bar-live';
     bar.innerHTML =
-      '🌸 Mother’s Day Sale LIVE! Use <span class="bar-code">MOM26</span>' +
-      ' for 15% off store wide · 20% off Combo + Free Shipping — Ends in <span id="barTimer">—</span>';
+      "🌸 Mother’s Day Special Offers Are Live! — Ends in <span id=\"barTimer\">—</span>";
     requestAnimationFrame(applyBarOffset);
 
     if (timer) clearInterval(timer);
