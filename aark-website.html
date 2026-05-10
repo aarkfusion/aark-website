@@ -284,6 +284,13 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
   transition: transform 0.38s cubic-bezier(0.4,0,0.2,1);
   overflow-y: auto; padding: 80px 36px 48px;
 }
+@media (max-width: 768px) {
+  .side-submenu {
+    width: 380px; max-width: 92vw;
+    z-index: 10003; /* slide over the side menu on phone */
+    padding: 80px 44px 48px;
+  }
+}
 .sm-sub-section { display: none; }
 .sm-sub-section.active { display: block; }
 .sm-back-btn {
@@ -2369,9 +2376,9 @@ img {
   <nav class="sm-nav-primary">
     <button class="sm-nav-item" onclick="closeSideMenu();openComboPage()">Mother's Day Combo</button>
     <button class="sm-nav-item" onclick="closeSideMenu();showPage('men')">Men</button>
-    <button class="sm-nav-item" onmouseenter="openSubmenuHover('woman')" onmouseleave="closeSubmenuHover()" onclick="closeSideMenu();clearFilters();showPage('shop')">Women <span class="sm-arrow">›</span></button>
-    <button class="sm-nav-item" onmouseenter="openSubmenuHover('kids')" onmouseleave="closeSubmenuHover()" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">Kids <span class="sm-arrow">›</span></button>
-    <button class="sm-nav-item" onmouseenter="openSubmenuHover('collections')" onmouseleave="closeSubmenuHover()" onclick="closeSideMenu();showPage('collections')">Collections <span class="sm-arrow">›</span></button>
+    <button class="sm-nav-item" onmouseenter="openSubmenuHover('woman')" onmouseleave="closeSubmenuHover()" onclick="navOrSubmenu('woman','shop')">Women <span class="sm-arrow">›</span></button>
+    <button class="sm-nav-item" onmouseenter="openSubmenuHover('kids')" onmouseleave="closeSubmenuHover()" onclick="navOrSubmenu('kids','kids')">Kids <span class="sm-arrow">›</span></button>
+    <button class="sm-nav-item" onmouseenter="openSubmenuHover('collections')" onmouseleave="closeSubmenuHover()" onclick="navOrSubmenu('collections','collections')">Collections <span class="sm-arrow">›</span></button>
   </nav>
   <div class="sm-divider"></div>
   <nav class="sm-secondary-nav">
@@ -2394,6 +2401,7 @@ img {
   <div class="sm-sub-section" id="smSub-kids">
     <button class="sm-back-btn" onclick="closeSubmenu()">‹ Back</button>
     <p class="sm-sub-heading">Kids</p>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">View All</button>
     <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">The Aira Series <span style="font-size:0.7rem;opacity:0.55;margin-left:6px;font-style:italic;">Coming Soon</span></button>
     <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('kids')">Collections</button>
   </div>
@@ -4202,7 +4210,10 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   const cartEnabled = canAddToCart(p);
   const inWishlist = wishlist.some(w => w.id === p.id);
   const productUrl = `https://aarkfusion.com/#product-${grp.repSku}`;
-  const whatsappMessage = `Hi! I want to order ${p.series}. Please share ordering details.\n\nView here: ${productUrl}`;
+  function buildVariantWaMsg(prod, patternName) {
+    return `Hi! I want to order ${prod.series} — ${patternName} (${prod.sku}) priced at ${getProductPriceLabel(prod)}.\n\nView here: ${productUrl}`;
+  }
+  const whatsappMessage = buildVariantWaMsg(initProduct, initPattern.name);
 
   const galleryHTML = initPattern.imgs.map((src, i) =>
     `<div class="gallery-slide" data-idx="${i}"><img src="${src}" alt="${p.series}" loading="${i === 0 ? 'eager' : 'lazy'}"></div>`
@@ -4250,7 +4261,7 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
       </div>
   ` : '';
 
-  const tagsHTML = p.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
+  const tagsHTML = initProduct.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
 
   document.getElementById('productDetailContent').innerHTML = `
     <div class="gallery-wrapper" id="variantGallery">
@@ -4277,7 +4288,7 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
       <div class="pick-section">
         <div class="pick-label-row">
           <span class="pick-label-text">Pattern</span>
-          <span class="pick-active-name" id="activePatternName">${initPattern.name}</span>
+          <span class="pick-active-name" id="activePatternName">${initPattern.name} <span style="color:var(--text-muted);font-weight:400;font-size:0.85em;">(${initProduct.sku})</span></span>
         </div>
         <div class="pick-row" id="variantSwatches">
           ${swatchesHTML}
@@ -4292,8 +4303,8 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
       </div>
       ${qtySectionHTML}
       ${ctaRowHTML}
-      <a class="btn btn-whatsapp btn-full" style="margin-bottom:16px;" href="${buildWhatsAppHref(whatsappMessage)}" target="_blank">${WA_ICON} Order on WhatsApp</a>
-      <div class="detail-tags">${tagsHTML}</div>
+      <a class="btn btn-whatsapp btn-full" id="detailWaBtn" data-url="${productUrl}" data-series="${p.series}" style="margin-bottom:16px;" href="${buildWhatsAppHref(whatsappMessage)}" target="_blank">${WA_ICON} Order on WhatsApp</a>
+      <div class="detail-tags" id="detailTags">${tagsHTML}</div>
       <div class="accordion">
         <div class="accordion-item">
           <div class="accordion-header" onclick="toggleAccordion(this)"><span>Fabric & Care</span><span>▾</span></div>
@@ -4341,7 +4352,7 @@ function switchVariant(sku, el) {
   el.classList.add('active');
 
   const nameEl = document.getElementById('activePatternName');
-  if (nameEl) nameEl.textContent = pattern.name;
+  if (nameEl) nameEl.innerHTML = pattern.name + ' <span style="color:var(--text-muted);font-weight:400;font-size:0.85em;">(' + sku + ')</span>';
 
   const wrapper = document.getElementById('variantGallery');
   if (wrapper) {
@@ -4378,6 +4389,19 @@ function switchVariant(sku, el) {
   if (bn)  bn.disabled  = true;
   if (hint) hint.style.display = '';
   if (prod) refreshSizeAvailability(prod);
+
+  const waBtn = document.getElementById('detailWaBtn');
+  if (waBtn && prod) {
+    const url = waBtn.dataset.url || '';
+    const series = waBtn.dataset.series || prod.series;
+    const newMsg = `Hi! I want to order ${series} — ${pattern.name} (${prod.sku}) priced at ${getProductPriceLabel(prod)}.\n\nView here: ${url}`;
+    waBtn.href = buildWhatsAppHref(newMsg);
+  }
+
+  const tagsEl = document.getElementById('detailTags');
+  if (tagsEl && prod) {
+    tagsEl.innerHTML = prod.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
+  }
 }
 
 function cardSwatchEnter(swatch) {
@@ -4899,13 +4923,18 @@ function closeSideMenu() {
   document.body.style.overflow = '';
   closeSubmenu();
 }
+function isMobileNav() { return window.matchMedia('(max-width: 768px)').matches; }
 function openSubmenu(name) {
   document.querySelectorAll('.sm-sub-section').forEach(el => el.classList.remove('active'));
   const target = document.getElementById('smSub-' + name);
   if (target) target.classList.add('active');
   const sub = document.getElementById('sideSubmenu');
-  const menuWidth = document.getElementById('sideMenu').offsetWidth;
-  sub.style.transform = `translateX(${menuWidth}px)`;
+  if (isMobileNav()) {
+    sub.style.transform = 'translateX(0)';
+  } else {
+    const menuWidth = document.getElementById('sideMenu').offsetWidth;
+    sub.style.transform = `translateX(${menuWidth}px)`;
+  }
 }
 function closeSubmenu() {
   document.querySelectorAll('.sm-sub-section').forEach(el => el.classList.remove('active'));
@@ -4913,9 +4942,16 @@ function closeSubmenu() {
   if (sub) sub.style.transform = 'translateX(-100%)';
 }
 let _submenuTimer = null;
-function openSubmenuHover(name) { clearTimeout(_submenuTimer); openSubmenu(name); }
-function closeSubmenuHover() { _submenuTimer = setTimeout(closeSubmenu, 200); }
-function cancelCloseSubmenu() { clearTimeout(_submenuTimer); }
+function openSubmenuHover(name) { if (isMobileNav()) return; clearTimeout(_submenuTimer); openSubmenu(name); }
+function closeSubmenuHover() { if (isMobileNav()) return; _submenuTimer = setTimeout(closeSubmenu, 200); }
+function cancelCloseSubmenu() { if (isMobileNav()) return; clearTimeout(_submenuTimer); }
+function navOrSubmenu(name, action) {
+  if (isMobileNav()) { openSubmenu(name); return; }
+  closeSideMenu();
+  if (action === 'shop') { clearFilters(); showPage('shop'); }
+  else if (action === 'kids') { showShopWithFilter('kids-frocks'); }
+  else if (action === 'collections') { showPage('collections'); }
+}
 function showCollectionsFiltered(group) {
   showPage('collections');
   document.querySelectorAll('.coll-card[data-group]').forEach(c => {
@@ -5246,7 +5282,7 @@ document.addEventListener('DOMContentLoaded', function initFromHash() {
 const MDC_BASE = 'mdc/';
 const MDC_PATTERNS = [
   {
-    id: 'lotus-vine', name: 'Lotus Vine', fabric: 'Kalamkari Cotton',
+    id: 'lotus-vine', sku: 'MDC-001', name: 'Lotus Vine', fabric: 'Kalamkari Cotton',
     cardImg: 'mdc/1/swatch_1_1.png',
     colors: [
       { id: 'lv-black-gold', name: 'Black & Gold', swatch: 'mdc/1/swatch_1_1.png',  momImg: 'mdc/1/mom_kurta_1_1.jpeg', momFrockImg: 'mdc/1/mom_frock_1_1.jpeg', girlImg: 'mdc/1/girl_frock_1_1.jpeg', girlSkirtImg: 'mdc/1/girl_skirt_1_1.png', boyImg: 'mdc/1/boy_1_1.jpeg' },
@@ -5254,7 +5290,7 @@ const MDC_PATTERNS = [
     ]
   },
   {
-    id: 'kalamkari-peacock', name: 'Kalamkari Peacock', fabric: 'Kalamkari Cotton',
+    id: 'kalamkari-peacock', sku: 'MDC-002', name: 'Kalamkari Peacock', fabric: 'Kalamkari Cotton',
     cardImg: 'mdc/2/swatch_2_1.jpeg',
     colors: [
       { id: 'kp-black',  name: 'Black',  swatch: 'mdc/2/swatch_2_1.jpeg', momImg: 'mdc/2/mom_kurta_2_1.jpeg', momFrockImg: 'mdc/2/mom_frock_2_1.jpeg', girlImg: 'mdc/2/girl_frock_2_1.jpeg', girlSkirtImg: 'mdc/2/girl_skirt_2_1.png', boyImg: 'mdc/2/boy_2_1.jpeg' },
@@ -5264,7 +5300,7 @@ const MDC_PATTERNS = [
     ]
   },
   {
-    id: 'hanging-lotus', name: 'Hanging Lotus', fabric: 'Kalamkari Cotton',
+    id: 'hanging-lotus', sku: 'MDC-003', name: 'Hanging Lotus', fabric: 'Kalamkari Cotton',
     cardImg: 'mdc/3/swatch3_1.jpeg',
     colors: [
       { id: 'hl-cream',  name: 'Cream',  swatch: 'mdc/3/swatch3_1.jpeg', momImg: 'mdc/3/mom_kurta_3_1.jpeg', momFrockImg: 'mdc/3/mom_frock_3_1.jpeg', girlImg: 'mdc/3/girl_frock_3_1.jpeg', girlSkirtImg: 'mdc/3/girl_skirt_3_1.png', boyImg: 'mdc/3/boy_3_1.jpeg' },
@@ -5273,7 +5309,7 @@ const MDC_PATTERNS = [
     ]
   },
   {
-    id: 'golden-bloom', name: 'Golden Bloom', fabric: 'Kalamkari Silk',
+    id: 'golden-bloom', sku: 'MDC-004', name: 'Golden Bloom', fabric: 'Kalamkari Silk',
     cardImg: 'mdc/4/swatch_4_1.jpeg',
     colors: [
       { id: 'gb-royal-blue', name: 'Royal Blue', swatch: 'mdc/4/swatch_4_1.jpeg', momImg: 'mdc/4/mom_kurtha_4_1.JPG', momFrockImg: 'mdc/4/mom_frock_4_1.jpg', girlImg: 'mdc/4/girl_frock_4_1.JPG', girlSkirtImg: 'mdc/4/girl_skirt_4_1.png', boyImg: 'mdc/4/boy_4_1.JPG' },
@@ -5295,6 +5331,11 @@ function mdcGetPrice(fabric, person, style, size) {
 function fmtRs(n) { return n >= 1000 ? '₹' + Math.floor(n/1000) + ',' + ('00'+(n%1000)).slice(-3) : '₹' + n; }
 const MOM_SIZES  = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
 /* KIDS_SIZES already defined above */
+const MDC_STYLE_CODE = { mom: { kurta: 'SC', frock: 'F' }, girl: { 'simple-frock': 'GF', 'skirt-top': 'GS' }, boy: 'BK' };
+function mdcStyleCode(person, style) {
+  if (person === 'boy') return 'BK';
+  return (MDC_STYLE_CODE[person] || {})[style] || style;
+}
 
 let mdcAccState = {};
 MDC_PATTERNS.forEach(function(p) { mdcAccState[p.id] = mdcFreshState(); });
@@ -5520,25 +5561,25 @@ function mdcRenderSum(pid) {
     var canAdd = !missing;
     if (canAdd) {
       var total = 0; var rows = '';
-      var waLines = ["Hi AARK! I'd like to order the Mother's Day Combo:",'Fabric pattern: '+pat.name];
-      function addRow(pr, pLabel, personImg, styleLabel, price) {
+      var waLines = ["Hi AARK! I'd like to order the Mother's Day Combo:",'Pattern: '+pat.name+' ('+pat.sku+')'];
+      function addRow(pr, pLabel, personImg, styleLabel, styleCode, price) {
         total += price;
         rows += '<div class="mdc-sum-row"><div class="mdc-sum-sw" style="background-image:url(\''+personImg+'\');background-size:cover;background-position:top center;"></div>' +
           '<div class="mdc-sum-info"><div class="mdc-sum-who">'+pLabel+'</div><div class="mdc-sum-detail">'+styleLabel+' · '+pr.size+' · '+pat.colors[pr.colorIdx].name+'</div></div>' +
           '<div class="mdc-sum-price">₹'+price+'</div></div>';
-        waLines.push(pLabel+': '+styleLabel+', '+pat.colors[pr.colorIdx].name+', Size '+pr.size);
+        waLines.push(pLabel+' ['+styleCode+']: '+pat.colors[pr.colorIdx].name+', Size '+pr.size+' — ₹'+price);
       }
       if (st.momSelected) {
         var mpr = st.mom; var mc = pat.colors[mpr.colorIdx];
-        addRow(mpr, 'Mom', mpr.style==='frock'?mc.momFrockImg:mc.momImg, mpr.style==='kurta'?'Kurta':'Frock', mdcGetPrice(pat.fabric,'mom',mpr.style,mpr.size));
+        addRow(mpr, 'Mom', mpr.style==='frock'?mc.momFrockImg:mc.momImg, mpr.style==='kurta'?'Kurta':'Frock', mdcStyleCode('mom',mpr.style), mdcGetPrice(pat.fabric,'mom',mpr.style,mpr.size));
       }
       st.girls.forEach(function(gpr, i) {
         var gc = pat.colors[gpr.colorIdx]; var gl = st.girlCount===1?'Girl':'Girl '+(i+1);
-        addRow(gpr, gl, gpr.style==='skirt-top'?gc.girlSkirtImg:gc.girlImg, gpr.style==='simple-frock'?'Simple Frock':'Skirt & Top', mdcGetPrice(pat.fabric,'girl',gpr.style,gpr.size));
+        addRow(gpr, gl, gpr.style==='skirt-top'?gc.girlSkirtImg:gc.girlImg, gpr.style==='simple-frock'?'Simple Frock':'Skirt & Top', mdcStyleCode('girl',gpr.style), mdcGetPrice(pat.fabric,'girl',gpr.style,gpr.size));
       });
       st.boys.forEach(function(bpr, i) {
         var bc = pat.colors[bpr.colorIdx]; var bl = st.boyCount===1?'Boy':'Boy '+(i+1);
-        addRow(bpr, bl, bc.boyImg, '3/4 Kurta', mdcGetPrice(pat.fabric,'boy',null,bpr.size));
+        addRow(bpr, bl, bc.boyImg, '3/4 Kurta', 'BK', mdcGetPrice(pat.fabric,'boy',null,bpr.size));
       });
       waLines.push('Total: ₹'+total);
       var waHref = buildWhatsAppHref(waLines.join('\n'));
@@ -5651,22 +5692,22 @@ function mdcAddToCartForPat(pid) {
   var total = 0; var detailParts = [];
   if (st.momSelected) {
     var mpr = st.mom; total += mdcGetPrice(pat.fabric,'mom',mpr.style,mpr.size);
-    detailParts.push('Mom: '+(mpr.style==='kurta'?'Kurta':'Frock')+' · '+pat.colors[mpr.colorIdx].name+' · '+mpr.size);
+    detailParts.push('Mom ['+mdcStyleCode('mom',mpr.style)+']: '+pat.colors[mpr.colorIdx].name+' · '+mpr.size);
   }
   st.girls.forEach(function(gpr, i) {
     total += mdcGetPrice(pat.fabric,'girl',gpr.style,gpr.size);
     var gl = st.girlCount===1?'Girl':'Girl '+(i+1);
-    detailParts.push(gl+': '+(gpr.style==='simple-frock'?'Simple Frock':'Skirt & Top')+' · '+pat.colors[gpr.colorIdx].name+' · '+gpr.size);
+    detailParts.push(gl+' ['+mdcStyleCode('girl',gpr.style)+']: '+pat.colors[gpr.colorIdx].name+' · '+gpr.size);
   });
   st.boys.forEach(function(bpr, i) {
     total += mdcGetPrice(pat.fabric,'boy',null,bpr.size);
     var bl = st.boyCount===1?'Boy':'Boy '+(i+1);
-    detailParts.push(bl+': 3/4 Kurta · '+pat.colors[bpr.colorIdx].name+' · '+bpr.size);
+    detailParts.push(bl+' [BK]: '+pat.colors[bpr.colorIdx].name+' · '+bpr.size);
   });
   cart.push({
     id: 'mdc-'+Date.now(),
-    name: "Mother's Day Combo",
-    sku: 'MDC-'+pat.id.replace(/-/g,'').slice(0,6).toUpperCase(),
+    name: pat.name+" Combo ("+pat.sku+")",
+    sku: pat.sku,
     price: total,
     qty: 1,
     selectedSize: detailParts.join(' | '),
