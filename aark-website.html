@@ -1232,19 +1232,23 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
 .detail-price .original { font-size: 1.2rem; color: var(--warm-grey); text-decoration: line-through; }
 .detail-price .save { background: #fef3f0; color: #e8533a; padding: 3px 10px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
 .detail-desc { font-size: 0.9rem; color: var(--text-muted); line-height: 1.8; margin-bottom: 24px; border-bottom: 1px solid var(--light-grey); padding-bottom: 24px; }
-.pick-section { margin-bottom: 24px; }
-.pick-label-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.pick-section { margin-bottom: 28px; }
+.pick-label-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px; gap: 12px; flex-wrap: wrap; }
 .pick-label-text { font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text); }
-.pick-active-name { font-size: 0.82rem; color: var(--teal); font-weight: 500; }
-.pick-row { display: flex; gap: 8px; flex-wrap: wrap; }
-.pick-item { display: flex; flex-direction: column; align-items: center; gap: 4px; cursor: pointer; }
-.pick-thumb { width: 54px; height: 54px; border-radius: 6px; overflow: hidden; border: 2px solid var(--light-grey); transition: border-color 0.2s, box-shadow 0.2s; }
-.pick-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pick-active-name { font-size: 0.92rem; color: var(--teal); font-weight: 500; }
+.pick-row { display: grid; grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); gap: 14px; }
+.pick-item { display: flex; flex-direction: column; align-items: stretch; gap: 8px; cursor: pointer; }
+.pick-thumb { width: 100%; aspect-ratio: 3/4; border-radius: 8px; overflow: hidden; border: 2px solid var(--light-grey); transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; background: var(--cream-dark); }
+.pick-thumb img { width: 100%; height: 100%; object-fit: cover; object-position: top; display: block; }
 .pick-item.active .pick-thumb { border-color: var(--teal); box-shadow: 0 0 0 1.5px var(--teal); }
-.pick-item:hover .pick-thumb { border-color: var(--teal); }
-.pick-name { font-size: 0.6rem; letter-spacing: 0.04em; text-align: center; color: var(--text-muted); max-width: 58px; line-height: 1.3; }
+.pick-item:hover .pick-thumb { border-color: var(--teal); transform: translateY(-2px); }
+.pick-name { font-size: 0.78rem; letter-spacing: 0.02em; text-align: center; color: var(--text-muted); line-height: 1.3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .pick-item.active .pick-name { color: var(--teal); font-weight: 600; }
 .pick-thumb.pick-soldout { opacity: 0.4; }
+@media (max-width: 768px) {
+  .pick-row { grid-template-columns: repeat(auto-fill, minmax(85px, 1fr)); gap: 10px; }
+  .pick-name { font-size: 0.72rem; }
+}
 .size-section { margin-bottom: 24px; }
 .size-label {
   display: flex; justify-content: space-between; align-items: center;
@@ -3631,7 +3635,13 @@ function sortProductList(list, mode = currentSort) {
 }
 
 function getFilteredProducts() {
-  let filtered = products.filter(p => !p.isGroupHidden && !isFullySoldOut(p));
+  // When a category filter is active, ungroup variants — show every pattern as its own card
+  const ungroup = !!activeFilters.category;
+  let filtered = products.filter(p => {
+    if (isFullySoldOut(p, ungroup)) return false;
+    if (!ungroup && p.isGroupHidden) return false;
+    return true;
+  });
 
   if (activeFilters.category) {
     filtered = filtered.filter(product => product.cat === activeFilters.category);
@@ -3681,9 +3691,9 @@ function getAvailableStock(sku, size) {
 }
 
 // true when a product has no stock — untracked SKUs (absent from inventory.json) are treated as sold out
-function isFullySoldOut(p) {
+function isFullySoldOut(p, ungroup = false) {
   if (!inventoryLoaded) return false;
-  if (p.isGroupRep && p.variantGroupKey) {
+  if (!ungroup && p.isGroupRep && p.variantGroupKey) {
     return !VARIANT_GROUPS[p.variantGroupKey].patterns.some(pt => {
       if (!inventory.hasOwnProperty(pt.sku)) return false; // untracked = sold out
       const prod = products.find(x => x.sku === pt.sku);
@@ -3757,11 +3767,13 @@ function showShopWithFilter(filter) {
 function buildProductCard(p) {
   const inWishlist = wishlist.some(w => w.id === p.id);
   const cartEnabled = canAddToCart(p);
+  // Ungroup mode (category filter active): even reps render as standalone cards
+  const treatAsGroup = p.isGroupRep && p.variantGroupKey && !activeFilters.category;
 
   // For group reps: display the first in-stock pattern; sold-out only if ALL patterns are out
   let displayPattern = null;
   let isSoldOut;
-  if (p.isGroupRep && p.variantGroupKey) {
+  if (treatAsGroup) {
     const grp = VARIANT_GROUPS[p.variantGroupKey];
     if (inventoryLoaded) {
       displayPattern = grp.patterns.find(pt => {
@@ -3787,11 +3799,11 @@ function buildProductCard(p) {
   const headline = displayPattern ? displayPattern.name : (PRODUCT_STYLE_NAMES[p.sku] || p.series);
   const subtitle  = displayPattern ? `${p.series} · ${p.categoryLabel}` : p.categoryLabel;
 
-  const badgeSoHTML = p.isGroupRep
+  const badgeSoHTML = treatAsGroup
     ? `<span class="badge-so card-so-badge"${isSoldOut ? '' : ' style="display:none"'}>Sold out</span>`
     : (isSoldOut ? `<span class="badge-so">Sold out</span>` : '');
 
-  const thumbsHTML = p.isGroupRep
+  const thumbsHTML = treatAsGroup
     ? `<div class="card-thumbs" onclick="event.stopPropagation()">
         ${VARIANT_GROUPS[p.variantGroupKey].patterns.map((pt) => {
           const isActive = displayPattern && pt.sku === displayPattern.sku;
@@ -4078,8 +4090,8 @@ function initWishlistGrid() {
 function openProduct(id, addToHistory = true) {
   const p = products.find(x => x.id === id);
   if (!p) return;
-  if (p.isGroupRep && p.variantGroupKey) {
-    openVariantProduct(p.variantGroupKey, addToHistory);
+  if (p.variantGroupKey) {
+    openVariantProduct(p.variantGroupKey, addToHistory, p.sku);
     return;
   }
   currentProduct = p;
