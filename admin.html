@@ -71,8 +71,8 @@
   .price-cell .currency { color: var(--muted); font-weight: 600; }
   .price-cell input { width: 100%; padding: 7px 9px; border: 1px solid var(--border); border-radius: 5px; font-size: 0.95rem; font-family: ui-monospace, 'SF Mono', Menlo, monospace; text-align: right; }
   .price-cell input:focus { outline: 1px solid var(--teal); border-color: var(--teal); }
-  .sizes-cell { display: flex; flex-wrap: wrap; gap: 8px; }
-  .size-input { display: flex; flex-direction: column; gap: 3px; align-items: center; min-width: 60px; }
+  .sizes-cell { display: flex; flex-wrap: nowrap; gap: 8px; overflow-x: auto; }
+  .size-input { display: flex; flex-direction: column; gap: 3px; align-items: center; flex: 0 0 60px; }
   .size-input label { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
   .size-input input { width: 60px; padding: 5px 7px; border: 1px solid var(--border); border-radius: 5px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; text-align: center; font-size: 0.9rem; }
   .size-input input:focus { outline: 1px solid var(--teal); border-color: var(--teal); }
@@ -316,6 +316,23 @@ function prefixOf(sku) {
   return sku.slice(0, 2);
 }
 
+// Canonical size order: adult XS→XXL first, then kids by numeric age start ("5-6yr" → 5),
+// then anything else alphabetical. Stable across SKUs so the row always looks consistent.
+const ADULT_SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
+function sortSizes(keys) {
+  return keys.slice().sort((a, b) => {
+    const ia = ADULT_SIZE_ORDER.indexOf(a);
+    const ib = ADULT_SIZE_ORDER.indexOf(b);
+    if (ia !== -1 && ib !== -1) return ia - ib;
+    if (ia !== -1) return -1;
+    if (ib !== -1) return 1;
+    const na = parseInt(a, 10);
+    const nb = parseInt(b, 10);
+    if (!isNaN(na) && !isNaN(nb)) return na - nb;
+    return a < b ? -1 : a > b ? 1 : 0;
+  });
+}
+
 function renderEditor() {
   const root = $('skuList');
   root.className = '';
@@ -351,7 +368,7 @@ function renderSkuRow(sku) {
   row.dataset.sku = sku;
 
   const inv = localInventory[sku] || {};
-  const sizeKeys = Object.keys(inv).filter(k => k !== 'price');
+  const sizeKeys = sortSizes(Object.keys(inv).filter(k => k !== 'price'));
 
   // Thumbnail column
   const thumb = document.createElement('div');
