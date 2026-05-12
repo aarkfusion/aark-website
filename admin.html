@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AARK Admin — Inventory</title>
+<meta name="robots" content="noindex, nofollow">
+<style>
+  :root {
+    --teal: #008080;
+    --teal-pale: #e0f5f5;
+    --cream: #f9f7f3;
+    --gold: #c4a050;
+    --text: #1a1a1a;
+    --muted: #666;
+    --border: #e0e0e0;
+    --danger: #e8533a;
+    --ok: #2d8659;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Jost', system-ui, sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+  header {
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  header h1 { font-size: 1.1rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal); }
+  header h1 small { color: var(--muted); font-weight: 400; letter-spacing: 0.06em; text-transform: none; margin-left: 12px; font-size: 0.78rem; }
+  header .session-actions { font-size: 0.85rem; }
+  header button.linkbtn { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 0.85rem; text-decoration: underline; }
+
+  /* Login */
+  .login-wrap { max-width: 360px; margin: 80px auto; padding: 32px; background: #fff; border: 1px solid var(--border); border-radius: 8px; }
+  .login-wrap h2 { font-size: 1rem; margin-bottom: 16px; color: var(--text); }
+  .login-wrap p { color: var(--muted); font-size: 0.85rem; margin-bottom: 20px; }
+  .login-wrap input, .login-wrap button { width: 100%; padding: 10px 14px; font-size: 1rem; border-radius: 6px; border: 1px solid var(--border); }
+  .login-wrap input { margin-bottom: 12px; }
+  .login-wrap button { background: var(--teal); color: #fff; border: none; cursor: pointer; font-weight: 600; }
+  .login-wrap button:disabled { opacity: 0.5; cursor: progress; }
+  .login-err { color: var(--danger); font-size: 0.85rem; margin-top: 8px; min-height: 20px; }
+
+  /* Editor */
+  .editor { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+  .editor .toolbar { background: #fff; border: 1px solid var(--border); border-radius: 8px; padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .editor .toolbar .info { font-size: 0.85rem; color: var(--muted); }
+  .editor .toolbar button { background: #fff; border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; cursor: pointer; font-size: 0.85rem; color: var(--text); }
+  .editor .toolbar button:hover { border-color: var(--teal); color: var(--teal); }
+
+  .series-block { background: #fff; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 18px; overflow: hidden; }
+  .series-head { background: var(--cream); padding: 10px 16px; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
+  .sku-row { display: grid; grid-template-columns: minmax(140px, 1fr) 130px 1fr; gap: 16px; padding: 14px 16px; border-bottom: 1px solid var(--border); align-items: center; }
+  .sku-row:last-child { border-bottom: none; }
+  .sku-row.dirty { background: #fff8e6; }
+  .sku-meta { display: flex; flex-direction: column; gap: 2px; }
+  .sku-meta .sku { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-weight: 600; font-size: 0.9rem; color: var(--text); }
+  .sku-meta .label { font-size: 0.75rem; color: var(--muted); }
+  .price-cell { display: flex; align-items: center; gap: 6px; }
+  .price-cell .currency { color: var(--muted); font-weight: 600; }
+  .price-cell input { width: 100%; padding: 7px 9px; border: 1px solid var(--border); border-radius: 5px; font-size: 0.95rem; font-family: ui-monospace, 'SF Mono', Menlo, monospace; text-align: right; }
+  .price-cell input:focus { outline: 1px solid var(--teal); border-color: var(--teal); }
+  .sizes-cell { display: flex; flex-wrap: wrap; gap: 8px; }
+  .size-input { display: flex; flex-direction: column; gap: 3px; align-items: center; min-width: 60px; }
+  .size-input label { font-size: 0.65rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+  .size-input input { width: 60px; padding: 5px 7px; border: 1px solid var(--border); border-radius: 5px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; text-align: center; font-size: 0.9rem; }
+  .size-input input:focus { outline: 1px solid var(--teal); border-color: var(--teal); }
+  .size-input input.zero { color: var(--danger); }
+
+  /* Save bar */
+  .save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid var(--border); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 -4px 12px rgba(0,0,0,0.04); transform: translateY(100%); transition: transform 0.2s; z-index: 100; }
+  .save-bar.show { transform: translateY(0); }
+  .save-bar .count { font-size: 0.9rem; color: var(--text); }
+  .save-bar .count b { color: var(--teal); }
+  .save-bar .actions { display: flex; gap: 10px; }
+  .save-bar button { padding: 10px 22px; border-radius: 6px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: 1px solid var(--border); background: #fff; color: var(--muted); }
+  .save-bar button.primary { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .save-bar button:disabled { opacity: 0.5; cursor: progress; }
+
+  /* Toast */
+  .toast { position: fixed; top: 24px; right: 24px; background: var(--text); color: #fff; padding: 12px 18px; border-radius: 6px; font-size: 0.9rem; opacity: 0; transform: translateY(-10px); transition: opacity 0.2s, transform 0.2s; pointer-events: none; max-width: 360px; z-index: 200; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast.ok { background: var(--ok); }
+  .toast.err { background: var(--danger); }
+
+  .loading { text-align: center; padding: 60px 20px; color: var(--muted); }
+
+  @media (max-width: 720px) {
+    .sku-row { grid-template-columns: 1fr; gap: 10px; }
+    header h1 small { display: block; margin-left: 0; margin-top: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>AARK Inventory <small>Stock & price editor</small></h1>
+  <div class="session-actions" id="sessionActions" style="display:none;">
+    <button class="linkbtn" id="logoutBtn">Sign out</button>
+  </div>
+</header>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <h2>Sign in</h2>
+  <p>Enter the admin password to manage live inventory.</p>
+  <form id="loginForm">
+    <input id="pwInput" type="password" placeholder="Password" autocomplete="current-password" required>
+    <button id="loginBtn" type="submit">Unlock</button>
+    <div class="login-err" id="loginErr"></div>
+  </form>
+</div>
+
+<!-- EDITOR -->
+<div class="editor" id="editor" style="display:none;">
+  <div class="toolbar">
+    <div class="info" id="serverInfo">Loading…</div>
+    <button id="reloadBtn">↻ Reload from server</button>
+  </div>
+  <div id="skuList" class="loading">Fetching inventory…</div>
+</div>
+
+<!-- SAVE BAR -->
+<div class="save-bar" id="saveBar">
+  <span class="count"><b id="dirtyCount">0</b> change(s) pending</span>
+  <div class="actions">
+    <button id="discardBtn">Discard</button>
+    <button id="saveBtn" class="primary">Save all</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+
+// Default backend; override with ?backend=http://localhost:5000 for local dev
+const params  = new URLSearchParams(location.search);
+const BACKEND = (params.get('backend') || 'https://aark-backend-dkn9.onrender.com').replace(/\/$/, '');
+
+// Friendly labels for the 2-letter series prefix
+const SERIES_NAMES = {
+  SC: 'The Riju Series (Straight Cut Kurtis)',
+  ST: 'The Alpa Series (Fusion Tops)',
+  F0: 'The Ananta Series (Frocks)',
+  KS: 'The Aira Series (Kids Skirt & Top)',
+  KF: 'Legacy Aira Frock',
+};
+
+const STORAGE_KEY = 'aark_admin_pw';
+
+// Mutable state
+let password = sessionStorage.getItem(STORAGE_KEY) || '';
+let serverInventory = null;   // last known server state (deep-copied)
+let serverSha = null;
+let localInventory = null;    // editable copy
+let saving = false;
+
+// ───────────────────── helpers ─────────────────────
+
+function $(id) { return document.getElementById(id); }
+
+function toast(msg, kind = '') {
+  const el = $('toast');
+  el.textContent = msg;
+  el.className = 'toast show ' + kind;
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => { el.className = 'toast ' + kind; }, 3500);
+}
+
+function authedFetch(path, opts = {}) {
+  opts.headers = Object.assign({}, opts.headers, {
+    'Authorization': 'Bearer ' + password,
+    'Content-Type': 'application/json',
+  });
+  return fetch(BACKEND + path, opts);
+}
+
+function showLogin(err) {
+  $('loginWrap').style.display = '';
+  $('editor').style.display = 'none';
+  $('sessionActions').style.display = 'none';
+  $('saveBar').classList.remove('show');
+  $('loginErr').textContent = err || '';
+  $('pwInput').focus();
+}
+
+function showEditor() {
+  $('loginWrap').style.display = 'none';
+  $('editor').style.display = '';
+  $('sessionActions').style.display = '';
+}
+
+// ───────────────────── login flow ─────────────────────
+
+$('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const btn = $('loginBtn');
+  btn.disabled = true; btn.textContent = 'Checking…';
+  $('loginErr').textContent = '';
+  const pw = $('pwInput').value;
+  try {
+    const r = await fetch(BACKEND + '/admin/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw }),
+    });
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      throw new Error(j.error || 'Login failed');
+    }
+    password = pw;
+    sessionStorage.setItem(STORAGE_KEY, pw);
+    showEditor();
+    loadInventory();
+  } catch (err) {
+    $('loginErr').textContent = err.message;
+  } finally {
+    btn.disabled = false; btn.textContent = 'Unlock';
+  }
+});
+
+$('logoutBtn').addEventListener('click', () => {
+  sessionStorage.removeItem(STORAGE_KEY);
+  password = '';
+  serverInventory = null; localInventory = null; serverSha = null;
+  showLogin();
+});
+
+// ───────────────────── inventory load & render ─────────────────────
+
+async function loadInventory() {
+  $('skuList').className = 'loading';
+  $('skuList').textContent = 'Fetching inventory from GitHub…';
+  $('serverInfo').textContent = 'Loading…';
+  try {
+    const r = await authedFetch('/admin/inventory');
+    if (r.status === 401) { showLogin('Session expired. Sign in again.'); return; }
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      throw new Error(j.error || ('HTTP ' + r.status));
+    }
+    const data = await r.json();
+    serverInventory = JSON.parse(JSON.stringify(data.inventory || {}));
+    serverSha = data.sha;
+    localInventory = JSON.parse(JSON.stringify(serverInventory));
+    renderEditor();
+    $('serverInfo').textContent = 'Loaded ' + Object.keys(localInventory).length + ' SKUs · sha ' + (serverSha || '').slice(0, 7);
+  } catch (err) {
+    $('skuList').textContent = 'Could not load: ' + err.message;
+    toast('Load failed: ' + err.message, 'err');
+  }
+}
+
+function prefixOf(sku) {
+  // Match how index.html groups: first 2 letters of the SKU as series prefix
+  return sku.slice(0, 2);
+}
+
+function renderEditor() {
+  const root = $('skuList');
+  root.className = '';
+  root.innerHTML = '';
+
+  // Group by series prefix; show series block per group in alphabetical SKU order
+  const groups = {};
+  Object.keys(localInventory).sort().forEach((sku) => {
+    const pre = prefixOf(sku);
+    (groups[pre] = groups[pre] || []).push(sku);
+  });
+
+  Object.keys(groups).sort().forEach((pre) => {
+    const block = document.createElement('div');
+    block.className = 'series-block';
+    const head = document.createElement('div');
+    head.className = 'series-head';
+    head.textContent = SERIES_NAMES[pre] || ('Series ' + pre);
+    block.appendChild(head);
+
+    groups[pre].forEach((sku) => {
+      block.appendChild(renderSkuRow(sku));
+    });
+    root.appendChild(block);
+  });
+
+  refreshDirty();
+}
+
+function renderSkuRow(sku) {
+  const row = document.createElement('div');
+  row.className = 'sku-row';
+  row.dataset.sku = sku;
+
+  const inv = localInventory[sku] || {};
+  const sizeKeys = Object.keys(inv).filter(k => k !== 'price');
+
+  // Meta column
+  const meta = document.createElement('div');
+  meta.className = 'sku-meta';
+  meta.innerHTML = '<span class="sku">' + sku + '</span><span class="label">' + (SERIES_NAMES[prefixOf(sku)] || '').replace(/^The /, '').split(' (')[0] + '</span>';
+  row.appendChild(meta);
+
+  // Price column
+  const priceCell = document.createElement('div');
+  priceCell.className = 'price-cell';
+  priceCell.innerHTML = '<span class="currency">₹</span>';
+  const priceInput = document.createElement('input');
+  priceInput.type = 'number';
+  priceInput.min = '0';
+  priceInput.step = '1';
+  priceInput.value = (typeof inv.price === 'number') ? inv.price : '';
+  priceInput.placeholder = 'default';
+  priceInput.title = 'Leave blank to use the catalog default price';
+  priceInput.addEventListener('input', () => {
+    const v = priceInput.value.trim();
+    if (v === '') {
+      delete localInventory[sku].price;
+    } else {
+      const num = Number(v);
+      if (!Number.isFinite(num) || num < 0) return;
+      localInventory[sku].price = num;
+    }
+    refreshDirty();
+  });
+  priceCell.appendChild(priceInput);
+  row.appendChild(priceCell);
+
+  // Sizes column
+  const sizesCell = document.createElement('div');
+  sizesCell.className = 'sizes-cell';
+  sizeKeys.forEach((size) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'size-input';
+    const lab = document.createElement('label');
+    lab.textContent = size;
+    const inp = document.createElement('input');
+    inp.type = 'number';
+    inp.min = '0';
+    inp.step = '1';
+    inp.value = inv[size];
+    if (inv[size] === 0) inp.classList.add('zero');
+    inp.addEventListener('input', () => {
+      const num = Number(inp.value);
+      if (!Number.isFinite(num) || num < 0) return;
+      localInventory[sku][size] = num;
+      inp.classList.toggle('zero', num === 0);
+      refreshDirty();
+    });
+    wrap.appendChild(lab);
+    wrap.appendChild(inp);
+    sizesCell.appendChild(wrap);
+  });
+  row.appendChild(sizesCell);
+
+  return row;
+}
+
+// ───────────────────── dirty state ─────────────────────
+
+function diffCount() {
+  if (!serverInventory || !localInventory) return 0;
+  let count = 0;
+  const allSkus = new Set([...Object.keys(serverInventory), ...Object.keys(localInventory)]);
+  for (const sku of allSkus) {
+    const s = serverInventory[sku] || {};
+    const l = localInventory[sku] || {};
+    const allKeys = new Set([...Object.keys(s), ...Object.keys(l)]);
+    for (const k of allKeys) {
+      if (s[k] !== l[k]) count += 1;
+    }
+  }
+  return count;
+}
+
+function refreshDirty() {
+  // Per-row dirty highlight
+  document.querySelectorAll('.sku-row').forEach((row) => {
+    const sku = row.dataset.sku;
+    const s = JSON.stringify(serverInventory[sku] || {});
+    const l = JSON.stringify(localInventory[sku] || {});
+    row.classList.toggle('dirty', s !== l);
+  });
+
+  const n = diffCount();
+  $('dirtyCount').textContent = n;
+  $('saveBar').classList.toggle('show', n > 0 && !saving);
+}
+
+$('discardBtn').addEventListener('click', () => {
+  if (!confirm('Discard all unsaved changes?')) return;
+  localInventory = JSON.parse(JSON.stringify(serverInventory));
+  renderEditor();
+});
+
+$('reloadBtn').addEventListener('click', () => {
+  if (diffCount() > 0 && !confirm('You have unsaved changes — reload anyway?')) return;
+  loadInventory();
+});
+
+// ───────────────────── save ─────────────────────
+
+$('saveBtn').addEventListener('click', async () => {
+  if (saving) return;
+  saving = true;
+  $('saveBtn').disabled = true; $('saveBtn').textContent = 'Saving…';
+  $('discardBtn').disabled = true;
+  try {
+    const r = await authedFetch('/admin/inventory', {
+      method: 'POST',
+      body: JSON.stringify({ inventory: localInventory, sha: serverSha }),
+    });
+    if (r.status === 401) { showLogin('Session expired. Sign in again.'); return; }
+    if (r.status === 409) {
+      toast('Someone else just saved. Reloading…', 'err');
+      await loadInventory();
+      return;
+    }
+    if (!r.ok) {
+      const j = await r.json().catch(() => ({}));
+      throw new Error(j.error || ('HTTP ' + r.status));
+    }
+    const j = await r.json();
+    serverSha = j.sha;
+    serverInventory = JSON.parse(JSON.stringify(localInventory));
+    refreshDirty();
+    $('serverInfo').textContent = 'Saved · live in ~1 min · sha ' + (serverSha || '').slice(0, 7);
+    toast('Saved — site updates in about a minute', 'ok');
+  } catch (err) {
+    toast('Save failed: ' + err.message, 'err');
+  } finally {
+    saving = false;
+    $('saveBtn').disabled = false; $('saveBtn').textContent = 'Save all';
+    $('discardBtn').disabled = false;
+  }
+});
+
+// Warn before tab close if dirty
+window.addEventListener('beforeunload', (e) => {
+  if (diffCount() > 0) { e.preventDefault(); e.returnValue = ''; }
+});
+
+// ───────────────────── boot ─────────────────────
+
+if (password) {
+  // Verify the cached password is still valid by attempting a load
+  showEditor();
+  loadInventory();
+} else {
+  showLogin();
+}
+</script>
+</body>
+</html>

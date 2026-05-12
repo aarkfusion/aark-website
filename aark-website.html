@@ -4300,7 +4300,7 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
       <div class="detail-cat">${p.categoryLabel}</div>
       <h1 class="detail-name">${p.series}</h1>
       <div class="detail-price">
-        <span class="current">${getProductPriceLabel(p)}</span>
+        <span class="current" id="detailPrice">${getProductPriceLabel(initProduct)}</span>
       </div>
       <p class="detail-desc">${p.desc}</p>
       <div class="pick-section">
@@ -4419,6 +4419,11 @@ function switchVariant(sku, el) {
   const tagsEl = document.getElementById('detailTags');
   if (tagsEl && prod) {
     tagsEl.innerHTML = prod.tags.map(t => `<div class="detail-tag">${t}</div>`).join('');
+  }
+
+  const priceEl = document.getElementById('detailPrice');
+  if (priceEl && prod) {
+    priceEl.textContent = getProductPriceLabel(prod);
   }
 }
 
@@ -5261,9 +5266,17 @@ try { renderCart(); }          catch(e) { console.error('[init] renderCart:', e)
 try { setupContactForm(); }    catch(e) { console.error('[init] setupContactForm:', e); }
 try { initHomeGrids(); }       catch(e) { console.error('[init] initHomeGrids:', e); }
 
-// Load inventory from inventory.json (size availability / stock)
+// Load inventory from inventory.json (size availability / stock + optional price overrides)
 fetch('inventory.json').then(r => r.ok ? r.json() : {}).then(data => {
   inventory = data || {};
+  // Apply admin-edited price overrides: inventory[sku].price wins over the filename-encoded default
+  products.forEach(p => {
+    const row = inventory[p.sku];
+    if (row && typeof row.price === 'number' && row.price > 0 && row.price !== p.price) {
+      p.price = row.price;
+      p.tags = p.tags.map(t => /^₹\d/.test(t) ? `₹${row.price}` : t);
+    }
+  });
   inventoryLoaded = true;
   // If product detail is open, update size availability in place (no full re-render)
   if (currentProduct) refreshSizeAvailability(currentProduct);

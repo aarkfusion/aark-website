@@ -3,6 +3,10 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import smtplib
 import os
+import base64
+import json
+import secrets
+import requests
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from datetime import datetime
@@ -14,6 +18,14 @@ CORS(app)
 GMAIL_ADDRESS = os.getenv('GMAIL_ADDRESS')
 GMAIL_APP_PASSWORD = os.getenv('GMAIL_APP_PASSWORD')
 OWNER_EMAIL = os.getenv('OWNER_EMAIL')
+
+# Admin inventory editor — gated by ADMIN_PASSWORD. Commits inventory.json
+# to GitHub on save so GitHub Pages republishes the live site.
+ADMIN_PASSWORD = os.getenv('ADMIN_PASSWORD')
+GITHUB_TOKEN   = os.getenv('GITHUB_TOKEN')
+GITHUB_REPO    = os.getenv('GITHUB_REPO', 'aarkfusion/aark-website')
+GITHUB_BRANCH  = os.getenv('GITHUB_BRANCH', 'main')
+INVENTORY_PATH = 'inventory.json'
 
 
 def send_email(to_email, subject, html_body):
@@ -160,6 +172,28 @@ def place_order():
             warnings.append(f"Customer email failed: {str(e)}")
             print(f"ERROR sending customer email: {e}")
 
+        # Auto-deduct sold qty from inventory.json on GitHub. Never blocks the
+        # order — on failure we attach a warning and email the owner so they
+        # can reconcile manually.
+        cart_items = data.get('cart_items')
+        if cart_items:
+            ok, detail = _deduct_inventory_for_order(cart_items, data['order_id'])
+            if not ok:
+                warnings.append(f"Inventory auto-deduct failed: {detail}")
+                print(f"ERROR auto-deducting inventory: {detail}")
+                try:
+                    alert_html = (
+                        f"<p>Order <b>{data['order_id']}</b> placed, but the automatic "
+                        f"inventory deduction failed.</p><p>Reason: {detail}</p>"
+                        f"<p>Please update inventory.json manually for: "
+                        f"<pre>{json.dumps(cart_items, indent=2)}</pre></p>"
+                    )
+                    send_email(OWNER_EMAIL,
+                               f"AARK: manual inventory reconciliation needed for {data['order_id']}",
+                               alert_html)
+                except Exception as alert_err:
+                    print(f"ERROR sending reconciliation alert: {alert_err}")
+
         response = {
             "success": True,
             "order_id": data['order_id'],
@@ -230,6 +264,166 @@ def contact():
 
     except Exception as e:
         print(f"Contact form error: {e}")
+        return jsonify({"error": "Server error", "detail": str(e)}), 500
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Admin inventory editor
+#
+# Auth model: the employee enters ADMIN_PASSWORD on admin.html; the page sends
+# it as `Authorization: Bearer <password>` on every admin request. The password
+# lives only in Render env vars and in the employee's sessionStorage — never
+# in client source. GitHub PAT stays server-side and is used only to commit
+# inventory.json on save.
+# ─────────────────────────────────────────────────────────────────────────────
+
+def _require_admin(req):
+    """Return None if request is authorised; otherwise return a Flask response tuple."""
+    if not ADMIN_PASSWORD:
+        return jsonify({"error": "Admin not configured on server"}), 503
+    header = req.headers.get('Authorization', '')
+    if not header.startswith('Bearer '):
+        return jsonify({"error": "Unauthorized"}), 401
+    supplied = header[len('Bearer '):]
+    if not secrets.compare_digest(supplied, ADMIN_PASSWORD):
+        return jsonify({"error": "Unauthorized"}), 401
+    return None
+
+
+def _github_headers():
+    if not GITHUB_TOKEN:
+        raise RuntimeError("GITHUB_TOKEN not set")
+    return {
+        'Authorization': f'Bearer {GITHUB_TOKEN}',
+        'Accept': 'application/vnd.github+json',
+        'X-GitHub-Api-Version': '2022-11-28',
+    }
+
+
+def _github_get_inventory():
+    """Fetch inventory.json from GitHub. Returns (parsed_json, sha)."""
+    url = f'https://api.github.com/repos/{GITHUB_REPO}/contents/{INVENTORY_PATH}'
+    r = requests.get(url, headers=_github_headers(), params={'ref': GITHUB_BRANCH}, timeout=15)
+    r.raise_for_status()
+    payload = r.json()
+    content_b64 = payload.get('content', '')
+    raw = base64.b64decode(content_b64).decode('utf-8')
+    return json.loads(raw), payload.get('sha')
+
+
+def _github_put_inventory(new_inventory, sha, commit_message):
+    """Commit a new inventory.json. Returns the new SHA on success."""
+    url = f'https://api.github.com/repos/{GITHUB_REPO}/contents/{INVENTORY_PATH}'
+    body_text = json.dumps(new_inventory, indent=2) + '\n'
+    body = {
+        'message': commit_message,
+        'content': base64.b64encode(body_text.encode('utf-8')).decode('ascii'),
+        'sha': sha,
+        'branch': GITHUB_BRANCH,
+    }
+    r = requests.put(url, headers=_github_headers(), json=body, timeout=20)
+    if r.status_code == 409:
+        return None  # caller will surface a conflict message
+    r.raise_for_status()
+    return r.json().get('content', {}).get('sha')
+
+
+def _deduct_inventory_for_order(cart_items, order_id):
+    """Subtract sold qty from inventory.json on GitHub. Retries on SHA conflict.
+
+    Returns (ok: bool, detail: str). Designed to NEVER raise — order placement
+    must succeed even if the deduction fails. On failure the caller emails the
+    owner so manual reconciliation is possible.
+    """
+    if not GITHUB_TOKEN:
+        return False, "GITHUB_TOKEN not set on server"
+    if not isinstance(cart_items, list) or not cart_items:
+        return False, "No cart_items provided"
+
+    for attempt in range(3):
+        try:
+            inv, sha = _github_get_inventory()
+        except Exception as e:
+            return False, f"GitHub fetch failed: {e}"
+
+        for item in cart_items:
+            sku  = (item or {}).get('sku')
+            size = (item or {}).get('size')
+            qty  = (item or {}).get('qty')
+            if not sku or not size or not isinstance(qty, (int, float)) or qty <= 0:
+                continue
+            row = inv.get(sku)
+            if not isinstance(row, dict) or size not in row:
+                continue  # untracked SKU/size — skip silently
+            current = row.get(size, 0)
+            row[size] = max(0, int(current) - int(qty))
+
+        commit_msg = f"Auto-deduct inventory for order {order_id}"
+        try:
+            new_sha = _github_put_inventory(inv, sha, commit_msg)
+        except Exception as e:
+            return False, f"GitHub commit failed: {e}"
+        if new_sha:
+            return True, "ok"
+        # 409 conflict — someone else committed in between, retry with fresh SHA
+    return False, "GitHub conflict after 3 retries"
+
+
+@app.route('/admin/login', methods=['POST'])
+def admin_login():
+    if not ADMIN_PASSWORD:
+        return jsonify({"error": "Admin not configured on server"}), 503
+    data = request.get_json(silent=True) or {}
+    supplied = data.get('password', '')
+    if not isinstance(supplied, str) or not secrets.compare_digest(supplied, ADMIN_PASSWORD):
+        return jsonify({"error": "Invalid password"}), 401
+    return jsonify({"ok": True}), 200
+
+
+@app.route('/admin/inventory', methods=['GET'])
+def admin_get_inventory():
+    auth_err = _require_admin(request)
+    if auth_err:
+        return auth_err
+    try:
+        inv, sha = _github_get_inventory()
+        return jsonify({"inventory": inv, "sha": sha}), 200
+    except requests.HTTPError as e:
+        detail = e.response.text if e.response is not None else str(e)
+        return jsonify({"error": "GitHub fetch failed", "detail": detail}), 502
+    except Exception as e:
+        return jsonify({"error": "Server error", "detail": str(e)}), 500
+
+
+@app.route('/admin/inventory', methods=['POST'])
+def admin_put_inventory():
+    auth_err = _require_admin(request)
+    if auth_err:
+        return auth_err
+    data = request.get_json(silent=True) or {}
+    new_inv = data.get('inventory')
+    client_sha = data.get('sha')
+    if not isinstance(new_inv, dict) or not isinstance(client_sha, str):
+        return jsonify({"error": "Body must include `inventory` (object) and `sha` (string)"}), 400
+
+    # Server-side sanity: every value must be a dict; every leaf must be a non-negative number.
+    for sku, row in new_inv.items():
+        if not isinstance(row, dict):
+            return jsonify({"error": f"SKU {sku} is not an object"}), 400
+        for k, v in row.items():
+            if not isinstance(v, (int, float)) or v < 0:
+                return jsonify({"error": f"SKU {sku} key '{k}' must be a non-negative number"}), 400
+
+    commit_message = f"Inventory update via admin — {datetime.utcnow().isoformat(timespec='seconds')}Z"
+    try:
+        new_sha = _github_put_inventory(new_inv, client_sha, commit_message)
+        if new_sha is None:
+            return jsonify({"error": "Conflict: someone else just saved. Reload and try again."}), 409
+        return jsonify({"ok": True, "sha": new_sha}), 200
+    except requests.HTTPError as e:
+        detail = e.response.text if e.response is not None else str(e)
+        return jsonify({"error": "GitHub commit failed", "detail": detail}), 502
+    except Exception as e:
         return jsonify({"error": "Server error", "detail": str(e)}), 500
 
 

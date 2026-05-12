@@ -1328,6 +1328,8 @@ async function placeOrder() {
     customer_phone:   document.getElementById('fieldPhone').value.trim(),
     customer_address: fullAddress,
     order_items:      getFormattedItems(),
+    // Structured cart for server-side auto-deduction from inventory.json
+    cart_items:       cart.map(i => ({ sku: i.sku, size: i.selectedSize, qty: i.qty })),
     order_total:      grandTotal.toString(),
     utr_number:       utrValue,
     date:             new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' }),

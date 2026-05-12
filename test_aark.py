@@ -183,13 +183,13 @@ if html_index:
     formerly_untracked = ['F0003','F0004','F0005','F0006','F0009','F0012','F0013']
     for sku in formerly_untracked:
         in_inv  = sku in inventory
-        all_zero = in_inv and all(v == 0 for v in inventory[sku].values())
+        all_zero = in_inv and all(v == 0 for k, v in inventory[sku].items() if k != 'price')
         check(in_inv and all_zero, f'{sku} in inventory.json with all-zero stock (sold out)')
 
     # Verify the 7 previously-tracked all-zero SKUs still show as sold out
     always_zero = ['SC004','SC009','SC013','ST010','ST013','ST014','ST015']
     for sku in always_zero:
-        all_zero = sku in inventory and all(v == 0 for v in inventory[sku].values())
+        all_zero = sku in inventory and all(v == 0 for k, v in inventory[sku].items() if k != 'price')
         check(all_zero, f'{sku} confirmed all-zero in inventory (sold out)')
 
 
