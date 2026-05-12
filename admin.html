@@ -58,9 +58,12 @@
 
   .series-block { background: #fff; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 18px; overflow: hidden; }
   .series-head { background: var(--cream); padding: 10px 16px; font-size: 0.7rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); }
-  .sku-row { display: grid; grid-template-columns: minmax(140px, 1fr) 130px 1fr; gap: 16px; padding: 14px 16px; border-bottom: 1px solid var(--border); align-items: center; }
+  .sku-row { display: grid; grid-template-columns: 64px minmax(120px, 1fr) 130px 1fr; gap: 16px; padding: 14px 16px; border-bottom: 1px solid var(--border); align-items: center; }
   .sku-row:last-child { border-bottom: none; }
   .sku-row.dirty { background: #fff8e6; }
+  .sku-thumb { width: 64px; height: 80px; border-radius: 5px; overflow: hidden; background: var(--cream); display: flex; align-items: center; justify-content: center; }
+  .sku-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .sku-thumb .placeholder { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 0.7rem; color: var(--muted); letter-spacing: 0.08em; }
   .sku-meta { display: flex; flex-direction: column; gap: 2px; }
   .sku-meta .sku { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-weight: 600; font-size: 0.9rem; color: var(--text); }
   .sku-meta .label { font-size: 0.75rem; color: var(--muted); }
@@ -94,7 +97,8 @@
   .loading { text-align: center; padding: 60px 20px; color: var(--muted); }
 
   @media (max-width: 720px) {
-    .sku-row { grid-template-columns: 1fr; gap: 10px; }
+    .sku-row { grid-template-columns: 64px 1fr; grid-template-rows: auto auto; gap: 10px; }
+    .sku-row .price-cell, .sku-row .sizes-cell { grid-column: 1 / -1; }
     header h1 small { display: block; margin-left: 0; margin-top: 4px; }
   }
 </style>
@@ -163,6 +167,7 @@ let serverInventory = null;   // last known server state (deep-copied)
 let serverSha = null;
 let localInventory = null;    // editable copy
 let saving = false;
+let skuImages = {};           // sku -> image URL (best-effort, scraped from index.html)
 
 // ───────────────────── helpers ─────────────────────
 
@@ -182,6 +187,52 @@ function authedFetch(path, opts = {}) {
     'Content-Type': 'application/json',
   });
   return fetch(BACKEND + path, opts);
+}
+
+// Scrape PRODUCT_IMAGES + CATALOG_FILES from index.html to build a SKU → thumbnail-URL
+// map. Best-effort: if it fails or a SKU isn't found, the row falls back to a placeholder.
+async function loadSkuImages() {
+  try {
+    const html = await (await fetch('index.html')).text();
+    const map = {};
+    // PRODUCT_IMAGES entries (preferred — multi-image override). Take the first image.
+    const piBlock = html.match(/const PRODUCT_IMAGES\s*=\s*\{([\s\S]*?)\n\};/);
+    if (piBlock) {
+      const re = /(\w+):\s*\[\s*['"]([^'"]+)['"]/g;
+      let m;
+      while ((m = re.exec(piBlock[1])) !== null) {
+        map[m[1]] = m[2];
+      }
+    }
+    // CATALOG_FILES entries — fallback for SKUs without a PRODUCT_IMAGES override.
+    const cfBlock = html.match(/const CATALOG_FILES\s*=\s*\[([\s\S]*?)\];/);
+    if (cfBlock) {
+      const re = /['"]([A-Z]+\d+)_([^'"]+)['"]/g;
+      let m;
+      while ((m = re.exec(cfBlock[1])) !== null) {
+        const sku = m[1];
+        if (!map[sku]) map[sku] = `catalog-images/${sku}_${m[2]}`;
+      }
+    }
+    skuImages = map;
+    // If the editor is already on screen, slot the images in without re-rendering rows
+    if (localInventory) refreshThumbnails();
+  } catch (e) {
+    console.warn('Could not load product thumbnails:', e);
+  }
+}
+
+function refreshThumbnails() {
+  document.querySelectorAll('.sku-thumb').forEach((thumb) => {
+    const sku = thumb.closest('.sku-row').dataset.sku;
+    const url = skuImages[sku];
+    if (!url || thumb.querySelector('img')) return;
+    thumb.innerHTML = '';
+    const img = document.createElement('img');
+    img.src = url; img.alt = sku; img.loading = 'lazy';
+    img.onerror = function () { thumb.innerHTML = '<span class="placeholder">' + sku + '</span>'; };
+    thumb.appendChild(img);
+  });
 }
 
 function showLogin(err) {
@@ -301,6 +352,24 @@ function renderSkuRow(sku) {
 
   const inv = localInventory[sku] || {};
   const sizeKeys = Object.keys(inv).filter(k => k !== 'price');
+
+  // Thumbnail column
+  const thumb = document.createElement('div');
+  thumb.className = 'sku-thumb';
+  const imgUrl = skuImages[sku];
+  if (imgUrl) {
+    const img = document.createElement('img');
+    img.src = imgUrl;
+    img.alt = sku;
+    img.loading = 'lazy';
+    img.onerror = function () {
+      thumb.innerHTML = '<span class="placeholder">' + sku + '</span>';
+    };
+    thumb.appendChild(img);
+  } else {
+    thumb.innerHTML = '<span class="placeholder">' + sku + '</span>';
+  }
+  row.appendChild(thumb);
 
   // Meta column
   const meta = document.createElement('div');
@@ -448,6 +517,11 @@ window.addEventListener('beforeunload', (e) => {
 });
 
 // ───────────────────── boot ─────────────────────
+
+// Kick off catalog-image scraping in parallel with the rest of boot. If it finishes
+// before the inventory renders, thumbnails show on first paint; otherwise they slot
+// in on the next renderEditor() (e.g., after Reload or Save).
+loadSkuImages();
 
 if (password) {
   // Verify the cached password is still valid by attempting a load
