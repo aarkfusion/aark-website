@@ -311,8 +311,34 @@ def _github_get_inventory():
     return json.loads(raw), payload.get('sha')
 
 
+_ADULT_SIZE_ORDER = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
+
+def _size_rank(key):
+    """Sort key for size labels — adult XS→XXL first, then kids by numeric age,
+    then alphabetical fallback. `price` always sorts last."""
+    if key == 'price':
+        return (3, 0, '')
+    if key in _ADULT_SIZE_ORDER:
+        return (0, _ADULT_SIZE_ORDER.index(key), '')
+    try:
+        return (1, int(str(key).split('-')[0]), '')
+    except (ValueError, IndexError):
+        return (2, 0, key)
+
+
+def _normalize_inventory(inv):
+    """Return a new dict with SKUs sorted alphabetically and each row's keys
+    in canonical size order (price last). Keeps the JSON file readable and
+    consistent across admin saves and auto-deductions."""
+    return {
+        sku: {k: inv[sku][k] for k in sorted(inv[sku].keys(), key=_size_rank)}
+        for sku in sorted(inv.keys())
+    }
+
+
 def _github_put_inventory(new_inventory, sha, commit_message):
     """Commit a new inventory.json. Returns the new SHA on success."""
+    new_inventory = _normalize_inventory(new_inventory)
     url = f'https://api.github.com/repos/{GITHUB_REPO}/contents/{INVENTORY_PATH}'
     body_text = json.dumps(new_inventory, indent=2) + '\n'
     body = {
