@@ -645,6 +645,7 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
 .badge-soldout { background: rgba(0,0,0,0.62); color: rgba(255,255,255,0.92); }
 .badge-variant { background: rgba(0,128,128,0.82); color: white; }
 .badge-hand { background: var(--cream-dark); color: var(--teal); border: 1px solid var(--teal); }
+.badge-kidsafe { background: #2d8659; color: #fff; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; display: inline-block; }
 .product-actions {
   position: absolute; bottom: 0; left: 0; right: 0;
   display: flex; gap: 4px; padding: 10px 12px;
@@ -2412,8 +2413,8 @@ img {
   <div class="sm-sub-section" id="smSub-kids">
     <button class="sm-back-btn" onclick="closeSubmenu()">‹ Back</button>
     <p class="sm-sub-heading">Kids</p>
-    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">View All</button>
-    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-frocks')">The Aira Series <span style="font-size:0.7rem;opacity:0.55;margin-left:6px;font-style:italic;">Coming Soon</span></button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-skirt-top')">View All</button>
+    <button class="sm-sub-item" onclick="closeSideMenu();showShopWithFilter('kids-skirt-top')">The Aira Series</button>
     <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('kids')">Collections</button>
   </div>
   <div class="sm-sub-section" id="smSub-collections">
@@ -2524,11 +2525,8 @@ img {
             <div class="sc-img-wrap"><img src="catalog-images/ST011_1.png" alt="The Alpa Series" loading="lazy"></div>
             <div class="sc-label">The Alpa Series</div>
           </div>
-          <div class="sc-card" data-href="#shop-kids-frocks" onclick="showShopWithFilter('kids-frocks')">
-            <div class="sc-img-wrap" style="position:relative;">
-              <img src="mdc/1/girl_skirt_1_1.png" alt="The Aira Series" loading="lazy">
-              <div style="position:absolute;top:10px;right:10px;background:var(--teal);color:#fff;font-size:0.62rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:4px 10px;border-radius:12px;">Coming Soon</div>
-            </div>
+          <div class="sc-card" data-href="#shop-kids-skirt-top" onclick="showShopWithFilter('kids-skirt-top')">
+            <div class="sc-img-wrap"><img src="kids_collection/KST01_1.jpeg" alt="The Aira Series" loading="lazy"></div>
             <div class="sc-label">The Aira Series</div>
           </div>
           <!-- clones for seamless loop (first 3 repeated) -->
@@ -2711,7 +2709,7 @@ img {
               <div class="filter-chip" data-filter-type="category" data-filter-value="straight-cut-kurtis" onclick="toggleFilter(this,'category','straight-cut-kurtis')">The Riju Series</div>
               <div class="filter-chip" data-filter-type="category" data-filter-value="fusion-tops" onclick="toggleFilter(this,'category','fusion-tops')">The Alpa Series</div>
               <div class="filter-chip" data-filter-type="category" data-filter-value="frocks" onclick="toggleFilter(this,'category','frocks')">The Ananta Series</div>
-              <div class="filter-chip" data-filter-type="category" data-filter-value="kids-frocks" onclick="toggleFilter(this,'category','kids-frocks')">The Aira Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="kids-skirt-top" onclick="toggleFilter(this,'category','kids-skirt-top')">The Aira Series</div>
             </div>
           </div>
           <div class="filter-group">
@@ -2792,14 +2790,11 @@ img {
         <div class="coll-sub">Women · Frocks</div>
       </div>
     </div>
-    <div class="coll-card" data-group="kids" onclick="showShopWithFilter('kids-frocks')">
-      <div class="coll-img-wrap" style="position:relative;">
-        <img src="mdc/1/girl_skirt_1_1.png" alt="The Aira Series" loading="lazy">
-        <div style="position:absolute;top:10px;right:10px;background:var(--teal);color:#fff;font-size:0.62rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;padding:4px 10px;border-radius:12px;">Coming Soon</div>
-      </div>
+    <div class="coll-card" data-group="kids" onclick="showShopWithFilter('kids-skirt-top')">
+      <div class="coll-img-wrap"><img src="kids_collection/KST01_1.jpeg" alt="The Aira Series" loading="lazy"></div>
       <div class="coll-label">
         <div class="coll-name">The Aira Series</div>
-        <div class="coll-sub">Kids · Coming Soon</div>
+        <div class="coll-sub">Kids · Skirt & Top</div>
       </div>
     </div>
     <div class="coll-card" data-group="family" onclick="openComboPage()">
@@ -3367,14 +3362,14 @@ const SERIES_META = {
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     fitNote: 'Elegant frock silhouette crafted for everyday and festive dressing.',
   },
-  KF: {
+  KS: {
     series: 'The Aira Series',
-    cat: 'kids-frocks',
-    categoryLabel: 'Kids Frocks',
-    productLabel: 'Kids Frock',
+    cat: 'kids-skirt-top',
+    categoryLabel: 'Kids Skirt & Top',
+    productLabel: 'Skirt & Top',
     fabric: 'Soft Cotton',
-    sizes: ['2-3yr', '4-5yr', '6-7yr', '8-9yr', '10-11yr'],
-    fitNote: 'Kid-friendly fit with easy movement and comfortable wear.',
+    sizes: ['5-6yr', '7-8yr', '9-10yr', '11-12yr', '13-14yr'],
+    fitNote: 'Two-piece set with a flared skirt and matching top — breathable cotton, easy to wear.',
   },
 };
 
@@ -3410,13 +3405,15 @@ const CATALOG_FILES = [
   'F0009_1150.jpg',
   'F0012_1200.jpg',
   'F0013_1200.jpg',
-  'KF001_750.jpg',
-  'KF002_750.png',
-  'KF003_750.jpg',
+  'KST011_690.jpeg',
+  'KST012_690.jpeg',
+  'KST013_690.jpeg',
+  'KST014_690.jpeg',
+  'KST015_690.jpeg',
 ];
 
-const NEW_SKUS = new Set(['SC012', 'F0006', 'KF003']);
-const FEATURED_SKUS = new Set(['SC001', 'SC006', 'ST003', 'F0002', 'KF001']);
+const NEW_SKUS = new Set(['SC012', 'F0006', 'KST011']);
+const FEATURED_SKUS = new Set(['SC001', 'SC006', 'ST003', 'F0002', 'KST011']);
 
 function buildWhatsAppHref(message) {
   return `${WHATSAPP_URL}?text=${encodeURIComponent(message)}`;
@@ -3452,13 +3449,13 @@ function buildProductDescription(meta, sku) {
       'An elegant frock adorned with a traditional ethnic motif. The relaxed A-line cut and premium fabric make it a go-to for celebrations and casual days alike.',
       'A beautifully printed frock with a fluid drape and rich ethnic character. Designed to be worn from morning to evening without compromising comfort or style.',
     ],
-    KF: [
-      'A cheerful kids frock in a playful ethnic print. Crafted in soft, breathable cotton for all-day comfort and easy movement.',
-      'A vibrant kids frock with a fun ethnic motif. Gentle on skin and easy to wear, making it perfect for festive occasions and everyday play.',
+    KS: [
+      'A playful skirt-and-top set in a vibrant ethnic print. Made with kid-safe dyes and breathable cotton — gentle on little ones and easy for all-day play.',
+      'A cheerful two-piece set with a fun ethnic motif. Crafted with kid-safe dyes and soft, skin-friendly cotton for festive days and everyday adventures alike.',
     ],
   };
   const prefix = sku.slice(0, 2);
-  const seq = Number(sku.slice(2));
+  const seq = Number((sku.match(/\d+$/) || ['0'])[0]);
   const pool = descMap[prefix] || descMap.SC;
   return pool[(seq - 1) % pool.length] + ` Fabric: ${meta.fabric}. ${meta.fitNote}`;
 }
@@ -3484,6 +3481,11 @@ const PRODUCT_IMAGES = {
   ST013: ['catalog-images/ST013_1.png','catalog-images/ST013_2.png','catalog-images/ST013_3.png'],
   ST014: ['catalog-images/ST014_1.png','catalog-images/ST014_2.png','catalog-images/ST014_3.png'],
   ST015: ['catalog-images/ST015_1.png','catalog-images/ST015_2.png','catalog-images/ST015_3.png'],
+  KST011: ['kids_collection/KST01_1.jpeg'],
+  KST012: ['kids_collection/KST01_2.jpeg'],
+  KST013: ['kids_collection/KST01_3.jpeg'],
+  KST014: ['kids_collection/KST01_4.jpeg'],
+  KST015: ['kids_collection/KST01_5.jpeg'],
 };
 
 const VARIANT_GROUPS = {
@@ -3508,12 +3510,14 @@ const VARIANT_GROUPS = {
       { sku: 'SC009', name: 'Lal Keri',   imgs: ['catalog-images/SC009_870.jpg'] },
     ]
   },
-  'aira-frock': {
-    repSku: 'KF001',
+  'aira-skirt-top': {
+    repSku: 'KST011',
     patterns: [
-      { sku: 'KF001', name: 'Devi',         imgs: ['catalog-images/KF001_750.jpg'] },
-      { sku: 'KF002', name: 'Bodhi',        imgs: ['catalog-images/KF002_750.png'] },
-      { sku: 'KF003', name: 'Maroon Bodhi', imgs: ['catalog-images/KF003_750.jpg'] },
+      { sku: 'KST011', name: 'Color 1', imgs: ['kids_collection/KST01_1.jpeg'] },
+      { sku: 'KST012', name: 'Color 2', imgs: ['kids_collection/KST01_2.jpeg'] },
+      { sku: 'KST013', name: 'Color 3', imgs: ['kids_collection/KST01_3.jpeg'] },
+      { sku: 'KST014', name: 'Color 4', imgs: ['kids_collection/KST01_4.jpeg'] },
+      { sku: 'KST015', name: 'Color 5', imgs: ['kids_collection/KST01_5.jpeg'] },
     ]
   },
   'alpa-peplum': {
@@ -3563,7 +3567,7 @@ const PRODUCT_STYLE_NAMES = {
 function buildProduct(file, index) {
   const [sku, priceWithExt] = file.split('_');
   const prefix = sku.slice(0, 2);
-  const sequence = Number(sku.slice(2));
+  const sequence = Number((sku.match(/\d+$/) || ['0'])[0]);
   const price = Number(priceWithExt.split('.')[0]);
   const meta = SERIES_META[prefix];
   const photos = PRODUCT_IMAGES[sku] || null;
@@ -3584,7 +3588,8 @@ function buildProduct(file, index) {
     desc: buildProductDescription(meta, sku),
     fabric: meta.fabric,
     sizes: meta.sizes,
-    tags: [meta.series, meta.categoryLabel, sku, `₹${price}`],
+    tags: [meta.series, meta.categoryLabel, sku, `₹${price}`, ...(prefix === 'KS' ? ['Kids Safe'] : [])],
+    kidSafe: prefix === 'KS',
     badge: NEW_SKUS.has(sku) ? 'new' : '',
     featured: FEATURED_SKUS.has(sku),
     fitNote: meta.fitNote,
@@ -3751,12 +3756,12 @@ function updateMobileNav(pageId) {
 }
 
 const ADULT_SIZES = ['XS','S','M','L','XL','XXL'];
-const KIDS_SIZES  = ['2-3yr','4-5yr','6-7yr','8-9yr','10-11yr','12-13yr','13-14yr'];
+const KIDS_SIZES  = ['5-6yr','7-8yr','9-10yr','11-12yr','13-14yr'];
 
 function renderSizeFilterChips(category) {
   const container = document.getElementById('sizeFilterOptions');
   if (!container) return;
-  const sizes = category === 'kids-frocks' ? KIDS_SIZES : ADULT_SIZES;
+  const sizes = category === 'kids-skirt-top' ? KIDS_SIZES : ADULT_SIZES;
   container.innerHTML = sizes.map(sz =>
     `<div class="filter-chip${activeFilters.size === sz ? ' selected' : ''}" data-filter-type="size" data-filter-value="${sz}" onclick="toggleFilter(this,'size','${sz}')">${sz}</div>`
   ).join('');
@@ -3848,6 +3853,7 @@ function buildProductCard(p) {
       <img class="product-img-hover" src="${cardHoverImg}" alt="${headline}" loading="lazy">
       <div class="card-badges">
         ${badgeSoHTML}
+        ${p.kidSafe ? '<span class="badge-kidsafe">Kids Safe</span>' : ''}
       </div>
       <div class="product-actions" onclick="event.stopPropagation()">
         <button class="product-action-btn wishlist ${inWishlist?'active':''}" onclick="toggleWishlist(${p.id},this)" title="Wishlist">${getHeartIconMarkup()}</button>
@@ -4060,7 +4066,7 @@ const KIDS_COMING_SOON_HTML = `
 
 function initShopGrid() {
   const filtered = getFilteredProducts();
-  const emptyHTML = activeFilters.category === 'kids-frocks'
+  const emptyHTML = activeFilters.category === 'kids-skirt-top'
     ? KIDS_COMING_SOON_HTML
     : `<div style="grid-column:1/-1;background:white;border-radius:12px;padding:32px;text-align:center;box-shadow:var(--shadow-sm);">No products match those filters yet.</div>`;
   document.getElementById('shopProductGrid').innerHTML = filtered.length
@@ -4967,7 +4973,7 @@ function navOrSubmenu(name, action) {
   if (isMobileNav()) { openSubmenu(name); return; }
   closeSideMenu();
   if (action === 'shop') { clearFilters(); showPage('shop'); }
-  else if (action === 'kids') { showShopWithFilter('kids-frocks'); }
+  else if (action === 'kids') { showShopWithFilter('kids-skirt-top'); }
   else if (action === 'collections') { showPage('collections'); }
 }
 function showCollectionsFiltered(group) {
@@ -5335,7 +5341,7 @@ const MDC_PATTERNS = [
     ]
   }
 ];
-function isLargeKidSize(sz) { return sz === '8-9yr' || sz === '10-11yr' || sz === '12-13yr' || sz === '13-14yr'; }
+function isLargeKidSize(sz) { return sz === '7-8yr' || sz === '9-10yr' || sz === '11-12yr' || sz === '13-14yr'; }
 function mdcGetPrice(fabric, person, style, size) {
   var silk = fabric === 'Kalamkari Silk';
   if (person === 'mom') return style === 'frock' ? (silk ? 1460 : 1250) : (silk ? 1050 : 950);

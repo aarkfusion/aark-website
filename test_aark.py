@@ -170,17 +170,17 @@ suite('Product Catalog — Inventory Coverage')
 catalog_skus = []
 if html_index:
     catalog_skus = list(dict.fromkeys(
-        re.findall(r"'((?:SC|ST|F|KF)\d+)_\d+\.\w+'", html_index)
+        re.findall(r"'((?:SC|ST|F|KF|KST)\d+)_\d+\.\w+'", html_index)
     ))
     check(len(catalog_skus) > 0, f'Catalog SKUs extracted  ({len(catalog_skus)} products)')
 
     tracked   = [s for s in catalog_skus if s in inventory]
     untracked = [s for s in catalog_skus if s not in inventory]
-    check(len(tracked) == 34, f'All 34 catalog SKUs now tracked in inventory  (found {len(tracked)})')
+    check(len(tracked) == 36, f'All 36 catalog SKUs now tracked in inventory  (found {len(tracked)})')
     check(len(untracked) == 0, f'No untracked SKUs remaining  ({len(untracked)} untracked)')
 
-    # Verify the 10 previously-untracked SKUs are now in inventory with zero stock
-    formerly_untracked = ['F0003','F0004','F0005','F0006','F0009','F0012','F0013','KF001','KF002','KF003']
+    # Verify the previously-untracked SKUs are now in inventory with zero stock
+    formerly_untracked = ['F0003','F0004','F0005','F0006','F0009','F0012','F0013']
     for sku in formerly_untracked:
         in_inv  = sku in inventory
         all_zero = in_inv and all(v == 0 for v in inventory[sku].values())
@@ -204,7 +204,7 @@ mock_products = [
     {'id':2,'sku':'SC002','cat':'straight-cut-kurtis','sizes':['S','M','L','XL']},
     {'id':3,'sku':'F0002','cat':'frocks',             'sizes':['XS','S','M','L','XL','XXL']},
     {'id':4,'sku':'ST011','cat':'fusion-tops',        'sizes':['XS','S','M','L']},
-    {'id':5,'sku':'KF001','cat':'kids-frocks',        'sizes':['2-3yr','4-5yr','6-7yr']},
+    {'id':5,'sku':'KF001','cat':'kids-skirt-top',     'sizes':['5-6yr','7-8yr','9-10yr']},
     {'id':6,'sku':'F0003','cat':'frocks',             'sizes':['XS','S','M','L','XL','XXL']},  # untracked
 ]
 
@@ -214,7 +214,7 @@ mock_inv = {
     'F0002': {'XS':1,'S':2,'M':3,'L':1,'XL':2,'XXL':0},
     'ST011': {'XS':0,'S':1,'M':2,'L':0},
     'F0003': {'XS':0,'S':0,'M':0,'L':0,'XL':0},   # now tracked, all-zero (sold out)
-    'KF001': {'2-3yr':0,'4-5yr':0,'6-7yr':0,'8-9yr':0,'10-11yr':0},  # tracked, all-zero
+    'KF001': {'5-6yr':0,'7-8yr':0,'9-10yr':0,'11-12yr':0,'13-14yr':0},  # tracked, all-zero
 }
 
 # Before inventory loads — size check only, no stock check
@@ -485,11 +485,11 @@ final, removed, reduced = validate_checkout_cart(mock_inv, cart_in, confirmed=co
 check(len(final) == 0 and 'SC001/L' in removed,
       'Checkout validation: confirmed deduction makes item OOS → removed from checkout cart')
 
-# KF001 is now tracked with zero stock — checkout must reject it
-cart_in = [{'sku':'KF001','size':'2-3yr','qty':3}]
+# Tracked but zero-stock SKU — checkout must reject it (formerly-untracked F0003 is now tracked all-zero)
+cart_in = [{'sku':'F0003','size':'XS','qty':3}]
 final, removed, reduced = validate_checkout_cart(mock_inv, cart_in)
-check(len(final) == 0 and 'KF001/2-3yr' in removed,
-      'Checkout validation: KF001 (now tracked, zero stock) removed from checkout cart')
+check(len(final) == 0 and 'F0003/XS' in removed,
+      'Checkout validation: F0003 (tracked, zero stock) removed from checkout cart')
 
 # ─────────────────────────────────────────────────────────────────────────────
 # Suite 9 — Dynamic size filter (kids ↔ adult swap)
@@ -498,14 +498,14 @@ check(len(final) == 0 and 'KF001/2-3yr' in removed,
 suite('Dynamic Size Filter — Kids ↔ Adult Swap')
 
 ADULT_SIZES_PY = ['XS', 'S', 'M', 'L', 'XL', 'XXL']
-KIDS_SIZES_PY  = ['2-3yr', '4-5yr', '6-7yr', '8-9yr', '10-11yr']
+KIDS_SIZES_PY  = ['5-6yr', '7-8yr', '9-10yr', '11-12yr', '13-14yr']
 
 def get_size_chips_for(category):
-    return KIDS_SIZES_PY if category == 'kids-frocks' else ADULT_SIZES_PY
+    return KIDS_SIZES_PY if category == 'kids-skirt-top' else ADULT_SIZES_PY
 
 # Category → correct size set
-check(get_size_chips_for('kids-frocks') == KIDS_SIZES_PY,
-      'kids-frocks category → kids sizes shown (2-3yr … 10-11yr)')
+check(get_size_chips_for('kids-skirt-top') == KIDS_SIZES_PY,
+      'kids-skirt-top category → kids sizes shown (5-6yr … 13-14yr)')
 check(get_size_chips_for('straight-cut-kurtis') == ADULT_SIZES_PY,
       'straight-cut-kurtis → adult sizes shown (XS … XXL)')
 check(get_size_chips_for('frocks') == ADULT_SIZES_PY,
@@ -523,8 +523,8 @@ for sz in ADULT_SIZES_PY:
 
 # Filter logic: kids sizes only match kids products, not adult products
 kids_products = [
-    {'id':5,'sku':'KF001','cat':'kids-frocks','sizes':['2-3yr','4-5yr','6-7yr','8-9yr','10-11yr']},
-    {'id':6,'sku':'KF002','cat':'kids-frocks','sizes':['2-3yr','4-5yr','6-7yr','8-9yr','10-11yr']},
+    {'id':5,'sku':'KF001','cat':'kids-skirt-top','sizes':['5-6yr','7-8yr','9-10yr','11-12yr','13-14yr']},
+    {'id':6,'sku':'KF002','cat':'kids-skirt-top','sizes':['5-6yr','7-8yr','9-10yr','11-12yr','13-14yr']},
 ]
 adult_products = [
     {'id':1,'sku':'SC001','cat':'straight-cut-kurtis','sizes':['XS','S','M','L','XL','XXL']},
@@ -556,15 +556,15 @@ def simulate_category_switch(from_cat, to_cat, active_size):
     del active['size']   # cleared on category change
     return active
 
-state = simulate_category_switch('straight-cut-kurtis', 'kids-frocks', 'M')
+state = simulate_category_switch('straight-cut-kurtis', 'kids-skirt-top', 'M')
 check('size' not in state,
-      'Switching to kids-frocks clears stale adult size filter (M removed)')
-check(state['category'] == 'kids-frocks',
-      'Category correctly set to kids-frocks after switch')
+      'Switching to kids-skirt-top clears stale adult size filter (M removed)')
+check(state['category'] == 'kids-skirt-top',
+      'Category correctly set to kids-skirt-top after switch')
 
-state = simulate_category_switch('kids-frocks', 'frocks', '4-5yr')
+state = simulate_category_switch('kids-skirt-top', 'frocks', '7-8yr')
 check('size' not in state,
-      'Switching from kids-frocks to frocks clears stale kids size filter (4-5yr removed)')
+      'Switching from kids-skirt-top to frocks clears stale kids size filter (7-8yr removed)')
 
 # HTML: both files have the dynamic rendering function and correct constants
 for fname, content in [('index.html', html_index), ('aark-website.html', html_aark)]:
@@ -577,8 +577,8 @@ for fname, content in [('index.html', html_index), ('aark-website.html', html_aa
           f'{fname}: renderSizeFilterChips() function defined')
     check('KIDS_SIZES' in content,
           f'{fname}: KIDS_SIZES constant defined')
-    check('2-3yr' in content,
-          f'{fname}: kids size values (2-3yr…) present in JS')
+    check('5-6yr' in content,
+          f'{fname}: kids size values (5-6yr…) present in JS')
     check('delete activeFilters.size' in content,
           f'{fname}: category switch clears size filter')
 
