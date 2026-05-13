@@ -1,3 +1,8 @@
 node_modules/
 .DS_Store
 backend/.venv/
+tools/.venv/
+
+# graphify outputs — keep the human/AI-readable report tracked, ignore everything else
+graphify-out/*
+!graphify-out/GRAPH_REPORT.md
