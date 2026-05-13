@@ -603,12 +603,12 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
   background: var(--cream-dark);
 }
 .product-img-main {
-  width: 100%; height: 100%; object-fit: cover;
+  width: 100%; height: 100%; object-fit: cover; object-position: top center;
   transition: opacity 0.4s ease, transform 0.5s ease;
 }
 .product-img-hover {
   position: absolute; inset: 0; width: 100%; height: 100%;
-  object-fit: cover; opacity: 0;
+  object-fit: cover; object-position: top center; opacity: 0;
   transition: opacity 0.4s ease;
 }
 .product-card:hover .product-img-main { opacity: 0; transform: scale(1.04); }
@@ -1211,7 +1211,7 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
   transition: opacity 0.7s cubic-bezier(0.22,1,0.36,1), transform 0.7s cubic-bezier(0.22,1,0.36,1);
 }
 .gallery-slide.visible { opacity: 1; transform: none; }
-.gallery-slide img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+.gallery-slide img { width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s ease; }
 .gallery-slide:hover img { transform: scale(1.03); }
 .gallery-slide:last-child { margin-bottom: 0; }
 .product-detail-info {
@@ -3512,11 +3512,11 @@ const VARIANT_GROUPS = {
   'aira-skirt-top': {
     repSku: 'KST011',
     patterns: [
-      { sku: 'KST011', name: 'Color 1', imgs: ['kids_collection/KST01_1.jpeg'] },
-      { sku: 'KST012', name: 'Color 2', imgs: ['kids_collection/KST01_2.jpeg'] },
-      { sku: 'KST013', name: 'Color 3', imgs: ['kids_collection/KST01_3.jpeg'] },
-      { sku: 'KST014', name: 'Color 4', imgs: ['kids_collection/KST01_4.jpeg'] },
-      { sku: 'KST015', name: 'Color 5', imgs: ['kids_collection/KST01_5.jpeg'] },
+      { sku: 'KST011', name: 'Brick Red',       imgs: ['kids_collection/KST01_1.jpeg'] },
+      { sku: 'KST012', name: 'Saffron Orange',  imgs: ['kids_collection/KST01_2.jpeg'] },
+      { sku: 'KST013', name: 'Indigo Blue',     imgs: ['kids_collection/KST01_3.jpeg'] },
+      { sku: 'KST014', name: 'Onyx Black',      imgs: ['kids_collection/KST01_4.jpeg'] },
+      { sku: 'KST015', name: 'Mustard Yellow',  imgs: ['kids_collection/KST01_5.jpeg'] },
     ]
   },
   'alpa-peplum': {
@@ -3744,7 +3744,8 @@ function showPage(pageId, addToHistory = true) {
     document.querySelectorAll('.coll-card[data-group]').forEach(c => c.style.display = '');
   }
   if (addToHistory) {
-    history.pushState({ type: 'page', pageId }, '', location.pathname);
+    const url = pageId === 'home' ? location.pathname : ('#' + pageId);
+    history.pushState({ type: 'page', pageId }, '', url);
   }
 }
 
@@ -3769,7 +3770,8 @@ function renderSizeFilterChips(category) {
 function showShopWithFilter(filter) {
   activeFilters = { category: filter };
   renderSizeFilterChips(filter);
-  showPage('shop');
+  showPage('shop', false);
+  history.pushState({ type: 'shop', filter }, '', '#shop-' + filter);
 }
 
 // ══════════════════════════════════════════
@@ -4212,7 +4214,7 @@ function openProduct(id, addToHistory = true) {
   showPage('product', false);
   initGallery();
   if (addToHistory) {
-    history.pushState({ type: 'product', id }, '', location.pathname);
+    history.pushState({ type: 'product', id }, '', '#product-' + p.sku);
   }
 }
 
@@ -4398,7 +4400,8 @@ function openVariantProduct(groupKey, addToHistory = true, initialSku = null) {
   showPage('product', false);
   initGallery();
   if (addToHistory) {
-    history.pushState({ type: 'product', id: repProduct.id }, '', location.pathname);
+    const activeSku = (initialSku && grp.patterns.find(pt => pt.sku === initialSku)) ? initialSku : repProduct.sku;
+    history.pushState({ type: 'product', id: repProduct.id }, '', '#product-' + activeSku);
   }
 }
 
@@ -4473,6 +4476,12 @@ function switchVariant(sku, el) {
   const priceEl = document.getElementById('detailPrice');
   if (priceEl && prod) {
     priceEl.textContent = getProductPriceLabel(prod);
+  }
+
+  // Reflect the active swatch in the URL so refresh restores this exact variant.
+  // replaceState (not pushState) so each swatch click doesn't add a back-button entry.
+  if (prod) {
+    history.replaceState({ type: 'product', id: prod.id }, '', '#product-' + sku);
   }
 }
 
