@@ -3,7 +3,9 @@
  *
  * Reads inventry.xlsx → writes inventory.json
  *
- * Excel columns: Dress Code | (empty) | XS | S | M | L | XL | XXL
+ * Excel columns are looked up by header name (e.g. "Dress Code", "XS", ...)
+ * rather than by position, so re-arranging or adding columns in the sheet
+ * doesn't silently shift every SKU's stock by one slot.
  *
  * Behavior:
  *  - Only writes SKUs that exist in CATALOG_FILES (i.e. have product photos
@@ -51,19 +53,39 @@ const existing = existsSync(OUTPUT_FILE)
 // ── 3. Read Excel and split into "in-catalog" vs "skipped" ─────────────────
 const wb   = read(readFileSync(EXCEL_FILE));
 const ws   = wb.Sheets[wb.SheetNames[0]];
-const rows = utils.sheet_to_json(ws, { header: 1 });
+const rows = utils.sheet_to_json(ws, { header: 1, defval: '' });
+
+// Build a header-name → column-index map so we tolerate column reordering
+// (and the historical "Dress Code | (empty) | XS | ..." vs current "Dress
+// Code | XS | ..." shift that previously mis-labeled every size by one).
+const header = (rows[0] || []).map((h) => (h || '').toString().trim());
+const skuColIdx = header.findIndex((h) => h.toLowerCase() === 'dress code' || h.toLowerCase() === 'sku');
+if (skuColIdx === -1) {
+  console.error('⚠️  No "Dress Code" / "SKU" column in the Excel header — aborting.');
+  process.exit(1);
+}
+const sizeColIdx = {};
+SIZE_COLS.forEach((sz) => {
+  const idx = header.findIndex((h) => h === sz);
+  if (idx !== -1) sizeColIdx[sz] = idx;
+});
+const missingSizes = SIZE_COLS.filter((sz) => !(sz in sizeColIdx));
+if (missingSizes.length) {
+  console.error(`⚠️  Excel header is missing size column(s): ${missingSizes.join(', ')} — aborting.`);
+  process.exit(1);
+}
 
 const inventory = {};
 const skipped   = [];   // SKUs in Excel but not photographed yet
 
 for (let i = 1; i < rows.length; i++) {
   const row = rows[i];
-  const sku = (row[0] || '').toString().trim();
+  const sku = (row[skuColIdx] || '').toString().trim();
   if (!sku) continue;
 
   const stock = {};
-  SIZE_COLS.forEach((size, colOffset) => {
-    stock[size] = Number(row[colOffset + 2]) || 0;
+  SIZE_COLS.forEach((size) => {
+    stock[size] = Number(row[sizeColIdx[size]]) || 0;
   });
 
   if (!photographedSkus.has(sku)) {
