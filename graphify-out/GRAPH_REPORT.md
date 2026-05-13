@@ -1,11 +1,11 @@
 # Graph Report - aark_website  (2026-05-12)
 
 ## Corpus Check
-- 16 files · ~8,226,281 words
+- 17 files · ~8,226,776 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 183 nodes · 194 edges · 15 communities (13 shown, 2 thin omitted)
+- 184 nodes · 194 edges · 16 communities (14 shown, 2 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
@@ -49,7 +49,7 @@
 - `renderLive()` --calls--> `startCountdown()`  [INFERRED]
   sale/heroBanner.js → sale/couponEngine.js
 
-## Communities (15 total, 2 thin omitted)
+## Communities (16 total, 2 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.08
@@ -96,7 +96,7 @@ Nodes (7): After Deploy, code:block1 (curl https://aark-backend.onrender.com), c
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `startCountdown()` connect `Community 5` to `Community 11`?**
-  _High betweenness centrality (0.008) - this node is a cross-community bridge._
+  _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **Are the 4 inferred relationships involving `startCountdown()` (e.g. with `renderTeaser()` and `renderLive()`) actually correct?**
   _`startCountdown()` has 4 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `mockProducts`, `mockInventory`, `r` to the rest of the system?**
