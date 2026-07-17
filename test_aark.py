@@ -170,13 +170,13 @@ suite('Product Catalog — Inventory Coverage')
 catalog_skus = []
 if html_index:
     catalog_skus = list(dict.fromkeys(
-        re.findall(r"'((?:SC|ST|F|KF|KST)\d+)_\d+\.\w+'", html_index)
+        re.findall(r"'([A-Z]+\d+)_\d+\.\w+'", html_index)
     ))
     check(len(catalog_skus) > 0, f'Catalog SKUs extracted  ({len(catalog_skus)} products)')
 
     tracked   = [s for s in catalog_skus if s in inventory]
     untracked = [s for s in catalog_skus if s not in inventory]
-    check(len(tracked) == 36, f'All 36 catalog SKUs now tracked in inventory  (found {len(tracked)})')
+    check(len(tracked) == 61, f'All 61 catalog SKUs now tracked in inventory  (found {len(tracked)})')
     check(len(untracked) == 0, f'No untracked SKUs remaining  ({len(untracked)} untracked)')
 
     # Verify the previously-untracked SKUs stay tracked. Stock counts are managed

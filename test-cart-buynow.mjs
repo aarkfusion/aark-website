@@ -18,13 +18,29 @@ function ok(label, condition, detail = '') {
 
 async function openProduct(page) {
   await page.goto(BASE, { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(400);
-  // Navigate to shop and open first product
+  await page.waitForFunction(() => { try { return inventoryLoaded === true; } catch { return false; } }, { timeout: 8000 }).catch(() => {});
+  await page.waitForTimeout(200);
+  // Open a well-stocked, non-grouped product so the add-to-cart / buy-now flows
+  // have real stock to exercise, independent of catalog sort order (the default
+  // "newest first" sort can surface a brand-new, low-stock item first). The suites
+  // click .size-opt.first() and .size-opt.nth(1), so require the FIRST TWO sizes
+  // to each have >=2 available units.
+  const sku = await page.evaluate(() => {
+    const cand = products.filter(p => !p.isGroupHidden && !p.variantGroupKey && !isFullySoldOut(p));
+    const rich = cand.find(p => p.sizes.length >= 2
+      && getAvailableStock(p.sku, p.sizes[0]) >= 2
+      && getAvailableStock(p.sku, p.sizes[1]) >= 2);
+    const pick = rich || cand.find(p => getAvailableStock(p.sku, p.sizes[0]) >= 1) || cand[0];
+    return pick ? pick.sku : null;
+  });
   await page.evaluate(() => showPage('shop'));
   await page.waitForSelector('#page-shop.active', { timeout: 3000 }).catch(() => {});
   await page.waitForTimeout(300);
-  await page.locator('#page-shop .product-card').first().click();
-  await page.waitForTimeout(400);
+  const card = page.locator(`#page-shop .product-card[data-href="#product-${sku}"]`);
+  await card.scrollIntoViewIfNeeded().catch(() => {});
+  await card.click();
+  await page.waitForSelector('#addToCartBtn', { timeout: 3000 }).catch(() => {});
+  await page.waitForTimeout(300);
 }
 
 const browser = await chromium.launch({ headless: true });

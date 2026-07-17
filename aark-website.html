@@ -2703,6 +2703,12 @@ img {
               <div class="filter-chip" data-filter-type="category" data-filter-value="fusion-tops" onclick="toggleFilter(this,'category','fusion-tops')">The Alpa Series</div>
               <div class="filter-chip" data-filter-type="category" data-filter-value="frocks" onclick="toggleFilter(this,'category','frocks')">The Ananta Series</div>
               <div class="filter-chip" data-filter-type="category" data-filter-value="kids-skirt-top" onclick="toggleFilter(this,'category','kids-skirt-top')">The Aira Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="anarkali" onclick="toggleFilter(this,'category','anarkali')">The Anarkali Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="a-line" onclick="toggleFilter(this,'category','a-line')">The A-Line Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="jumpsuit" onclick="toggleFilter(this,'category','jumpsuit')">The Jumpsuit Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="long-tops" onclick="toggleFilter(this,'category','long-tops')">The Long Top Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="short-frock" onclick="toggleFilter(this,'category','short-frock')">The Short Frock Series</div>
+              <div class="filter-chip" data-filter-type="category" data-filter-value="shirt" onclick="toggleFilter(this,'category','shirt')">The Shrug Series</div>
             </div>
           </div>
           <div class="filter-group">
@@ -3324,7 +3330,7 @@ const WHATSAPP_COMMUNITY_URL = 'https://chat.whatsapp.com/JSdgmnWt8GrBUiCqQ9w6AC
 const WA_ICON = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" style="width:18px;height:18px;display:inline-block;vertical-align:middle;margin-right:6px;flex-shrink:0;"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>';
 const INSTAGRAM_URL = 'https://instagram.com/aark.fusion';
 const INSTAGRAM_HANDLE = '@aark.fusion';
-const PREFIX_ORDER = { SC: 0, ST: 1, F0: 2, KF: 3 };
+const PREFIX_ORDER = { SC: 0, ST: 1, F0: 2, KF: 3, AK: 4, AL: 5, JS: 6, LT: 7, SF: 8, SH: 9 };
 const BACKEND_URL = 'https://aark-backend-dkn9.onrender.com';
 
 const SERIES_META = {
@@ -3363,6 +3369,60 @@ const SERIES_META = {
     fabric: 'Soft Cotton',
     sizes: ['5-6yr', '7-8yr', '9-10yr', '11-12yr', '13-14yr'],
     fitNote: 'Two-piece set with a flared skirt and matching top — breathable cotton, easy to wear.',
+  },
+  AK: {
+    series: 'The Anarkali Series',
+    cat: 'anarkali',
+    categoryLabel: 'Anarkali',
+    productLabel: 'Anarkali',
+    fabric: 'Cotton',
+    sizes: ['S', 'M', 'L'],
+    fitNote: 'Flowy Anarkali silhouette with a comfortable, relaxed fit.',
+  },
+  AL: {
+    series: 'The A-Line Series',
+    cat: 'a-line',
+    categoryLabel: 'A-Line Dress',
+    productLabel: 'A-Line Dress',
+    fabric: 'Cotton / Silk',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    fitNote: 'Flattering A-line silhouette that is comfortable and easy to wear.',
+  },
+  JS: {
+    series: 'The Jumpsuit Series',
+    cat: 'jumpsuit',
+    categoryLabel: 'Jumpsuit',
+    productLabel: 'Jumpsuit',
+    fabric: 'Cotton',
+    sizes: ['M'],
+    fitNote: 'Comfortable and stylish one-piece jumpsuit with a relaxed fit.',
+  },
+  LT: {
+    series: 'The Long Top Series',
+    cat: 'long-tops',
+    categoryLabel: 'Long Top',
+    productLabel: 'Long Top',
+    fabric: 'Cotton',
+    sizes: ['XS'],
+    fitNote: 'Elegant longline top with a comfortable, relaxed fit.',
+  },
+  SF: {
+    series: 'The Short Frock Series',
+    cat: 'short-frock',
+    categoryLabel: 'Short Frock',
+    productLabel: 'Short Frock',
+    fabric: 'Cotton',
+    sizes: ['M', 'L'],
+    fitNote: 'Charming short frock with a comfortable and airy fit.',
+  },
+  SH: {
+    series: 'The Shrug Series',
+    cat: 'shirt',
+    categoryLabel: 'Shrug',
+    productLabel: 'Shrug',
+    fabric: 'Cotton',
+    sizes: ['S', 'M', 'L', 'XL'],
+    fitNote: 'Versatile open-front shrug with a relaxed and comfortable fit.',
   },
 };
 
@@ -3403,6 +3463,31 @@ const CATALOG_FILES = [
   'KST013_690.jpeg',
   'KST014_690.jpeg',
   'KST015_690.jpeg',
+  'SC014_1099.jpg',
+  'SC015_1099.jpg',
+  'SC016_1099.jpg',
+  'SC019_869.jpg',
+  'SC020_869.jpg',
+  'SC021_869.jpg',
+  'SC022_869.jpg',
+  'SC023_869.jpg',
+  'SC024_869.jpg',
+  'SC025_869.jpg',
+  'SC026_869.jpg',
+  'SC027_869.jpg',
+  'SC028_869.jpg',
+  'SF002_1199.jpg',
+  'SF003_1199.jpg',
+  'ALC001_999.jpg',
+  'AL002_999.jpg',
+  'AL003_999.jpg',
+  'AK001_1899.jpg',
+  'AK002_1899.jpg',
+  'ALS004_1299.jpg',
+  'AL007_1399.jpg',
+  'SH001_1399.jpg',
+  'LT001_1199.jpg',
+  'JS001_1499.jpg',
 ];
 
 const NEW_SKUS = new Set(['SC012', 'F0006', 'KST011']);
@@ -3446,6 +3531,24 @@ function buildProductDescription(meta, sku) {
       'A playful skirt-and-top set in a vibrant ethnic print. Made with kid-safe dyes and breathable cotton — gentle on little ones and easy for all-day play.',
       'A cheerful two-piece set with a fun ethnic motif. Crafted with kid-safe dyes and soft, skin-friendly cotton for festive days and everyday adventures alike.',
     ],
+    AK: [
+      'A graceful floor-length Anarkali with a flowing, tiered silhouette. Designed to move beautifully and layer over churidars or leggings.',
+    ],
+    AL: [
+      'A flattering A-line dress that skims the frame for an easy, elegant drape. Versatile enough for daytime and festive wear alike.',
+    ],
+    JS: [
+      'A relaxed one-piece jumpsuit that pairs comfort with a put-together look. Effortless from day to evening.',
+    ],
+    LT: [
+      'An elegant longline top with clean lines and a relaxed drape. Pairs easily with leggings, palazzos, or jeans.',
+    ],
+    SF: [
+      'A charming short frock with an airy, easy fit. Light and breezy for casual days.',
+    ],
+    SH: [
+      'A versatile open-front shrug that layers effortlessly over any outfit for a finished, relaxed look.',
+    ],
   };
   const prefix = sku.slice(0, 2);
   const seq = Number((sku.match(/\d+$/) || ['0'])[0]);
@@ -3478,6 +3581,30 @@ const PRODUCT_IMAGES = {
   KST013: ['kids_collection/KST01_3.jpeg'],
   KST014: ['kids_collection/KST01_4.jpeg'],
   KST015: ['kids_collection/KST01_5.jpeg'],
+  SC014: ['catalog-images/SC014_1.jpg','catalog-images/SC014_2.jpg','catalog-images/SC014_3.jpg','catalog-images/SC014_4.jpg'],
+  SC015: ['catalog-images/SC015_1.jpg','catalog-images/SC015_2.jpg','catalog-images/SC015_3.jpg'],
+  SC016: ['catalog-images/SC016_1.jpg','catalog-images/SC016_2.jpg','catalog-images/SC016_3.jpg','catalog-images/SC016_4.jpg'],
+  SC019: ['catalog-images/SC019_1.jpg','catalog-images/SC019_2.jpg','catalog-images/SC019_3.jpg'],
+  SC020: ['catalog-images/SC020_1.jpg','catalog-images/SC020_2.jpg','catalog-images/SC020_3.jpg'],
+  SC021: ['catalog-images/SC021_1.jpg','catalog-images/SC021_2.jpg','catalog-images/SC021_3.jpg'],
+  SC022: ['catalog-images/SC022_1.jpg','catalog-images/SC022_2.jpg','catalog-images/SC022_3.jpg','catalog-images/SC022_4.jpg'],
+  SC023: ['catalog-images/SC023_1.jpg','catalog-images/SC023_2.jpg','catalog-images/SC023_3.jpg','catalog-images/SC023_4.jpg'],
+  SC024: ['catalog-images/SC024_1.jpg','catalog-images/SC024_2.jpg','catalog-images/SC024_3.jpg','catalog-images/SC024_4.jpg'],
+  SC026: ['catalog-images/SC026_1.jpg','catalog-images/SC026_2.jpg','catalog-images/SC026_3.jpg','catalog-images/SC026_4.jpg'],
+  SC027: ['catalog-images/SC027_1.jpg','catalog-images/SC027_2.jpg','catalog-images/SC027_3.jpg','catalog-images/SC027_4.jpg'],
+  SC028: ['catalog-images/SC028_1.jpg','catalog-images/SC028_2.jpg','catalog-images/SC028_3.jpg'],
+  SF002: ['catalog-images/SF002_1.jpg','catalog-images/SF002_2.jpg','catalog-images/SF002_3.jpg','catalog-images/SF002_4.jpg'],
+  SF003: ['catalog-images/SF003_1.jpg','catalog-images/SF003_2.jpg','catalog-images/SF003_3.jpg'],
+  ALC001: ['catalog-images/ALC001_1.jpg','catalog-images/ALC001_2.jpg','catalog-images/ALC001_3.jpg'],
+  AL002: ['catalog-images/AL002_1.jpg','catalog-images/AL002_2.jpg','catalog-images/AL002_3.jpg','catalog-images/AL002_4.jpg'],
+  AL003: ['catalog-images/AL003_1.jpg','catalog-images/AL003_2.jpg','catalog-images/AL003_3.jpg','catalog-images/AL003_4.jpg','catalog-images/AL003_5.jpg','catalog-images/AL003_6.jpg','catalog-images/AL003_7.jpg'],
+  AK001: ['catalog-images/AK001_1.jpg','catalog-images/AK001_2.jpg','catalog-images/AK001_3.jpg','catalog-images/AK001_4.jpg'],
+  AK002: ['catalog-images/AK002_1.jpg','catalog-images/AK002_2.jpg','catalog-images/AK002_3.jpg','catalog-images/AK002_4.jpg','catalog-images/AK002_5.jpg'],
+  ALS004: ['catalog-images/ALS004_1.jpg','catalog-images/ALS004_2.jpg','catalog-images/ALS004_3.jpg','catalog-images/ALS004_4.jpg'],
+  AL007: ['catalog-images/AL007_1.jpg','catalog-images/AL007_2.jpg','catalog-images/AL007_3.jpg'],
+  SH001: ['catalog-images/SH001_1.jpg','catalog-images/SH001_2.jpg','catalog-images/SH001_3.jpg','catalog-images/SH001_4.jpg'],
+  LT001: ['catalog-images/LT001_1.jpg','catalog-images/LT001_2.jpg','catalog-images/LT001_3.jpg'],
+  JS001: ['catalog-images/JS001_1.jpg','catalog-images/JS001_2.jpg','catalog-images/JS001_3.jpg'],
 };
 
 const VARIANT_GROUPS = {
