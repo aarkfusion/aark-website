@@ -150,12 +150,15 @@ try:
         )
         check(in_i and in_a, f'{label}', detail)
 
-    # Dot count: both files must have exactly 2 hero dots
-    dots_i = len(re.findall(r'class="hero-dot', html_index))
-    dots_a = len(re.findall(r'class="hero-dot', html_aark))
-    check(dots_i == dots_a, f'Hero dot count matches between files  ({dots_i} vs {dots_a})',
-          'One file has more/fewer dots than the other')
-    check(dots_i >= 1, f'Hero has at least 1 dot  (found {dots_i})')
+    # Hero is a static split layout (text + product image) — no carousel dots.
+    # Both files must carry the same hero markup.
+    for token, label in [('hero-media', 'hero image column'),
+                         ('hero_images/7.png', 'hero product image'),
+                         ('hero-headline', 'hero headline')]:
+        in_i, in_a = token in html_index, token in html_aark
+        check(in_i and in_a, f'Hero: {label} present in both files',
+              ' | '.join((['MISSING in index.html'] if not in_i else []) +
+                         (['MISSING in aark-website.html'] if not in_a else [])))
 
 except FileNotFoundError as e:
     check(False, 'Both HTML files readable', str(e))
