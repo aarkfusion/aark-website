@@ -659,6 +659,11 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
 .badge-variant { background: rgba(0,128,128,0.82); color: white; }
 .badge-hand { background: var(--cream-dark); color: var(--teal); border: 1px solid var(--teal); }
 .badge-kidsafe { background: #2d8659; color: #fff; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; padding: 4px 10px; border-radius: 20px; display: inline-block; }
+.badge-inquiry { background: var(--gold); color: #fff; }
+.card-inquiry { font-size: 0.8rem; margin-bottom: 12px; }
+.card-inquiry a { color: var(--teal); text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; }
+.card-inquiry a:hover { text-decoration: underline; }
+.card-inquiry a svg { width: 15px; height: 15px; margin-right: 5px; }
 .product-actions {
   position: absolute; bottom: 0; left: 0; right: 0;
   display: flex; gap: 4px; padding: 10px 12px;
@@ -2425,7 +2430,6 @@ img {
     <button class="sm-sub-item" onclick="closeSideMenu();showPage('collections')">View All</button>
     <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('women')">Women</button>
     <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('kids')">Kids</button>
-    <button class="sm-sub-item" onclick="closeSideMenu();showCollectionsFiltered('family')">Family</button>
   </div>
   <div class="sm-sub-section" id="smSub-men">
     <button class="sm-back-btn" onclick="closeSubmenu()">‹ Back</button>
@@ -2506,8 +2510,6 @@ img {
     </div>
   </section>
 
-  <!-- MOTHER'S DAY SALE BANNER — populated by sale/heroBanner.js -->
-  <div id="mdayBanner" onclick="openComboPage()" style="cursor:pointer"></div>
 
   <!-- SERIES CAROUSEL (home) -->
   <section class="sc-section">
@@ -3371,13 +3373,13 @@ const SERIES_META = {
     fitNote: 'Elegant longline top with a comfortable, relaxed fit.',
   },
   SF: {
-    series: 'The Short Frock Series',
-    cat: 'short-frock',
-    categoryLabel: 'Short Frock',
-    productLabel: 'Short Frock',
-    fabric: 'Cotton',
-    sizes: ['M', 'L'],
-    fitNote: 'Charming short frock with a comfortable and airy fit.',
+    series: 'The Ananta Series',
+    cat: 'frocks',
+    categoryLabel: 'Frocks',
+    productLabel: 'Frock',
+    fabric: 'Premium Cotton',
+    sizes: ['XS', 'S', 'M', 'L', 'XL'],
+    fitNote: 'Elegant frock silhouette crafted for everyday and festive dressing.',
   },
   SH: {
     series: 'The Shrug Series',
@@ -3414,6 +3416,8 @@ const CATALOG_FILES = [
   'ST013_800.png',
   'ST014_800.png',
   'ST015_800.png',
+  'ST008_800.jpg',
+  'ST009_800.jpg',
   'F0002_1200.jpg',
   'F0003_1200.jpg',
   'F0004_1200.jpg',
@@ -3422,11 +3426,11 @@ const CATALOG_FILES = [
   'F0009_1150.jpg',
   'F0012_1200.jpg',
   'F0013_1200.jpg',
-  'KST011_690.jpeg',
-  'KST012_690.jpeg',
-  'KST013_690.jpeg',
-  'KST014_690.jpeg',
-  'KST015_690.jpeg',
+  'KST011_1250.jpeg',
+  'KST012_1250.jpeg',
+  'KST013_1250.jpeg',
+  'KST014_1250.jpeg',
+  'KST015_1250.jpeg',
   'SC014_1099.jpg',
   'SC015_1099.jpg',
   'SC016_1099.jpg',
@@ -3439,7 +3443,6 @@ const CATALOG_FILES = [
   'SC025_869.jpg',
   'SC026_869.jpg',
   'SC027_869.jpg',
-  'SC028_869.jpg',
   'SF002_1199.jpg',
   'SF003_1199.jpg',
   'ALC001_999.jpg',
@@ -3537,9 +3540,11 @@ const PRODUCT_IMAGES = {
   F0006: ['catalog-images/F0006_1.png','catalog-images/F0006_2.png','catalog-images/F0006_3.png'],
   F0012: ['catalog-images/F0012_1.png','catalog-images/F0012_2.png','catalog-images/F0012_3.png'],
   F0013: ['catalog-images/F0013_1.png','catalog-images/F0013_2.png','catalog-images/F0013_3.png'],
-  ST013: ['catalog-images/ST013_1.png','catalog-images/ST013_2.png','catalog-images/ST013_3.png'],
+  ST013: ['catalog-images/ST013_1.jpg','catalog-images/ST013_2.jpg','catalog-images/ST013_3.jpg','catalog-images/ST013_4.jpg'],
   ST014: ['catalog-images/ST014_1.png','catalog-images/ST014_2.png','catalog-images/ST014_3.png'],
-  ST015: ['catalog-images/ST015_1.png','catalog-images/ST015_2.png','catalog-images/ST015_3.png'],
+  ST015: ['catalog-images/ST015_1.jpg','catalog-images/ST015_2.jpg','catalog-images/ST015_3.jpg','catalog-images/ST015_4.jpg'],
+  ST008: ['catalog-images/ST008_1.jpg','catalog-images/ST008_2.jpg','catalog-images/ST008_3.jpg','catalog-images/ST008_4.jpg'],
+  ST009: ['catalog-images/ST009_1.jpg','catalog-images/ST009_2.jpg','catalog-images/ST009_3.jpg'],
   KST011: ['kids_collection/KST01_1.jpeg'],
   KST012: ['kids_collection/KST01_2.jpeg'],
   KST013: ['kids_collection/KST01_3.jpeg'],
@@ -3554,14 +3559,15 @@ const PRODUCT_IMAGES = {
   SC022: ['catalog-images/SC022_1.jpg','catalog-images/SC022_2.jpg','catalog-images/SC022_3.jpg','catalog-images/SC022_4.jpg'],
   SC023: ['catalog-images/SC023_1.jpg','catalog-images/SC023_2.jpg','catalog-images/SC023_3.jpg','catalog-images/SC023_4.jpg'],
   SC024: ['catalog-images/SC024_1.jpg','catalog-images/SC024_2.jpg','catalog-images/SC024_3.jpg','catalog-images/SC024_4.jpg'],
+  SC013: ['catalog-images/SC013_1.jpg','catalog-images/SC013_2.jpg','catalog-images/SC013_3.jpg'],
+  SC025: ['catalog-images/SC025_1.jpg','catalog-images/SC025_2.jpg','catalog-images/SC025_3.jpg','catalog-images/SC025_4.jpg'],
   SC026: ['catalog-images/SC026_1.jpg','catalog-images/SC026_2.jpg','catalog-images/SC026_3.jpg','catalog-images/SC026_4.jpg'],
   SC027: ['catalog-images/SC027_1.jpg','catalog-images/SC027_2.jpg','catalog-images/SC027_3.jpg','catalog-images/SC027_4.jpg'],
-  SC028: ['catalog-images/SC028_1.jpg','catalog-images/SC028_2.jpg','catalog-images/SC028_3.jpg'],
   SF002: ['catalog-images/SF002_1.jpg','catalog-images/SF002_2.jpg','catalog-images/SF002_3.jpg','catalog-images/SF002_4.jpg'],
   SF003: ['catalog-images/SF003_1.jpg','catalog-images/SF003_2.jpg','catalog-images/SF003_3.jpg'],
   ALC001: ['catalog-images/ALC001_1.jpg','catalog-images/ALC001_2.jpg','catalog-images/ALC001_3.jpg'],
   AL002: ['catalog-images/AL002_1.jpg','catalog-images/AL002_2.jpg','catalog-images/AL002_3.jpg','catalog-images/AL002_4.jpg'],
-  AL003: ['catalog-images/AL003_1.jpg','catalog-images/AL003_2.jpg','catalog-images/AL003_3.jpg','catalog-images/AL003_4.jpg','catalog-images/AL003_5.jpg','catalog-images/AL003_6.jpg','catalog-images/AL003_7.jpg'],
+  AL003: ['catalog-images/AL003_1.jpg','catalog-images/AL003_2.jpg','catalog-images/AL003_3.jpg','catalog-images/AL003_4.jpg'],
   AK001: ['catalog-images/AK001_1.jpg','catalog-images/AK001_2.jpg','catalog-images/AK001_3.jpg','catalog-images/AK001_4.jpg'],
   AK002: ['catalog-images/AK002_1.jpg','catalog-images/AK002_2.jpg','catalog-images/AK002_3.jpg','catalog-images/AK002_4.jpg','catalog-images/AK002_5.jpg'],
   ALS004: ['catalog-images/ALS004_1.jpg','catalog-images/ALS004_2.jpg','catalog-images/ALS004_3.jpg','catalog-images/ALS004_4.jpg'],
@@ -3606,10 +3612,10 @@ const VARIANT_GROUPS = {
   'alpa-peplum': {
     repSku: 'ST001',
     patterns: [
-      { sku: 'ST001', name: 'Haldi Pushpa', imgs: ['catalog-images/ST001_800.jpg'] },
-      { sku: 'ST002', name: 'Neela Pushpa', imgs: ['catalog-images/ST002_800.jpg'] },
-      { sku: 'ST003', name: 'Lok Katha',    imgs: ['catalog-images/ST003_800.jpg'] },
-      { sku: 'ST007', name: 'Keri Raga',    imgs: ['catalog-images/ST007_800.jpg'] },
+      { sku: 'ST001', name: 'Haldi Pushpa', imgs: ['catalog-images/ST001_1.jpg','catalog-images/ST001_2.jpg','catalog-images/ST001_3.jpg'] },
+      { sku: 'ST002', name: 'Neela Pushpa', imgs: ['catalog-images/ST002_1.jpg','catalog-images/ST002_2.jpg','catalog-images/ST002_3.jpg','catalog-images/ST002_4.jpg'] },
+      { sku: 'ST003', name: 'Lok Katha',    imgs: ['catalog-images/ST003_1.jpg','catalog-images/ST003_2.jpg','catalog-images/ST003_3.jpg','catalog-images/ST003_4.jpg'] },
+      { sku: 'ST007', name: 'Keri Raga',    imgs: ['catalog-images/ST007_1.jpg','catalog-images/ST007_2.jpg','catalog-images/ST007_3.jpg','catalog-images/ST007_4.jpg'] },
     ]
   },
   'alpa-crop-3q': {
@@ -3623,9 +3629,9 @@ const VARIANT_GROUPS = {
   'alpa-crop-sl': {
     repSku: 'ST013',
     patterns: [
-      { sku: 'ST013', name: 'Lal Devi',      imgs: ['catalog-images/ST013_1.png','catalog-images/ST013_2.png','catalog-images/ST013_3.png'] },
+      { sku: 'ST013', name: 'Lal Devi',      imgs: ['catalog-images/ST013_1.jpg','catalog-images/ST013_2.jpg','catalog-images/ST013_3.jpg','catalog-images/ST013_4.jpg'] },
       { sku: 'ST014', name: 'Crimson Bodhi', imgs: ['catalog-images/ST014_1.png','catalog-images/ST014_2.png','catalog-images/ST014_3.png'] },
-      { sku: 'ST015', name: 'Nila Malika',   imgs: ['catalog-images/ST015_1.png','catalog-images/ST015_2.png','catalog-images/ST015_3.png'] },
+      { sku: 'ST015', name: 'Nila Malika',   imgs: ['catalog-images/ST015_1.jpg','catalog-images/ST015_2.jpg','catalog-images/ST015_3.jpg','catalog-images/ST015_4.jpg'] },
     ]
   },
 };
@@ -3733,7 +3739,7 @@ function getFilteredProducts() {
   // When a category filter is active, ungroup variants — show every pattern as its own card
   const ungroup = !!activeFilters.category;
   let filtered = products.filter(p => {
-    if (isFullySoldOut(p, ungroup)) return false;
+    // Out-of-stock products are no longer hidden — they render as "Request for Inquiry".
     if (!ungroup && p.isGroupHidden) return false;
     return true;
   });
@@ -3897,8 +3903,8 @@ function buildProductCard(p) {
   const subtitle  = displayPattern ? `${p.series} · ${p.categoryLabel}` : p.categoryLabel;
 
   const badgeSoHTML = treatAsGroup
-    ? `<span class="badge-so card-so-badge"${isSoldOut ? '' : ' style="display:none"'}>Sold out</span>`
-    : (isSoldOut ? `<span class="badge-so">Sold out</span>` : '');
+    ? `<span class="badge-so badge-inquiry card-so-badge"${isSoldOut ? '' : ' style="display:none"'}>Request for Inquiry</span>`
+    : (isSoldOut ? `<span class="badge-so badge-inquiry">Request for Inquiry</span>` : '');
 
   const thumbsHTML = treatAsGroup
     ? `<div class="card-thumbs" onclick="event.stopPropagation()">
@@ -3918,8 +3924,9 @@ function buildProductCard(p) {
       </div>`
     : '';
 
+  const inquiryHref = buildWhatsAppHref(`Hi AARK! I'd like to enquire about ${p.name} (${p.sku}). Is it available to order?\n\nView it here: https://aarkfusion.com/#product-${p.sku}`);
   const priceHTML = isSoldOut
-    ? `<div class="card-notify">Sold out &nbsp;·&nbsp; <a href="#notify" onclick="event.stopPropagation()">Notify me</a></div>`
+    ? `<div class="card-inquiry"><a href="${inquiryHref}" target="_blank" onclick="event.stopPropagation()">${WA_ICON}Send a WhatsApp message</a></div>`
     : `<div class="card-price">${getProductPriceLabel(p)}</div>`;
 
   const cartButtonHTML = cartEnabled && !isSoldOut
@@ -4223,7 +4230,14 @@ function openProduct(id, addToHistory = true) {
       </div>
   ` : '';
   const inWishlist = wishlist.some(w => w.id === p.id);
-  const ctaRowHTML = cartEnabled ? `
+  const detailInquiry = cartEnabled && isFullySoldOut(p, true);
+  const ctaRowHTML = detailInquiry ? `
+      <p id="sizeHint" style="font-size:0.78rem;color:var(--gold);letter-spacing:0.06em;text-transform:uppercase;margin-bottom:10px;font-weight:600;">Request for Inquiry</p>
+      <div class="cta-row">
+        <a class="btn btn-teal btn-lg" style="flex:1;display:inline-flex;align-items:center;justify-content:center;text-decoration:none;" href="${buildWhatsAppHref(`Hi AARK! I'd like to enquire about ${p.name} (${p.sku}). Is it available to order?\n\nView it here: https://aarkfusion.com/#product-${p.sku}`)}" target="_blank">${WA_ICON}Send a WhatsApp message</a>
+        <button id="detailWishlistBtn" class="product-action-btn wishlist${inWishlist ? ' active' : ''}" onclick="toggleWishlistFromDetail()" title="Add to Wishlist" style="width:48px;height:48px;flex-shrink:0;border-radius:var(--radius);">${getHeartIconMarkup()}</button>
+      </div>
+  ` : cartEnabled ? `
       <p id="sizeHint" style="font-size:0.78rem;color:var(--text-muted);letter-spacing:0.04em;text-transform:uppercase;margin-bottom:10px;">Select a size to continue</p>
       <div class="cta-row">
         <button class="btn btn-teal btn-lg" id="addToCartBtn" style="flex:1;" onclick="addToCartFromDetail()" disabled>Add to Cart</button>
@@ -5318,9 +5332,7 @@ const COLLECTION_META = {
   SH: { group: 'women' },
 };
 // Non-series collections that still belong on the Collections page.
-const COLLECTIONS_SPECIAL = [
-  { name: "Mother's Day Combo", sub: 'Family · Build Your Set', group: 'family', image: 'hero_images/2.png', onclick: 'openComboPage()' },
-];
+const COLLECTIONS_SPECIAL = [];
 const GROUP_LABEL = { women: 'Women', kids: 'Kids', family: 'Family' };
 
 // Ordered collection list built from SERIES_META (+ specials). New series need
@@ -5342,7 +5354,14 @@ function buildCollections() {
       searchTerm: m.series.replace(/^The\s+/, '').replace(/\s+Series$/, ''),
     };
   }).filter(Boolean);
-  return [...seriesColls, ...COLLECTIONS_SPECIAL];
+  // Merge series that share a category (e.g. Short Frock → Ananta/Frocks) into one collection.
+  const seenCat = new Set();
+  const deduped = seriesColls.filter(c => {
+    if (seenCat.has(c.category)) return false;
+    seenCat.add(c.category);
+    return true;
+  });
+  return [...deduped, ...COLLECTIONS_SPECIAL];
 }
 
 function renderCollectionsGrid() {

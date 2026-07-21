@@ -179,7 +179,7 @@ if html_index:
 
     tracked   = [s for s in catalog_skus if s in inventory]
     untracked = [s for s in catalog_skus if s not in inventory]
-    check(len(tracked) == 61, f'All 61 catalog SKUs now tracked in inventory  (found {len(tracked)})')
+    check(len(tracked) == 62, f'All 62 catalog SKUs now tracked in inventory  (found {len(tracked)})')
     check(len(untracked) == 0, f'No untracked SKUs remaining  ({len(untracked)} untracked)')
 
     # Verify the previously-untracked SKUs stay tracked. Stock counts are managed
