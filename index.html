@@ -744,7 +744,7 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
 }
 .feature-item:last-child { border-right: none; }
 .feature-icon {
-  width: 44px; height: 44px; border-radius: 12px;
+  width: 44px; height: 44px; border-radius: 50%; overflow: hidden;
   background: var(--teal-pale); color: var(--teal);
   display: flex; align-items: center; justify-content: center;
   font-size: 1.2rem; flex-shrink: 0;
@@ -2573,19 +2573,19 @@ img {
   <div id="features" class="features-strip">
     <div class="features-grid container">
       <div class="feature-item">
-        <div class="feature-icon">🧵</div>
+        <div class="feature-icon"><img src="catalog-images/feature-icons/handcrafted.png" alt="Handcrafted Quality" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('🧵'))"></div>
         <div class="feature-text"><h4>Handcrafted Quality</h4><p>Each piece stitched with care by skilled artisans</p></div>
       </div>
       <div class="feature-item">
-        <div class="feature-icon">🌿</div>
+        <div class="feature-icon"><img src="catalog-images/feature-icons/eco.png" alt="Eco-Conscious" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('🌿'))"></div>
         <div class="feature-text"><h4>Eco-Conscious</h4><p>Sustainable fabrics and responsible production</p></div>
       </div>
       <div class="feature-item">
-        <div class="feature-icon">🚚</div>
+        <div class="feature-icon"><img src="catalog-images/feature-icons/delivery.png" alt="Fast Delivery" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('🚚'))"></div>
         <div class="feature-text"><h4>Fast Delivery</h4><p>Ships within 3–5 days across India</p></div>
       </div>
       <div class="feature-item">
-        <div class="feature-icon">🔄</div>
+        <div class="feature-icon"><img src="catalog-images/feature-icons/exchange.png" alt="Easy Exchange" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('🔄'))"></div>
         <div class="feature-text"><h4>Easy Exchange</h4><p>Hassle-free size exchange within 7 days</p></div>
       </div>
     </div>
@@ -2617,23 +2617,23 @@ img {
       </div>
       <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:16px;">
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🪔</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;overflow:hidden;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='rgba(0,128,128,0.15)'"><img src="catalog-images/occasion-icons/festive.png" alt="Festive" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('🪔'))"></div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Festive</div>
         </div>
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🛕</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;overflow:hidden;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='rgba(0,128,128,0.15)'"><img src="catalog-images/occasion-icons/pooja.png" alt="Pooja / Temple" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('🛕'))"></div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Pooja / Temple</div>
         </div>
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🌸</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;overflow:hidden;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='rgba(0,128,128,0.15)'"><img src="catalog-images/occasion-icons/casual.png" alt="Casual Daily" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('🌸'))"></div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Casual Daily</div>
         </div>
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">💍</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;overflow:hidden;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='rgba(0,128,128,0.15)'"><img src="catalog-images/occasion-icons/wedding.png" alt="Wedding" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('💍'))"></div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Wedding</div>
         </div>
         <div style="text-align:center;cursor:pointer;" onclick="showPage('shop')">
-          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;" onmouseover="this.style.background='var(--teal)'" onmouseout="this.style.background='var(--teal-pale)'">🏢</div>
+          <div style="width:90px;height:90px;border-radius:50%;background:var(--teal-pale);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 12px;border:2px solid rgba(0,128,128,0.15);transition:all 0.3s;overflow:hidden;" onmouseover="this.style.borderColor='var(--teal)'" onmouseout="this.style.borderColor='rgba(0,128,128,0.15)'"><img src="catalog-images/occasion-icons/office.png" alt="Office Wear" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.replaceWith(document.createTextNode('🏢'))"></div>
           <div style="font-size:0.82rem;font-weight:500;color:var(--text);">Office Wear</div>
         </div>
       </div>
@@ -2656,40 +2656,6 @@ img {
     </div>
   </section>
   -->
-
-  <!-- TESTIMONIALS -->
-  <section class="section" style="background:var(--cream-dark);">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-label">What our customers say</div>
-        <h2 class="section-title">Loved by <em>Many</em></h2>
-        <div class="divider"></div>
-      </div>
-      <div class="testimonials-grid">
-        <div class="testimonial-card">
-          <p class="testimonial-text">"I ordered a straight-cut kurti and a matching kids frock for Dussehra — the quality is absolutely beautiful. The Kalamkari print is exactly as shown. Will be ordering again!"</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">P</div>
-            <div><div class="author-name">Priya M.</div><div class="author-place">Hyderabad, AP</div><div class="testimonial-stars">★★★★★</div></div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <p class="testimonial-text">"Ordered 3 frocks for my daughter — the fabric is so soft, and the stitching is neat. AARK has the best quality I've found online for ethnic kids wear. Highly recommend!"</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">S</div>
-            <div><div class="author-name">Suhasini R.</div><div class="author-place">Bangalore, KA</div><div class="testimonial-stars">★★★★★</div></div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <p class="testimonial-text">"The saree I ordered for my sister's wedding was stunning. Delivery was fast and packaging was thoughtful. I love that the brand cares about craftsmanship — you can feel it."</p>
-          <div class="testimonial-author">
-            <div class="author-avatar">L</div>
-            <div><div class="author-name">Lakshmi V.</div><div class="author-place">Chennai, TN</div><div class="testimonial-stars">★★★★★</div></div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <!-- NEWSLETTER -->
   <section class="newsletter-section">
@@ -3830,7 +3796,7 @@ function showPage(pageId, addToHistory = true) {
     window.scrollTo(0, 0);
     document.getElementById('header').classList.remove('scrolled');
     document.body.classList.remove('nav-scrolled');
-    document.body.classList.toggle('nav-solid', pageId !== 'home');
+    document.body.classList.add('nav-solid'); // header is always solid teal
   }
   document.getElementById('mobileNav').classList.remove('open');
   closeSearch();
@@ -5116,7 +5082,7 @@ function updateNavScroll(y) {
   } else if (y < 60) {
     header.classList.remove('scrolled');
     document.body.classList.remove('nav-scrolled');
-    if (onHome) document.body.classList.remove('nav-solid');
+    // header stays solid teal at all scroll positions
   }
 }
 window.addEventListener('scroll', () => updateNavScroll(window.scrollY));
@@ -5427,6 +5393,7 @@ function renderCollections() {
 // ══════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════
+document.body.classList.add('nav-solid'); // header is always solid teal (incl. home top)
 try { renderCollections(); }   catch(e) { console.error('[init] renderCollections:', e); }
 try { loadCartFromStorage(); } catch(e) { console.error('[init] loadCartFromStorage:', e); }
 try { const _sc = localStorage.getItem('aark_applied_coupon'); if (_sc) appliedCoupon = _sc; } catch(e) {}
