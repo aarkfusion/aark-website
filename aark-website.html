@@ -119,12 +119,14 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
 body.nav-solid .nav-icon-btn { color: rgba(255,255,255,0.9); }
 body.nav-solid .nav-icon-btn:hover { background: rgba(255,255,255,0.15); color: #ffffff; }
 body.nav-solid .nav-icon-btn.wishlist-nav { color: rgba(255,255,255,0.9); }
+body.nav-solid .nav-icon-btn:hover { color: #ffffff; }
 body.nav-solid .menu-trigger { color: rgba(255,255,255,0.9); }
+body.nav-solid .menu-trigger:hover { color: #ffffff; }
 
 .nav-inner {
-  max-width: 1280px; margin: 0 auto;
+  width: 100%;
   display: flex; align-items: center;
-  padding: 0 32px;
+  padding: 0 40px;
   height: var(--header-h);
   position: relative; z-index: 1;
 }
@@ -174,7 +176,7 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
   color: var(--text); font-size: 1rem;
 }
 .nav-icon-btn { color: rgba(0,0,0,0.78); }
-.nav-icon-btn:hover { background: rgba(0,0,0,0.06); color: #000; }
+.nav-icon-btn:hover { background: rgba(0,128,128,0.08); color: var(--teal); }
 .nav-icon-btn.wishlist-nav { color: rgba(0,0,0,0.78); }
 .nav-icon-btn.wishlist-nav:hover {
   color: var(--gold);
@@ -321,7 +323,7 @@ body.nav-solid .nav-logo { color: var(--gold-light); }
   background: none; border: none; padding: 4px 0;
   transition: color 0.2s;
 }
-.menu-trigger:hover { color: #ffffff; }
+.menu-trigger:hover { color: var(--teal); }
 .menu-trigger svg { flex-shrink: 0; }
 
 /* ══════════════════════════════════════════
