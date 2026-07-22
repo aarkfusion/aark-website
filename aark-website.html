@@ -5219,6 +5219,11 @@ window.addEventListener('popstate', function(e) {
   const state = e.state;
   if (!state) { showPage('home', false); return; }
   if (state.type === 'product') openProduct(state.id, false);
+  else if (state.type === 'shop') {
+    activeFilters = { category: state.filter };
+    renderSizeFilterChips(state.filter);
+    showPage('shop', false);
+  }
   else if (state.type === 'page') showPage(state.pageId, false);
 });
 
